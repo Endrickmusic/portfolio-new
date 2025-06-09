@@ -1,25 +1,15 @@
 import { Canvas } from "@react-three/fiber"
-import { Environment } from "@react-three/drei"
 
-import './index.css'
+import Scene from "./components/Scene"
 
-import Experience from "./Experience"
-
+import "./index.css"
 
 export default function App() {
-
- return (
-
-  
-    <Canvas shadows camera={{ position: [0, 0, 4], fov: 40 }}>
-      <Environment
-        files="./textures/envmap.hdr" />
-        <color 
-          attach="background" 
-          args={["#eeeeee"]} />
-      <Experience />
-    </Canvas>
-  
-  );
+  return (
+    <div className="w-screen h-screen bg-black">
+      <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
+        <Scene />
+      </Canvas>
+    </div>
+  )
 }
-
