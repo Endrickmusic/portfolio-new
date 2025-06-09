@@ -33,9 +33,9 @@ function Page({ title, paragraphs, className = "" }) {
   return (
     <div className={`h-screen pt-16 px-8 ${className}`}>
       <h1 className="text-6xl font-bold mb-8 text-white">{title}</h1>
-      <div className="max-w-4xl space-y-8">
+      <div className="max-w-8xl space-y-8">
         {paragraphs.map((paragraph, index) => (
-          <p key={index} className="text-xl leading-relaxed text-gray-300">
+          <p key={index} className="text-5xl leading-tight text-gray-300">
             {paragraph}
           </p>
         ))}
