@@ -7,6 +7,8 @@ export default function PostProcessPlane({ texture }) {
   const meshRef = useRef()
   const { viewport } = useThree()
   const scroll = useScroll()
+  const prevScrollRef = useRef(0)
+  const distortionTimeRef = useRef(0)
 
   // Basic passthrough material for now
   const material = useMemo(() => {
@@ -15,6 +17,7 @@ export default function PostProcessPlane({ texture }) {
         uTexture: { value: texture },
         uTime: { value: 0 },
         uScroll: { value: 0 },
+        uDistortionTime: { value: 0 },
       },
       vertexShader: `
           varying vec2 vUv;
@@ -28,29 +31,47 @@ export default function PostProcessPlane({ texture }) {
           uniform sampler2D uTexture;
           uniform float uTime;
           uniform float uScroll;
+          uniform float uDistortionTime;
 
           varying vec2 vUv;
           
           void main() {
-            vec4 color = texture2D(uTexture, vUv);
+            // Calculate distortion amount based on time since scroll
+            float distortion = uDistortionTime > 0.0 ? sin(uDistortionTime * 10.0) * 0.02 * (1.0 - uDistortionTime) : 0.0;
             
-            // Example: Add a scroll-based effect
-            float scrollEffect = sin(uScroll * 10.0) * 0.7;
-            color.r += scrollEffect;
+            // Apply distortion to UV coordinates
+            vec2 distortedUv = vUv;
+            distortedUv.x += distortion * sin(vUv.y * 10.0);
+            distortedUv.y += distortion * cos(vUv.x * 10.0);
             
+            vec4 color = texture2D(uTexture, distortedUv);
             gl_FragColor = color;
           }
         `,
     })
   }, [texture])
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
     if (material) {
       material.uniforms.uTime.value = state.clock.elapsedTime
       material.uniforms.uTexture.value = texture
+
       if (scroll.offset !== undefined) {
         material.uniforms.uScroll.value = scroll.offset
-        // console.log(scroll.offset)
+
+        // Check if scroll has changed
+        if (Math.abs(scroll.offset - prevScrollRef.current) > 0.001) {
+          distortionTimeRef.current = 1.0 // Reset distortion timer
+          material.uniforms.uDistortionTime.value = 1.0 // Apply immediately
+        }
+
+        // Update distortion time
+        if (distortionTimeRef.current > 0) {
+          distortionTimeRef.current -= delta * 1.5 // Adjust speed of fade out
+          material.uniforms.uDistortionTime.value = distortionTimeRef.current
+        }
+
+        prevScrollRef.current = scroll.offset
       }
     }
   })
