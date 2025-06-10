@@ -37,7 +37,7 @@ export default function PostProcessPlane({ texture }) {
           
           void main() {
             // Calculate distortion amount based on time since scroll
-            float distortion = uDistortionTime > 0.0 ? sin(uDistortionTime * 10.0) * 0.02 * (1.0 - uDistortionTime) : 0.0;
+            float distortion = uDistortionTime > 0.0 ? sin(uDistortionTime * 5.0) * 0.01 * (1.0 - uDistortionTime) : 0.0;
             
             // Apply distortion to UV coordinates
             vec2 distortedUv = vUv;
@@ -59,15 +59,19 @@ export default function PostProcessPlane({ texture }) {
       if (scroll.offset !== undefined) {
         material.uniforms.uScroll.value = scroll.offset
 
-        // Check if scroll has changed
-        if (Math.abs(scroll.offset - prevScrollRef.current) > 0.001) {
-          distortionTimeRef.current = 1.0 // Reset distortion timer
-          material.uniforms.uDistortionTime.value = 1.0 // Apply immediately
+        // Calculate scroll velocity
+        const scrollVelocity =
+          Math.abs(scroll.offset - prevScrollRef.current) / delta
+
+        // Trigger distortion when scroll velocity is high enough
+        if (scrollVelocity > 0.1) {
+          distortionTimeRef.current = 1.0
+          material.uniforms.uDistortionTime.value = 1.0
         }
 
         // Update distortion time
         if (distortionTimeRef.current > 0) {
-          distortionTimeRef.current -= delta * 1.5 // Adjust speed of fade out
+          distortionTimeRef.current -= delta * 1.5
           material.uniforms.uDistortionTime.value = distortionTimeRef.current
         }
 
