@@ -11,7 +11,6 @@ export default function Scene() {
   const boxRef = useRef()
   const boxRef2 = useRef()
   const { viewport, size } = useThree()
-  //   const fbo = useFBO(viewport.width, viewport.height)
   const fbo = useFBO(size.width * 2, size.height)
   const virtualScene = useMemo(() => new THREE.Scene(), [])
   const virtualCamera = useMemo(
@@ -34,7 +33,7 @@ export default function Scene() {
 
   return (
     <>
-      <ScrollControls pages={3} damping={0.1}>
+      <ScrollControls pages={1} damping={0.1}>
         {createPortal(
           <>
             <mesh ref={boxRef} position={[0, 0, 3]}>
@@ -46,16 +45,17 @@ export default function Scene() {
           </>,
           virtualScene
         )}
+
+        <mesh
+          ref={boxRef2}
+          position={[0.5, 0, 0.5]}
+          rotation={[Math.PI / 4, Math.PI / 6, 0]}
+        >
+          <boxGeometry args={[0.2, 0.2, 0.2]} />
+          <meshNormalMaterial />
+        </mesh>
+        <PostProcessPlane texture={fbo.texture} />
       </ScrollControls>
-      <mesh
-        ref={boxRef2}
-        position={[0.5, 0, 0.5]}
-        rotation={[Math.PI / 4, Math.PI / 6, 0]}
-      >
-        <boxGeometry args={[0.2, 0.2, 0.2]} />
-        <meshNormalMaterial />
-      </mesh>
-      <PostProcessPlane texture={fbo.texture} />
     </>
   )
 }
