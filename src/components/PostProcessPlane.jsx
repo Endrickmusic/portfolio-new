@@ -48,7 +48,8 @@ export default function PostProcessPlane({ texture }) {
 
   return (
     <mesh
-      scale={[viewport.width, viewport.height, 1]}
+      //   scale={[viewport.width, viewport.height, 1]}
+      scale={[3, 2, 1]}
       ref={meshRef}
       material={material}
     >
