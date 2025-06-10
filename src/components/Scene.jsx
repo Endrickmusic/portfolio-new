@@ -36,8 +36,8 @@ export default function Scene() {
       <ScrollControls pages={1} damping={0.1}>
         {createPortal(
           <>
-            <mesh ref={boxRef} position={[0, 0, 3]}>
-              <boxGeometry args={[0.3, 0.3, 0.3]} />
+            <mesh ref={boxRef} position={[0.7, 0.4, 3]}>
+              <boxGeometry args={[0.1, 0.1, 0.1]} />
               <meshNormalMaterial />
             </mesh>
 
@@ -48,7 +48,7 @@ export default function Scene() {
 
         <mesh
           ref={boxRef2}
-          position={[0.5, 0, 0.5]}
+          position={[-2.1, 0.8, 0.2]}
           rotation={[Math.PI / 4, Math.PI / 6, 0]}
         >
           <boxGeometry args={[0.2, 0.2, 0.2]} />

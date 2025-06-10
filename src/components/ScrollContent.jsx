@@ -37,7 +37,7 @@ const textContent = {
 }
 
 // Page component for reusability
-function Page({ title, paragraphs, position = [0, 0, 0] }) {
+function Page({ title, paragraphs, position = [0, 0, 0], children }) {
   const paragraphSpacing = 0.6 // Adjust this value to change spacing between paragraphs
   const firstParagraphOffset = 1.4 // Adjust this to change distance from title
 
@@ -72,6 +72,7 @@ function Page({ title, paragraphs, position = [0, 0, 0] }) {
           {paragraph}
         </Text>
       ))}
+      {children}
     </group>
   )
 }
@@ -81,6 +82,9 @@ export default function ScrollContent() {
   const scroll = useScroll()
   const group = useRef()
   const cubeRef = useRef()
+  const torusRef = useRef()
+  const capsuleRef = useRef()
+  const knotRef = useRef()
   const { viewport } = useThree()
 
   useFrame((state, delta) => {
@@ -88,10 +92,23 @@ export default function ScrollContent() {
       // Move the group down as we scroll up
       group.current.position.y = scroll.offset * 2.15 * viewport.height
 
-      // Rotate the cube
+      // Rotate all objects
       if (cubeRef.current) {
         cubeRef.current.rotation.x += delta * 0.3
         cubeRef.current.rotation.y += delta * 0.3
+      }
+      if (torusRef.current) {
+        torusRef.current.rotation.x += delta * 0.2
+        torusRef.current.rotation.z += delta * 0.4
+      }
+      if (capsuleRef.current) {
+        capsuleRef.current.rotation.y += delta * 0.5
+        capsuleRef.current.rotation.z += delta * 0.2
+      }
+      if (knotRef.current) {
+        knotRef.current.rotation.x += delta * 0.3
+        knotRef.current.rotation.y += delta * 0.3
+        knotRef.current.rotation.z += delta * 0.2
       }
     }
   })
@@ -100,7 +117,7 @@ export default function ScrollContent() {
     <group ref={group}>
       {/* Rotating cube */}
       <mesh ref={cubeRef} position={[-0.5, 0, -1]}>
-        <boxGeometry args={[0.2, 0.2, 0.2]} />
+        <boxGeometry args={[0.5, 0.1, 0.1]} />
         <meshNormalMaterial />
       </mesh>
 
@@ -108,17 +125,32 @@ export default function ScrollContent() {
         title={textContent.page1.title}
         paragraphs={textContent.page1.paragraphs}
         position={[0, -1.4, 0]}
-      />
+      >
+        <mesh ref={torusRef} position={[-0.5, -1.2, -1]}>
+          <torusGeometry args={[0.15, 0.05, 16, 32]} />
+          <meshNormalMaterial />
+        </mesh>
+      </Page>
       <Page
         title={textContent.page2.title}
         paragraphs={textContent.page2.paragraphs}
         position={[0, -4, 0]}
-      />
+      >
+        <mesh ref={capsuleRef} position={[-0.5, -0.7, -1]}>
+          <capsuleGeometry args={[0.05, 0.2, 16, 32]} />
+          <meshNormalMaterial />
+        </mesh>
+      </Page>
       <Page
         title={textContent.page3.title}
         paragraphs={textContent.page3.paragraphs}
         position={[0, -6, 0]}
-      />
+      >
+        <mesh ref={knotRef} position={[-0.5, -0.5, -1]}>
+          <torusKnotGeometry args={[0.1, 0.04, 128, 32, 2, 3]} />
+          <meshNormalMaterial />
+        </mesh>
+      </Page>
       <Page
         title={textContent.page4.title}
         paragraphs={textContent.page3.paragraphs}
