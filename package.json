@@ -13,6 +13,7 @@
     "@react-three/drei": "^10.0.7",
     "@react-three/fiber": "^9.1.2",
     "@tailwindcss/vite": "^4.1.8",
+    "leva": "^0.10.0",
     "npm-check-updates": "^18.0.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

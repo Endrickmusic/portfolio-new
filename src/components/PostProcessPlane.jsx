@@ -2,6 +2,7 @@ import { useRef, useMemo } from "react"
 import { useFrame, useThree } from "@react-three/fiber"
 import { useScroll } from "@react-three/drei"
 import * as THREE from "three"
+import { useControls } from "leva"
 
 export default function PostProcessPlane({ texture }) {
   const meshRef = useRef()
@@ -9,6 +10,35 @@ export default function PostProcessPlane({ texture }) {
   const scroll = useScroll()
   const prevScrollRef = useRef(0)
   const distortionTimeRef = useRef(0)
+
+  // Leva controls
+  const {
+    noiseScale,
+    noiseSpeed,
+    noiseThreshold,
+    noiseTransition,
+    baseDistortion,
+    strongDistortion,
+    aberrationStrength,
+    aberrationLayers,
+    aberrationSlide,
+    effectDuration,
+  } = useControls(
+    "Distortion Effect",
+    {
+      noiseScale: { value: 1.5, min: 0.5, max: 3.0, step: 0.1 },
+      noiseSpeed: { value: 0.2, min: 0.0, max: 1.0, step: 0.01 },
+      noiseThreshold: { value: 0.5, min: 0.3, max: 0.7, step: 0.05 },
+      noiseTransition: { value: 0.15, min: 0.05, max: 0.3, step: 0.05 },
+      baseDistortion: { value: 0.09, min: 0.01, max: 0.2, step: 0.01 },
+      strongDistortion: { value: 0.45, min: 0.1, max: 0.5, step: 0.05 },
+      aberrationStrength: { value: 0.01, min: 0.001, max: 0.01, step: 0.001 },
+      aberrationLayers: { value: 4, min: 1, max: 5, step: 1 },
+      aberrationSlide: { value: 0.12, min: 0.01, max: 2.0, step: 0.01 },
+      effectDuration: { value: 1.4, min: 0.2, max: 2.0, step: 0.1 },
+    },
+    { collapsed: true }
+  )
 
   // Basic passthrough material for now
   const material = useMemo(() => {
@@ -18,6 +48,15 @@ export default function PostProcessPlane({ texture }) {
         uTime: { value: 0 },
         uScroll: { value: 0 },
         uDistortionTime: { value: 0 },
+        uNoiseScale: { value: noiseScale },
+        uNoiseSpeed: { value: noiseSpeed },
+        uNoiseThreshold: { value: noiseThreshold },
+        uNoiseTransition: { value: noiseTransition },
+        uBaseDistortion: { value: baseDistortion },
+        uStrongDistortion: { value: strongDistortion },
+        uAberrationStrength: { value: aberrationStrength },
+        uAberrationLayers: { value: aberrationLayers },
+        uAberrationSlide: { value: aberrationSlide },
       },
       vertexShader: `
           varying vec2 vUv;
@@ -32,6 +71,15 @@ export default function PostProcessPlane({ texture }) {
           uniform float uTime;
           uniform float uScroll;
           uniform float uDistortionTime;
+          uniform float uNoiseScale;
+          uniform float uNoiseSpeed;
+          uniform float uNoiseThreshold;
+          uniform float uNoiseTransition;
+          uniform float uBaseDistortion;
+          uniform float uStrongDistortion;
+          uniform float uAberrationStrength;
+          uniform float uAberrationLayers;
+          uniform float uAberrationSlide;
 
           varying vec2 vUv;
 
@@ -124,15 +172,14 @@ export default function PostProcessPlane({ texture }) {
           
           void main() {
             // Calculate base noise with larger scale and slower time
-            float noise = fbm(vec3(vUv * 1.5, uTime * 0.2));  // Slowed down time by multiplying by 0.2
+            float noise = fbm(vec3(vUv * uNoiseScale, uTime * uNoiseSpeed));
             
             // Create areas of stronger distortion using threshold
-            float threshold = 0.5;
-            float strongDistortion = smoothstep(threshold, threshold + 0.15, noise);
+            float strongDistortion = smoothstep(uNoiseThreshold, uNoiseThreshold + uNoiseTransition, noise);
             
             // Calculate distortion amount based on time since scroll
-            float baseDistortion = uDistortionTime > 0.0 ? noise * 0.09 * smoothstep(0.0, 1.0, uDistortionTime) : 0.0;
-            float strongDistortionAmount = uDistortionTime > 0.0 ? noise * 0.25 * smoothstep(0.0, 1.0, uDistortionTime) : 0.0;
+            float baseDistortion = uDistortionTime > 0.0 ? noise * uBaseDistortion * smoothstep(0.0, 1.0, uDistortionTime) : 0.0;
+            float strongDistortionAmount = uDistortionTime > 0.0 ? noise * uStrongDistortion * smoothstep(0.0, 1.0, uDistortionTime) : 0.0;
             
             // Mix between normal and strong distortion
             float distortion = mix(baseDistortion, strongDistortionAmount, strongDistortion);
@@ -141,29 +188,56 @@ export default function PostProcessPlane({ texture }) {
             vec2 distortedUv = vUv;
             distortedUv += distortion;
             
-            // Chromatic aberration
-            float aberrationStrength = uDistortionTime > 0.0 ? 0.008 * smoothstep(0.0, 1.0, uDistortionTime) : 0.0;
-            // Make aberration stronger in areas of strong distortion
-            aberrationStrength *= (1.0 + strongDistortion * 2.0);  // Double the aberration in strong areas
+            // Chromatic aberration with slide effect
+            float aberrationStrength = uDistortionTime > 0.0 ? uAberrationStrength * smoothstep(0.0, 1.0, uDistortionTime) : 0.0;
+            aberrationStrength *= (1.0 + strongDistortion * 2.0);
             
-            vec2 redOffset = vec2(aberrationStrength, 0.0);
-            vec2 greenOffset = vec2(0.0, 0.0);
-            vec2 blueOffset = vec2(-aberrationStrength, 0.0);
+            vec3 color = vec3(0.0);
             
-            vec4 redChannel = texture2D(uTexture, distortedUv + redOffset);
-            vec4 greenChannel = texture2D(uTexture, distortedUv + greenOffset);
-            vec4 blueChannel = texture2D(uTexture, distortedUv + blueOffset);
+            for(int i = 0; i < int(uAberrationLayers); i++) {
+                float slide = float(i) / float(uAberrationLayers);
+                vec2 refractVecR = vec2(aberrationStrength, 0.0);
+                vec2 refractVecG = vec2(0.0, 0.0);
+                vec2 refractVecB = vec2(-aberrationStrength, 0.0);
+                
+                color.r += texture2D(uTexture, distortedUv + refractVecR.xy * (slide * uAberrationSlide * 1.0)).r;
+                color.g += texture2D(uTexture, distortedUv + refractVecG.xy * (slide * uAberrationSlide * 1.0)).g;
+                color.b += texture2D(uTexture, distortedUv + refractVecB.xy * (slide * uAberrationSlide * 1.0)).b;
+            }
             
-            gl_FragColor = vec4(redChannel.r, greenChannel.g, blueChannel.b, 1.0);
+            // Normalize colors
+            color /= float(uAberrationLayers);
+            
+            gl_FragColor = vec4(color, 1.0);
           }
         `,
     })
-  }, [texture])
+  }, [
+    texture,
+    noiseScale,
+    noiseSpeed,
+    noiseThreshold,
+    noiseTransition,
+    baseDistortion,
+    strongDistortion,
+    aberrationStrength,
+    aberrationLayers,
+    aberrationSlide,
+  ])
 
   useFrame((state, delta) => {
     if (material) {
       material.uniforms.uTime.value = state.clock.elapsedTime
       material.uniforms.uTexture.value = texture
+      material.uniforms.uNoiseScale.value = noiseScale
+      material.uniforms.uNoiseSpeed.value = noiseSpeed
+      material.uniforms.uNoiseThreshold.value = noiseThreshold
+      material.uniforms.uNoiseTransition.value = noiseTransition
+      material.uniforms.uBaseDistortion.value = baseDistortion
+      material.uniforms.uStrongDistortion.value = strongDistortion
+      material.uniforms.uAberrationStrength.value = aberrationStrength
+      material.uniforms.uAberrationLayers.value = aberrationLayers
+      material.uniforms.uAberrationSlide.value = aberrationSlide
 
       if (scroll.offset !== undefined) {
         material.uniforms.uScroll.value = scroll.offset
@@ -174,13 +248,13 @@ export default function PostProcessPlane({ texture }) {
 
         // Trigger distortion when scroll velocity is high enough
         if (scrollVelocity > 0.1) {
-          distortionTimeRef.current = 0.7
-          material.uniforms.uDistortionTime.value = 0.4
+          distortionTimeRef.current = effectDuration
+          material.uniforms.uDistortionTime.value = effectDuration
         }
 
         // Update distortion time
         if (distortionTimeRef.current > 0) {
-          distortionTimeRef.current -= delta * 0.3
+          distortionTimeRef.current -= delta
           material.uniforms.uDistortionTime.value = distortionTimeRef.current
         }
 
@@ -190,7 +264,6 @@ export default function PostProcessPlane({ texture }) {
   })
 
   return (
-    // <mesh scale={[3, 2, 1]} ref={meshRef} material={material}>
     <mesh
       scale={[viewport.width * 0.7, viewport.height, 1]}
       ref={meshRef}
