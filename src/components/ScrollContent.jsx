@@ -1,7 +1,6 @@
 import React from "react"
-import { Canvas } from "@react-three/fiber"
-import { ScrollControls, Scroll, useScroll } from "@react-three/drei"
-import { useFrame } from "@react-three/fiber"
+import { useScroll } from "@react-three/drei"
+import { useFrame, useThree } from "@react-three/fiber"
 import { Text } from "@react-three/drei"
 import { useRef } from "react"
 
@@ -67,15 +66,29 @@ function Page({ title, paragraphs, position = [0, 0, 0] }) {
 export default function ScrollContent() {
   const scroll = useScroll()
   const group = useRef()
+  const cubeRef = useRef()
+  const { viewport } = useThree()
 
-  useFrame(() => {
+  useFrame((state, delta) => {
     if (scroll.offset !== undefined) {
-      group.current.position.y = scroll.offset * -6 // Adjust this value to control scroll distance
+      group.current.position.y = scroll.offset * 3 * viewport.height // Adjust this value to control scroll distance
+
+      // Rotate the cube
+      if (cubeRef.current) {
+        cubeRef.current.rotation.x += delta * 0.5
+        cubeRef.current.rotation.y += delta * 0.5
+      }
     }
   })
 
   return (
     <group ref={group}>
+      {/* Rotating cube */}
+      <mesh ref={cubeRef} position={[2, 0, 0]}>
+        <boxGeometry args={[0.5, 0.5, 0.5]} />
+        <meshNormalMaterial />
+      </mesh>
+
       <Page
         title={textContent.page1.title}
         paragraphs={textContent.page1.paragraphs}

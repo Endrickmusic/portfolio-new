@@ -34,18 +34,19 @@ export default function Scene() {
 
   return (
     <>
-      {createPortal(
-        <>
-          <mesh ref={boxRef} position={[0, 0, 3]}>
-            <boxGeometry args={[0.3, 0.3, 0.3]} />
-            <meshNormalMaterial />
-          </mesh>
-          <ScrollControls pages={3} damping={0.1}>
+      <ScrollControls pages={3} damping={0.1}>
+        {createPortal(
+          <>
+            <mesh ref={boxRef} position={[0, 0, 3]}>
+              <boxGeometry args={[0.3, 0.3, 0.3]} />
+              <meshNormalMaterial />
+            </mesh>
+
             <ScrollContent />
-          </ScrollControls>
-        </>,
-        virtualScene
-      )}
+          </>,
+          virtualScene
+        )}
+      </ScrollControls>
       <mesh
         ref={boxRef2}
         position={[0.5, 0, 0.5]}
