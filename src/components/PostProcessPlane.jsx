@@ -123,8 +123,19 @@ export default function PostProcessPlane({ texture }) {
           }
           
           void main() {
+            // Calculate base noise with larger scale and slower time
+            float noise = fbm(vec3(vUv * 1.5, uTime * 0.2));  // Slowed down time by multiplying by 0.2
+            
+            // Create areas of stronger distortion using threshold
+            float threshold = 0.5;
+            float strongDistortion = smoothstep(threshold, threshold + 0.15, noise);
+            
             // Calculate distortion amount based on time since scroll
-            float distortion = uDistortionTime > 0.0 ? fbm(vec3(vUv * 3.0, uTime)) * 0.09 * smoothstep(0.0, 1.0, uDistortionTime) : 0.0;
+            float baseDistortion = uDistortionTime > 0.0 ? noise * 0.09 * smoothstep(0.0, 1.0, uDistortionTime) : 0.0;
+            float strongDistortionAmount = uDistortionTime > 0.0 ? noise * 0.25 * smoothstep(0.0, 1.0, uDistortionTime) : 0.0;
+            
+            // Mix between normal and strong distortion
+            float distortion = mix(baseDistortion, strongDistortionAmount, strongDistortion);
             
             // Apply distortion to UV coordinates
             vec2 distortedUv = vUv;
@@ -132,6 +143,9 @@ export default function PostProcessPlane({ texture }) {
             
             // Chromatic aberration
             float aberrationStrength = uDistortionTime > 0.0 ? 0.008 * smoothstep(0.0, 1.0, uDistortionTime) : 0.0;
+            // Make aberration stronger in areas of strong distortion
+            aberrationStrength *= (1.0 + strongDistortion * 2.0);  // Double the aberration in strong areas
+            
             vec2 redOffset = vec2(aberrationStrength, 0.0);
             vec2 greenOffset = vec2(0.0, 0.0);
             vec2 blueOffset = vec2(-aberrationStrength, 0.0);
