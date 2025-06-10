@@ -4,7 +4,7 @@ import * as THREE from "three"
 
 export default function PostProcessPlane({ texture }) {
   const meshRef = useRef()
-  const { size, viewport } = useThree()
+  const { viewport } = useThree()
 
   // Basic passthrough material for now
   const material = useMemo(() => {
@@ -30,10 +30,10 @@ export default function PostProcessPlane({ texture }) {
           void main() {
 
             vec4 color = texture2D(uTexture, vUv);
-        // Add a subtle red tint to prove we're seeing the FBO
-            color.r += 1.0 * sin(uTime * 12.0);           
-            gl_FragColor = vec4(color.r, 0.0, 1.0, 1.0);
-            gl_FragColor = vec4(vUv, 0.0, 1.0);
+          
+            // gl_FragColor = vec4(color.r, 0.0, 1.0, 1.0);
+            // gl_FragColor = vec4(vUv, 0.0, 1.0);
+            gl_FragColor = color;
           }
         `,
     })
@@ -42,6 +42,7 @@ export default function PostProcessPlane({ texture }) {
   useFrame((state) => {
     if (material) {
       material.uniforms.uTime.value = state.clock.elapsedTime
+      material.uniforms.uTexture.value = texture
     }
   })
 

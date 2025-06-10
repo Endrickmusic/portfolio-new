@@ -5,19 +5,25 @@ import { useFBO, OrthographicCamera } from "@react-three/drei"
 import PostProcessPlane from "./PostProcessPlane"
 
 export default function FBOCapture({ children }) {
-  const fbo = useFBO(1024, 1024) // Fixed size to avoid window reference issues
+  const fbo = useFBO(1024, 1024)
+  const virtualScene = useMemo(() => new THREE.Scene(), [])
+  const virtualCamera = useMemo(
+    () => new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 1000),
+    []
+  )
 
   useFrame((state) => {
-    // For now, let's just render normally and capture later
-    // This is a simplified approach to test the pipeline
+    // Render the children to our FBO
+    state.gl.setRenderTarget(fbo)
+    state.gl.render(virtualScene, virtualCamera)
+    state.gl.setRenderTarget(null)
   })
 
   return (
     <>
-      {/* Render children normally for now */}
-      {/* {children} */}
-
-      {/* Display the FBO texture on fullscreen plane */}
+      {/* Render content to virtual scene */}
+      (children, virtualScene)}
+      {/* Display the FBO texture */}
       <PostProcessPlane texture={fbo.texture} />
     </>
   )
