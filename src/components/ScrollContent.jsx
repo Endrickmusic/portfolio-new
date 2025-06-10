@@ -27,6 +27,13 @@ const textContent = {
       "Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae.",
     ],
   },
+  page4: {
+    title: "Page Four",
+    paragraphs: [
+      "Similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio.",
+      "Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae.",
+    ],
+  },
 }
 
 // Page component for reusability
@@ -37,13 +44,13 @@ function Page({ title, paragraphs, position = [0, 0, 0] }) {
   return (
     <group position={position}>
       <Text
-        position={[-1.04, 2, 0]}
+        position={[-0.9, 2, 0]}
         fontSize={0.5}
         color="#ffffff"
         anchorX="left"
         anchorY="middle"
         font="/fonts/open-sans-condensed-v14-latin-300.woff"
-        letterSpacing={0.05}
+        letterSpacing={0.02}
         lineHeight={1.2}
       >
         {title}
@@ -51,10 +58,10 @@ function Page({ title, paragraphs, position = [0, 0, 0] }) {
       {paragraphs.map((paragraph, index) => (
         <Text
           key={index}
-          position={[0, firstParagraphOffset - index * paragraphSpacing, 0]}
+          position={[-0.02, firstParagraphOffset - index * paragraphSpacing, 0]}
           fontSize={0.09}
           color="#ffffff"
-          maxWidth={2}
+          maxWidth={1.7}
           textAlign="left"
           anchorX="center"
           anchorY="middle"
@@ -79,7 +86,7 @@ export default function ScrollContent() {
   useFrame((state, delta) => {
     if (scroll.offset !== undefined) {
       // Move the group down as we scroll up
-      group.current.position.y = scroll.offset * 3 * viewport.height
+      group.current.position.y = scroll.offset * 2.15 * viewport.height
 
       // Rotate the cube
       if (cubeRef.current) {
@@ -100,7 +107,7 @@ export default function ScrollContent() {
       <Page
         title={textContent.page1.title}
         paragraphs={textContent.page1.paragraphs}
-        position={[0, -1.5, 0]}
+        position={[0, -1.4, 0]}
       />
       <Page
         title={textContent.page2.title}
@@ -111,6 +118,11 @@ export default function ScrollContent() {
         title={textContent.page3.title}
         paragraphs={textContent.page3.paragraphs}
         position={[0, -6, 0]}
+      />
+      <Page
+        title={textContent.page4.title}
+        paragraphs={textContent.page3.paragraphs}
+        position={[0, -8, 0]}
       />
     </group>
   )
