@@ -130,8 +130,17 @@ export default function PostProcessPlane({ texture }) {
             vec2 distortedUv = vUv;
             distortedUv += distortion;
             
-            vec4 color = texture2D(uTexture, distortedUv);
-            gl_FragColor = color;
+            // Chromatic aberration
+            float aberrationStrength = uDistortionTime > 0.0 ? 0.008 * smoothstep(0.0, 1.0, uDistortionTime) : 0.0;
+            vec2 redOffset = vec2(aberrationStrength, 0.0);
+            vec2 greenOffset = vec2(0.0, 0.0);
+            vec2 blueOffset = vec2(-aberrationStrength, 0.0);
+            
+            vec4 redChannel = texture2D(uTexture, distortedUv + redOffset);
+            vec4 greenChannel = texture2D(uTexture, distortedUv + greenOffset);
+            vec4 blueChannel = texture2D(uTexture, distortedUv + blueOffset);
+            
+            gl_FragColor = vec4(redChannel.r, greenChannel.g, blueChannel.b, 1.0);
           }
         `,
     })
