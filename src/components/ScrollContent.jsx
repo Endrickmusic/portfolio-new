@@ -31,29 +31,36 @@ const textContent = {
 
 // Page component for reusability
 function Page({ title, paragraphs, position = [0, 0, 0] }) {
+  const paragraphSpacing = 0.6 // Adjust this value to change spacing between paragraphs
+  const firstParagraphOffset = 1.4 // Adjust this to change distance from title
+
   return (
     <group position={position}>
       <Text
-        position={[0, 2, 0]}
+        position={[-1.04, 2, 0]}
         fontSize={0.5}
-        color="white"
-        anchorX="center"
+        color="#ffffff"
+        anchorX="left"
         anchorY="middle"
         font="/fonts/open-sans-condensed-v14-latin-300.woff"
+        letterSpacing={0.05}
+        lineHeight={1.2}
       >
         {title}
       </Text>
       {paragraphs.map((paragraph, index) => (
         <Text
           key={index}
-          position={[0, 1 - index * 0.8, 0]}
-          fontSize={0.2}
-          color="#cccccc"
-          maxWidth={4}
-          textAlign="center"
+          position={[0, firstParagraphOffset - index * paragraphSpacing, 0]}
+          fontSize={0.09}
+          color="#ffffff"
+          maxWidth={2}
+          textAlign="left"
           anchorX="center"
           anchorY="middle"
           font="/fonts/open-sans-condensed-v14-latin-300.woff"
+          letterSpacing={0.02}
+          lineHeight={1.5}
         >
           {paragraph}
         </Text>
@@ -71,12 +78,13 @@ export default function ScrollContent() {
 
   useFrame((state, delta) => {
     if (scroll.offset !== undefined) {
-      group.current.position.y = scroll.offset * 3 * viewport.height // Adjust this value to control scroll distance
+      // Move the group down as we scroll up
+      group.current.position.y = scroll.offset * 3 * viewport.height
 
       // Rotate the cube
       if (cubeRef.current) {
-        cubeRef.current.rotation.x += delta * 0.5
-        cubeRef.current.rotation.y += delta * 0.5
+        cubeRef.current.rotation.x += delta * 0.3
+        cubeRef.current.rotation.y += delta * 0.3
       }
     }
   })
@@ -84,25 +92,25 @@ export default function ScrollContent() {
   return (
     <group ref={group}>
       {/* Rotating cube */}
-      <mesh ref={cubeRef} position={[2, 0, 0]}>
-        <boxGeometry args={[0.5, 0.5, 0.5]} />
+      <mesh ref={cubeRef} position={[-0.5, 0, -1]}>
+        <boxGeometry args={[0.2, 0.2, 0.2]} />
         <meshNormalMaterial />
       </mesh>
 
       <Page
         title={textContent.page1.title}
         paragraphs={textContent.page1.paragraphs}
-        position={[0, 0, 0]}
+        position={[0, -1.5, 0]}
       />
       <Page
         title={textContent.page2.title}
         paragraphs={textContent.page2.paragraphs}
-        position={[0, -2, 0]}
+        position={[0, -4, 0]}
       />
       <Page
         title={textContent.page3.title}
         paragraphs={textContent.page3.paragraphs}
-        position={[0, -4, 0]}
+        position={[0, -6, 0]}
       />
     </group>
   )
