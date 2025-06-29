@@ -38,14 +38,15 @@ const textContent = {
 
 // Page component for reusability
 function Page({ title, paragraphs, position = [0, 0, 0], children }) {
-  const paragraphSpacing = 0.6 // Adjust this value to change spacing between paragraphs
-  const firstParagraphOffset = 1.4 // Adjust this to change distance from title
+  const { viewport } = useThree()
+  const paragraphSpacing = viewport.height * 0.12
+  const firstParagraphOffset = viewport.height * -0.2 // Much lower start for paragraphs
 
   return (
     <group position={position}>
       <Text
-        position={[-0.9, 2, 0]}
-        fontSize={0.5}
+        position={[-0.8, viewport.height * 0.3, 0]} // Title moved down
+        fontSize={viewport.height * 0.25}
         color="#ffffff"
         anchorX="left"
         anchorY="middle"
@@ -58,10 +59,10 @@ function Page({ title, paragraphs, position = [0, 0, 0], children }) {
       {paragraphs.map((paragraph, index) => (
         <Text
           key={index}
-          position={[-0.02, firstParagraphOffset - index * paragraphSpacing, 0]}
-          fontSize={0.09}
+          position={[0, firstParagraphOffset - index * paragraphSpacing, 0]}
+          fontSize={viewport.height * 0.03}
           color="#ffffff"
-          maxWidth={1.7}
+          maxWidth={2.2}
           textAlign="left"
           anchorX="center"
           anchorY="middle"
@@ -87,12 +88,12 @@ export default function ScrollContent() {
   const knotRef = useRef()
   const { viewport } = useThree()
 
+  const scaleCompensation = viewport.width / viewport.height
+
   useFrame((state, delta) => {
     if (scroll.offset !== undefined) {
-      // Move the group down as we scroll up
-      group.current.position.y = scroll.offset * 2.15 * viewport.height
+      group.current.position.y = scroll.offset * 4 * viewport.height
 
-      // Rotate all objects
       if (cubeRef.current) {
         cubeRef.current.rotation.x += delta * 0.3
         cubeRef.current.rotation.y += delta * 0.3
@@ -115,18 +116,16 @@ export default function ScrollContent() {
 
   return (
     <group ref={group}>
-      {/* Rotating cube */}
-      <mesh ref={cubeRef} position={[-0.5, 0, -1]}>
-        <boxGeometry args={[0.5, 0.1, 0.1]} />
-        <meshNormalMaterial />
-      </mesh>
-
       <Page
         title={textContent.page1.title}
         paragraphs={textContent.page1.paragraphs}
-        position={[0, -1.4, 0]}
+        position={[0, 0, 0]}
       >
-        <mesh ref={torusRef} position={[-0.5, -1.2, -1]}>
+        <mesh
+          ref={torusRef}
+          position={[-0.3, viewport.height * -0.4, -1]}
+          scale={[1 / scaleCompensation, 1, 1]}
+        >
           <torusGeometry args={[0.15, 0.05, 16, 32]} />
           <meshNormalMaterial />
         </mesh>
@@ -134,9 +133,13 @@ export default function ScrollContent() {
       <Page
         title={textContent.page2.title}
         paragraphs={textContent.page2.paragraphs}
-        position={[0, -4, 0]}
+        position={[0, -viewport.height, 0]}
       >
-        <mesh ref={capsuleRef} position={[-0.5, -0.7, -1]}>
+        <mesh
+          ref={capsuleRef}
+          position={[-0.3, viewport.height * -0.4, -1]}
+          scale={[1 / scaleCompensation, 1, 1]}
+        >
           <capsuleGeometry args={[0.05, 0.2, 16, 32]} />
           <meshNormalMaterial />
         </mesh>
@@ -144,18 +147,31 @@ export default function ScrollContent() {
       <Page
         title={textContent.page3.title}
         paragraphs={textContent.page3.paragraphs}
-        position={[0, -6, 0]}
+        position={[0, -viewport.height * 2, 0]}
       >
-        <mesh ref={knotRef} position={[-0.5, -0.5, -1]}>
+        <mesh
+          ref={knotRef}
+          position={[-0.3, viewport.height * -0.4, -1]}
+          scale={[1 / scaleCompensation, 1, 1]}
+        >
           <torusKnotGeometry args={[0.1, 0.04, 128, 32, 2, 3]} />
           <meshNormalMaterial />
         </mesh>
       </Page>
       <Page
         title={textContent.page4.title}
-        paragraphs={textContent.page3.paragraphs}
-        position={[0, -8, 0]}
-      />
+        paragraphs={textContent.page4.paragraphs}
+        position={[0, -viewport.height * 3, 0]}
+      >
+        <mesh
+          ref={cubeRef}
+          position={[-0.3, viewport.height * -0.4, -1]}
+          scale={[1 / scaleCompensation, 1, 1]}
+        >
+          <boxGeometry args={[0.5, 0.1, 0.1]} />
+          <meshNormalMaterial />
+        </mesh>
+      </Page>
     </group>
   )
 }
