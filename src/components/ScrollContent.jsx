@@ -8,14 +8,14 @@ import { useRef } from "react"
 const textStyles = {
   heading: {
     fontSize: (viewport) => viewport.height * 0.25,
-    color: "#ffffff",
+    color: "#38354F",
     font: "/fonts/SeasonSerifTRIAL-Light.woff",
     letterSpacing: 0.02,
     lineHeight: 1.2,
   },
   body: {
     fontSize: (viewport) => viewport.height * 0.03,
-    color: "#ffffff",
+    color: "#38354F",
     font: "/fonts/ibm-plex-mono-latin-400-normal.woff",
     letterSpacing: 0.02,
     lineHeight: 1.5,
@@ -66,7 +66,7 @@ function Page({ title, paragraphs, position = [0, 0, 0], children }) {
       <Text
         position={[-0.8, viewport.height * 0.3, 0]} // Title moved down
         fontSize={viewport.height * 0.25}
-        color="#ffffff"
+        color="#38354F"
         anchorX="left"
         anchorY="middle"
         font="/fonts/SeasonSerifTRIAL-Light.woff"
@@ -80,7 +80,7 @@ function Page({ title, paragraphs, position = [0, 0, 0], children }) {
           key={index}
           position={[0, firstParagraphOffset - index * paragraphSpacing, 0]}
           fontSize={viewport.height * 0.03}
-          color="#ffffff"
+          color="#38354F"
           maxWidth={2.2}
           textAlign="left"
           anchorX="center"

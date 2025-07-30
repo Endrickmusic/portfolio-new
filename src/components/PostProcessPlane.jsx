@@ -196,20 +196,23 @@ export default function PostProcessPlane({ texture }) {
             
             vec3 color = vec3(0.0);
             
-            for(int i = 0; i < int(uAberrationLayers); i++) {
-                float slide = float(i) / float(uAberrationLayers);
-                vec2 refractVecR = vec2(aberrationStrength, 0.0);
-                vec2 refractVecG = vec2(0.0, 0.0);
-                vec2 refractVecB = vec2(-aberrationStrength, 0.0);
+            // for(int i = 0; i < int(uAberrationLayers); i++) {
+            //     float slide = float(i) / float(uAberrationLayers);
+            //     vec2 refractVecR = vec2(aberrationStrength, 0.0);
+            //     vec2 refractVecG = vec2(0.0, 0.0);
+            //     vec2 refractVecB = vec2(-aberrationStrength, 0.0);
                 
-                color.r += texture2D(uTexture, distortedUv + refractVecR.xy * (slide * uAberrationSlide * 1.0)).r;
-                color.g += texture2D(uTexture, distortedUv + refractVecG.xy * (slide * uAberrationSlide * 1.0)).g;
-                color.b += texture2D(uTexture, distortedUv + refractVecB.xy * (slide * uAberrationSlide * 1.0)).b;
-            }
+            //     color.r += texture2D(uTexture, distortedUv + refractVecR.xy * (slide * uAberrationSlide * 1.0)).r;
+            //     color.g += texture2D(uTexture, distortedUv + refractVecG.xy * (slide * uAberrationSlide * 2.0)).g;
+            //     color.b += texture2D(uTexture, distortedUv + refractVecB.xy * (slide * uAberrationSlide * 4.0)).b;
+            // }
             
-            // Normalize colors
-            color /= float(uAberrationLayers);
+            // // Normalize colors
+            // color /= float(uAberrationLayers);
+                
+            color += texture2D(uTexture, distortedUv).rgb;
             
+            // gl_FragColor = vec4(color, 1.0);
             gl_FragColor = vec4(color, 1.0);
           }
         `,
