@@ -14,6 +14,7 @@ export default function Header({ textStyles }) {
         src="/svgs/CH_logo.svg"
         scale={0.0045}
         position={[-viewport.width / 2 + columnWidth, 0, 0]}
+        fillMaterial={new THREE.MeshBasicMaterial({ color: "#38358f" })}
       />
 
       {/* Name and Title */}
@@ -29,6 +30,7 @@ export default function Header({ textStyles }) {
           fontSize={textStyles.logo.fontSize(viewport)}
           anchorX="left"
           anchorY="middle"
+          color="#38358f"
         >
           Christian Hohenbild
         </Text>
@@ -38,6 +40,7 @@ export default function Header({ textStyles }) {
           position={[0, -viewport.height * 0.03, 0]}
           anchorX="left"
           anchorY="middle"
+          color="#38358f"
         >
           3D Artist and Creative Developer
         </Text>
@@ -97,6 +100,7 @@ export default function Header({ textStyles }) {
               fontSize={textStyles.nav.fontSize(viewport)}
               anchorX="center"
               anchorY="middle"
+              color="#38358f"
             >
               {text}
             </Text>

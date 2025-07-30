@@ -1,8 +1,8 @@
-import React from "react"
-import { useScroll } from "@react-three/drei"
-import { useFrame, useThree } from "@react-three/fiber"
-import { Text, Svg, Image } from "@react-three/drei"
 import { useRef } from "react"
+import * as THREE from "three"
+import { useFrame, useThree } from "@react-three/fiber"
+import { Text, Svg, Image, useScroll } from "@react-three/drei"
+
 import Grid from "./Grid"
 import Header from "./Header"
 
@@ -10,7 +10,7 @@ import Header from "./Header"
 const textStyles = {
   logo: {
     fontSize: (viewport) => viewport.height * 0.03,
-    color: "#38354F",
+    color: "#38354f",
     font: "/fonts/ibm-plex-mono-latin-400-normal.woff",
     letterSpacing: 0.02,
     lineHeight: 1.2,
@@ -24,14 +24,14 @@ const textStyles = {
   },
   heading: {
     fontSize: (viewport) => viewport.height * 0.25,
-    color: "#38354F",
+    color: "#38358F",
     font: "/fonts/SeasonSerifTRIAL-Light.woff",
     letterSpacing: 0.02,
     lineHeight: 1.2,
   },
   body: {
     fontSize: (viewport) => viewport.height * 0.03,
-    color: "#38354F",
+    color: "#38358F",
     font: "/fonts/ibm-plex-mono-latin-400-normal.woff",
     letterSpacing: 0.02,
     lineHeight: 1.5,
@@ -84,7 +84,7 @@ function Page({ title, paragraphs, position = [0, 0, 0], children }) {
       <Text
         position={[-0.8, viewport.height * 0.3, 0]} // Title moved down
         fontSize={viewport.height * 0.05}
-        color="#38354F"
+        color="#38358F"
         anchorX="left"
         anchorY="middle"
         font="/fonts/SeasonSerifTRIAL-Light.woff"
@@ -98,7 +98,7 @@ function Page({ title, paragraphs, position = [0, 0, 0], children }) {
           key={index}
           position={[0, firstParagraphOffset - index * paragraphSpacing, 0]}
           fontSize={viewport.height * 0.023}
-          color="#38354F"
+          color="#38358f"
           maxWidth={2.2}
           textAlign="left"
           anchorX="center"
@@ -119,13 +119,7 @@ function Page({ title, paragraphs, position = [0, 0, 0], children }) {
 export default function ScrollContent() {
   const scroll = useScroll()
   const group = useRef()
-  const cubeRef = useRef()
-  const torusRef = useRef()
-  const capsuleRef = useRef()
-  const knotRef = useRef()
   const { viewport } = useThree()
-
-  const scaleCompensation = viewport.width / viewport.height
 
   useFrame((state, delta) => {
     if (scroll.offset !== undefined) {
@@ -142,15 +136,15 @@ export default function ScrollContent() {
       <group position={[0, viewport.height * 0.1, 0]}>
         <Svg
           src="/svgs/C.svg"
-          // scale={viewport.height * 0.8}
           scale={0.0078}
           position={[-3, 0.2, 0]}
+          fillMaterial={new THREE.MeshBasicMaterial({ color: "#38358f" })}
         />
         <Svg
           src="/svgs/H.svg"
-          // scale={viewport.height * 0.8}
           scale={0.0078}
           position={[0.2, 0.2, 0]}
+          fillMaterial={new THREE.MeshBasicMaterial({ color: "#38358f" })}
         />
       </group>
 
