@@ -157,40 +157,40 @@ export default function ScrollContent() {
       <Page
         title={textContent.page0.title}
         paragraphs={textContent.page0.paragraphs}
-        position={[0, -viewport.height, 0]}
+        position={[0, -viewport.height * 1.5, 0]}
       ></Page>
       <Image
         url="/images/vellum_dance_main.png"
         scale={[viewport.width * 0.4, viewport.height * 0.4, 1]}
-        position={[1, -viewport.height, 0]}
+        position={[1, -viewport.height * 1.5, 0]}
         transparent
       />
       <Page
         title={textContent.page1.title}
         paragraphs={textContent.page1.paragraphs}
-        position={[0, -viewport.height * 2, 0]}
-      ></Page>
-      <Image
-        url="/images/particles_main.png"
-        scale={[viewport.width * 0.4, viewport.height * 0.4, 1]}
-        position={[-1, -viewport.height * 2, 0]}
-        transparent
-      />
-      <Page
-        title={textContent.page2.title}
-        paragraphs={textContent.page2.paragraphs}
         position={[0, -viewport.height * 3, 0]}
       ></Page>
       <Image
-        url="/images/liquid_prism_main.png"
+        url="/images/particles_main.png"
         scale={[viewport.width * 0.4, viewport.height * 0.4, 1]}
         position={[-1, -viewport.height * 3, 0]}
         transparent
       />
       <Page
+        title={textContent.page2.title}
+        paragraphs={textContent.page2.paragraphs}
+        position={[0, -viewport.height * 4.5, 0]}
+      ></Page>
+      <Image
+        url="/images/liquid_prism_main.png"
+        scale={[viewport.width * 0.4, viewport.height * 0.4, 1]}
+        position={[-1, -viewport.height * 4.5, 0]}
+        transparent
+      />
+      <Page
         title={textContent.page3.title}
         paragraphs={textContent.page3.paragraphs}
-        position={[0, -viewport.height * 4, 0]}
+        position={[0, -viewport.height * 6, 0]}
       ></Page>
     </group>
   )

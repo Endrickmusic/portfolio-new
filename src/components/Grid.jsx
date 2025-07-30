@@ -6,12 +6,38 @@ export default function Grid() {
   const { viewport } = useThree()
   const columns = 24
   const columnWidth = viewport.width / columns
-  const verticalLines = []
+  const lines = []
+
+  // Create edge vertical lines
+  lines.push(
+    <Line
+      key="v-left"
+      points={[
+        [-viewport.width / 2, viewport.height * 0.5, 0],
+        [-viewport.width / 2, -viewport.height * 5, 0],
+      ]}
+      color="#38354F"
+      opacity={0.1}
+      transparent
+      lineWidth={20.0}
+    />,
+    <Line
+      key="v-right"
+      points={[
+        [viewport.width / 2, viewport.height * 0.5, 0],
+        [viewport.width / 2, -viewport.height * 5, 0],
+      ]}
+      color="#38354F"
+      opacity={0.1}
+      transparent
+      lineWidth={20.0}
+    />
+  )
 
   // Create vertical grid lines
   for (let i = 0; i <= columns; i++) {
     const x = i * columnWidth - viewport.width / 2
-    verticalLines.push(
+    lines.push(
       <Line
         key={`v-${i}`}
         points={[
@@ -21,10 +47,10 @@ export default function Grid() {
         color="#38354F"
         opacity={0.1}
         transparent
-        lineWidth={1}
+        lineWidth={10.0}
       />
     )
   }
 
-  return <group>{verticalLines}</group>
+  return <group>{lines}</group>
 }
