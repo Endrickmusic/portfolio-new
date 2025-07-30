@@ -1,11 +1,27 @@
 import React from "react"
 import { useScroll } from "@react-three/drei"
 import { useFrame, useThree } from "@react-three/fiber"
-import { Text } from "@react-three/drei"
+import { Text, Svg, Image } from "@react-three/drei"
 import { useRef } from "react"
+import Grid from "./Grid"
+import Header from "./Header"
 
 // Text styling system (inspired by Tailwind)
 const textStyles = {
+  logo: {
+    fontSize: (viewport) => viewport.height * 0.03,
+    color: "#38354F",
+    font: "/fonts/ibm-plex-mono-latin-400-normal.woff",
+    letterSpacing: 0.02,
+    lineHeight: 1.2,
+  },
+  nav: {
+    fontSize: (viewport) => viewport.height * 0.025,
+    color: "#38354F",
+    font: "/fonts/ibm-plex-mono-latin-400-normal.woff",
+    letterSpacing: 0.02,
+    lineHeight: 1.2,
+  },
   heading: {
     fontSize: (viewport) => viewport.height * 0.25,
     color: "#38354F",
@@ -25,32 +41,34 @@ const textStyles = {
 
 // Separated text content
 const textContent = {
+  page0: {
+    title: "Page Zero",
+    paragraphs: [
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    ],
+  },
   page1: {
     title: "Page One",
     paragraphs: [
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.",
     ],
   },
   page2: {
     title: "Page Two",
     paragraphs: [
       "Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.",
-      "Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur.",
     ],
   },
   page3: {
     title: "Page Three",
     paragraphs: [
       "Similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio.",
-      "Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae.",
     ],
   },
   page4: {
     title: "Page Four",
     paragraphs: [
       "Similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio.",
-      "Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae.",
     ],
   },
 }
@@ -65,7 +83,7 @@ function Page({ title, paragraphs, position = [0, 0, 0], children }) {
     <group position={position}>
       <Text
         position={[-0.8, viewport.height * 0.3, 0]} // Title moved down
-        fontSize={viewport.height * 0.25}
+        fontSize={viewport.height * 0.05}
         color="#38354F"
         anchorX="left"
         anchorY="middle"
@@ -79,7 +97,7 @@ function Page({ title, paragraphs, position = [0, 0, 0], children }) {
         <Text
           key={index}
           position={[0, firstParagraphOffset - index * paragraphSpacing, 0]}
-          fontSize={viewport.height * 0.03}
+          fontSize={viewport.height * 0.023}
           color="#38354F"
           maxWidth={2.2}
           textAlign="left"
@@ -117,25 +135,62 @@ export default function ScrollContent() {
 
   return (
     <group ref={group}>
+      <Grid />
+      <Header textStyles={textStyles} />
+
+      {/* Large C and H letters */}
+      <group position={[0, viewport.height * 0.1, 0]}>
+        <Svg
+          src="/svgs/C.svg"
+          // scale={viewport.height * 0.8}
+          scale={0.0078}
+          position={[-3, 0.2, 0]}
+        />
+        <Svg
+          src="/svgs/H.svg"
+          // scale={viewport.height * 0.8}
+          scale={0.0078}
+          position={[0.2, 0.2, 0]}
+        />
+      </group>
+
+      <Page
+        title={textContent.page0.title}
+        paragraphs={textContent.page0.paragraphs}
+        position={[0, -viewport.height, 0]}
+      ></Page>
+      <Image
+        url="/images/vellum_dance_main.png"
+        scale={[viewport.width * 0.4, viewport.height * 0.4, 1]}
+        position={[1, -viewport.height, 0]}
+        transparent
+      />
       <Page
         title={textContent.page1.title}
         paragraphs={textContent.page1.paragraphs}
-        position={[0, 0, 0]}
+        position={[0, -viewport.height * 2, 0]}
       ></Page>
+      <Image
+        url="/images/particles_main.png"
+        scale={[viewport.width * 0.4, viewport.height * 0.4, 1]}
+        position={[-1, -viewport.height * 2, 0]}
+        transparent
+      />
       <Page
         title={textContent.page2.title}
         paragraphs={textContent.page2.paragraphs}
-        position={[0, -viewport.height, 0]}
+        position={[0, -viewport.height * 3, 0]}
       ></Page>
+      <Image
+        url="/images/liquid_prism_main.png"
+        scale={[viewport.width * 0.4, viewport.height * 0.4, 1]}
+        position={[-1, -viewport.height * 3, 0]}
+        transparent
+      />
       <Page
         title={textContent.page3.title}
         paragraphs={textContent.page3.paragraphs}
-        position={[0, -viewport.height * 2, 0]}
-      ></Page>
-      <Page
-        title={textContent.page4.title}
-        paragraphs={textContent.page4.paragraphs}
-        position={[0, -viewport.height * 3, 0]}
+        position={[0, -viewport.height * 4, 0]}
       ></Page>
     </group>
   )
