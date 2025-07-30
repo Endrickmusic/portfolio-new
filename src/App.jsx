@@ -8,7 +8,7 @@ import "./index.css"
 export default function App() {
   return (
     <div className="w-screen h-screen overflow-hidden">
-      <Leva collapsed />
+      <Leva collapsed hidden />
       <Canvas
         camera={{ position: [0, 0, 2], fov: 75 }}
         className="w-full h-full"
