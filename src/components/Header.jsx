@@ -1,11 +1,21 @@
 import { Text, Svg } from "@react-three/drei"
 import { useThree } from "@react-three/fiber"
 import * as THREE from "three"
-import { useMemo } from "react"
+import { useRef, useState, useEffect, useMemo } from "react"
+import { useControls } from "leva"
 
 export default function Header({ textStyles }) {
   const { viewport } = useThree()
   const columnWidth = viewport.width / 24
+
+  const { buttonSize, radius, borderWidth } = useControls(
+    "Navigation Buttons",
+    {
+      buttonSize: { value: 3.5, min: 1, max: 10, step: 0.1 },
+      radius: { value: 0.3, min: 0.1, max: 1.0, step: 0.1 },
+      borderWidth: { value: 0.01, min: 0.001, max: 0.01, step: 0.001 },
+    }
+  )
 
   return (
     <group position={[0, viewport.height * 0.4, 0]}>
@@ -49,80 +59,98 @@ export default function Header({ textStyles }) {
       {/* Navigation Links */}
       <group
         position={[
-          viewport.width / 2 - columnWidth * 6,
+          viewport.width / 2 - columnWidth * 7.2,
           viewport.height * 0.02,
           0,
         ]}
       >
-        {["Work", "Expertise", "About", "Playground"].map((text, i) => (
-          <group key={text} position={[columnWidth * i * 1.5, 0, 0]}>
-            <mesh position={[0, 0, -0.01]}>
-              <planeGeometry
-                args={[columnWidth * 1.2, viewport.height * 0.04]}
-              />
-              <shaderMaterial
-                transparent
-                uniforms={{
-                  uColor: { value: new THREE.Color("#38358f") },
-                  uFillColor: { value: new THREE.Color("#f0f0f0") }, // light grey fill
-                  uOpacity: { value: 1.0 },
-                  uRadius: { value: 0.3 },
-                  uSize: { value: [3.5, 3.5] },
-                  //   uSize: { value: [5, 5] },
-                  uBorderWidth: { value: 0.4 },
-                }}
-                vertexShader={`
+        {["Work", "Expertise", "About", "Playground"].map((text, i) => {
+          const ref = useRef()
+          const [width, setWidth] = useState(1) // default to avoid zero-size on first render
+          const fontSize = textStyles.nav.fontSize(viewport)
+          const padding = 0.6
+
+          useEffect(() => {
+            if (!ref.current?.geometry?.boundingBox) return
+            const size = new THREE.Vector3()
+            ref.current.geometry.boundingBox.getSize(size)
+            setWidth(size.x)
+          }, [viewport, text, fontSize])
+
+          const size = [
+            width + padding,
+            viewport.height * 0.04 * (buttonSize / 3.5),
+          ]
+
+          return (
+            <group key={text} position={[columnWidth * i * 2, 0, 0]}>
+              <mesh position={[0, 0, -0.01]}>
+                <planeGeometry args={size} />
+                <shaderMaterial
+                  key={size.toString()} // forces remount when size updates
+                  transparent
+                  uniforms={{
+                    uColor: { value: new THREE.Color("#38358f") },
+                    uFillColor: { value: new THREE.Color("#f0f0f0") },
+                    uOpacity: { value: 1.0 },
+                    uRadius: { value: radius },
+                    uSize: { value: new THREE.Vector2(...size) },
+                    uBorderWidth: { value: borderWidth },
+                  }}
+                  vertexShader={`
                     varying vec2 vUv;
                     void main() {
                       vUv = uv;
                       gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
                     }
                   `}
-                fragmentShader={`
-                   uniform vec3 uColor;
-                    uniform vec3 uFillColor;
-                    uniform float uOpacity;
-                    uniform float uRadius;
-                    uniform vec2 uSize;
-                    uniform float uBorderWidth;
-                    varying vec2 vUv;
+                  fragmentShader={`
+                      uniform vec3 uColor;
+                      uniform vec3 uFillColor;
+                      uniform float uOpacity;
+                      uniform float uRadius;
+                      uniform vec2 uSize;
+                      uniform float uBorderWidth;
+                      varying vec2 vUv;
 
-                    float roundedBoxSDF(vec2 p, vec2 b, float r) {
-                    vec2 q = abs(p) - b + vec2(r);
-                    return length(max(q, 0.0)) - r;
-                    }
+                      float roundedBoxSDF(vec2 p, vec2 b, float r) {
+                        vec2 q = abs(p) - b + vec2(r);
+                        return length(max(q, 0.0)) - r;
+                      }
 
-                    void main() {
-                    vec2 pos = (vUv - 0.5) * uSize;
-                    vec2 halfSize = uSize * 0.5 - uBorderWidth * 0.5;
+                      void main() {
+                        vec2 pos = (vUv - 0.5) * uSize;
+                        vec2 halfSize = uSize * 0.5 - uBorderWidth * 0.5;
 
-                    float dist = roundedBoxSDF(pos, halfSize, uRadius);
+                        float dist = roundedBoxSDF(pos, halfSize, uRadius);
 
-                    float fillAlpha = smoothstep(0.01, 0.0, dist);
-                    float borderAlpha = smoothstep(0.01, 0.0, abs(dist) - uBorderWidth * 0.5);
-                    float alpha = borderAlpha * (1.0 - fillAlpha) + fillAlpha;
+                        float fillAlpha = smoothstep(0.01, 0.0, dist);
+                        float borderAlpha = smoothstep(0.01, 0.0, abs(dist) - uBorderWidth * 0.5);
+                        float alpha = borderAlpha * (1.0 - fillAlpha) + fillAlpha;
 
-                    // Mix fill and border color
-                    vec3 color = mix(uFillColor, uColor, borderAlpha * (1.0 - fillAlpha));
+                        // Mix fill and border color
+                        vec3 color = mix(uFillColor, uColor, borderAlpha * (1.0 - fillAlpha));
 
-                    gl_FragColor = vec4(color, alpha * uOpacity);
+                        gl_FragColor = vec4(color, alpha * uOpacity);
                     }
 
 
                   `}
-              />
-            </mesh>
-            <Text
-              {...textStyles.nav}
-              fontSize={textStyles.nav.fontSize(viewport)}
-              anchorX="center"
-              anchorY="middle"
-              color="#38358f"
-            >
-              {text}
-            </Text>
-          </group>
-        ))}
+                />
+              </mesh>
+              <Text
+                ref={ref}
+                {...textStyles.nav}
+                fontSize={fontSize}
+                anchorX="center"
+                anchorY="middle"
+                color="#38358f"
+              >
+                {text}
+              </Text>
+            </group>
+          )
+        })}
       </group>
     </group>
   )
