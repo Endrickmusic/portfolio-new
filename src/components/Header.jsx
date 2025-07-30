@@ -1,5 +1,5 @@
 import { Text, Svg } from "@react-three/drei"
-import { useThree } from "@react-three/fiber"
+import { useThree, useFrame } from "@react-three/fiber"
 import * as THREE from "three"
 import { useRef, useState, useEffect, useMemo } from "react"
 import { useControls } from "leva"
@@ -8,14 +8,23 @@ export default function Header({ textStyles }) {
   const { viewport } = useThree()
   const columnWidth = viewport.width / 24
 
-  const { buttonSize, radius, borderWidth } = useControls(
-    "Navigation Buttons",
-    {
-      buttonSize: { value: 3.5, min: 1, max: 10, step: 0.1 },
-      radius: { value: 0.3, min: 0.1, max: 1.0, step: 0.1 },
-      borderWidth: { value: 0.01, min: 0.001, max: 0.01, step: 0.001 },
-    }
-  )
+  const controls = useControls("Navigation Buttons", {
+    buttonSize: { value: 3.5, min: 1, max: 10, step: 0.1 },
+    radius: { value: 0.1, min: 0.1, max: 1.0, step: 0.1 },
+    borderWidth: { value: 0.02, min: 0.01, max: 0.04, step: 0.01 },
+  })
+
+  const { buttonSize, radius, borderWidth } = controls
+  const materialRefs = useRef([])
+
+  useFrame(() => {
+    materialRefs.current.forEach((material) => {
+      if (material) {
+        material.uniforms.uRadius.value = radius
+        material.uniforms.uBorderWidth.value = borderWidth
+      }
+    })
+  })
 
   return (
     <group position={[0, viewport.height * 0.4, 0]}>
@@ -87,6 +96,11 @@ export default function Header({ textStyles }) {
               <mesh position={[0, 0, -0.01]}>
                 <planeGeometry args={size} />
                 <shaderMaterial
+                  ref={(material) => {
+                    if (material) {
+                      materialRefs.current[i] = material
+                    }
+                  }}
                   key={size.toString()} // forces remount when size updates
                   transparent
                   uniforms={{

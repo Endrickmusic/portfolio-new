@@ -119,6 +119,304 @@ function Description({ paragraphs, position = [0, 0, 0], children }) {
   )
 }
 
+function PlaygroundSection({ position = [0, 0, 0] }) {
+  const { viewport } = useThree()
+
+  return (
+    <group position={position}>
+      {/* Background plane */}
+      <mesh position={[0, 0, -0.1]}>
+        <planeGeometry args={[viewport.width * 0.8, viewport.height * 0.6]} />
+        <shaderMaterial
+          transparent
+          uniforms={{
+            uColor: { value: new THREE.Color("#f0f0f0") },
+            uBorderColor: { value: new THREE.Color("#38358f") },
+            uBorderWidth: { value: 0.02 },
+            uRadius: { value: 0.1 },
+            uSize: {
+              value: new THREE.Vector2(
+                viewport.width * 0.8,
+                viewport.height * 0.6
+              ),
+            },
+          }}
+          vertexShader={`
+            varying vec2 vUv;
+            void main() {
+              vUv = uv;
+              gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+          `}
+          fragmentShader={`
+            uniform vec3 uColor;
+            uniform vec3 uBorderColor;
+            uniform float uBorderWidth;
+            uniform float uRadius;
+            uniform vec2 uSize;
+            varying vec2 vUv;
+
+            float roundedBoxSDF(vec2 p, vec2 b, float r) {
+              vec2 q = abs(p) - b + vec2(r);
+              return length(max(q, 0.0)) - r;
+            }
+
+            void main() {
+              vec2 pos = (vUv - 0.5) * uSize;
+              vec2 halfSize = uSize * 0.5 - uBorderWidth * 0.5;
+
+              float dist = roundedBoxSDF(pos, halfSize, uRadius);
+
+              float fillAlpha = smoothstep(0.01, 0.0, dist);
+              float borderAlpha = smoothstep(0.01, 0.0, abs(dist) - uBorderWidth * 0.5);
+              
+              vec3 color = mix(uColor, uBorderColor, borderAlpha * (1.0 - fillAlpha));
+              float alpha = max(fillAlpha, borderAlpha);
+
+              gl_FragColor = vec4(color, alpha);
+            }
+          `}
+        />
+      </mesh>
+
+      {/* Title */}
+      <Text
+        position={[-viewport.width * 0.35, viewport.height * 0.2, 0]}
+        fontSize={viewport.height * 0.08}
+        color="#38358f"
+        anchorX="left"
+        anchorY="middle"
+        font="/fonts/SeasonSerifTRIAL-Light.woff"
+        letterSpacing={0.02}
+      >
+        PLAYGROUND
+      </Text>
+
+      {/* Description */}
+      <Text
+        position={[-viewport.width * 0.35, 0, 0]}
+        fontSize={viewport.height * 0.025}
+        color="#38358f"
+        maxWidth={viewport.width * 0.6}
+        anchorX="left"
+        anchorY="middle"
+        font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+        letterSpacing={0.02}
+        lineHeight={1.5}
+      >
+        A collection of experimental studies—testing shaders, simulations, and
+        interaction techniques. Focused on rapid prototyping and trying
+        technical concepts outside of polished projects.
+      </Text>
+
+      {/* More button */}
+      <group position={[-viewport.width * 0.35, -viewport.height * 0.15, 0]}>
+        <mesh>
+          <planeGeometry
+            args={[viewport.width * 0.15, viewport.height * 0.06]}
+          />
+          <shaderMaterial
+            transparent
+            uniforms={{
+              uColor: { value: new THREE.Color("#ffffff") },
+              uBorderColor: { value: new THREE.Color("#38358f") },
+              uBorderWidth: { value: 0.02 },
+              uRadius: { value: 0.1 },
+              uSize: {
+                value: new THREE.Vector2(
+                  viewport.width * 0.15,
+                  viewport.height * 0.06
+                ),
+              },
+            }}
+            vertexShader={`
+              varying vec2 vUv;
+              void main() {
+                vUv = uv;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+              }
+            `}
+            fragmentShader={`
+              uniform vec3 uColor;
+              uniform vec3 uBorderColor;
+              uniform float uBorderWidth;
+              uniform float uRadius;
+              uniform vec2 uSize;
+              varying vec2 vUv;
+
+              float roundedBoxSDF(vec2 p, vec2 b, float r) {
+                vec2 q = abs(p) - b + vec2(r);
+                return length(max(q, 0.0)) - r;
+              }
+
+              void main() {
+                vec2 pos = (vUv - 0.5) * uSize;
+                vec2 halfSize = uSize * 0.5 - uBorderWidth * 0.5;
+
+                float dist = roundedBoxSDF(pos, halfSize, uRadius);
+
+                float fillAlpha = smoothstep(0.01, 0.0, dist);
+                float borderAlpha = smoothstep(0.01, 0.0, abs(dist) - uBorderWidth * 0.5);
+                
+                vec3 color = mix(uColor, uBorderColor, borderAlpha * (1.0 - fillAlpha));
+                float alpha = max(fillAlpha, borderAlpha);
+
+                gl_FragColor = vec4(color, alpha);
+              }
+            `}
+          />
+        </mesh>
+        <Text
+          position={[0, 0, 0.01]}
+          fontSize={viewport.height * 0.02}
+          color="#38358f"
+          anchorX="center"
+          anchorY="middle"
+          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+        >
+          MORE
+        </Text>
+      </group>
+    </group>
+  )
+}
+
+function Footer({ position = [0, 0, 0] }) {
+  const { viewport } = useThree()
+
+  return (
+    <group position={position}>
+      {/* Background */}
+      <mesh position={[0, 0, -0.1]}>
+        <planeGeometry args={[viewport.width * 2, viewport.height * 0.8]} />
+        <meshBasicMaterial color="#ffffff" />
+      </mesh>
+
+      {/* Navigation Links */}
+      <group position={[-viewport.width * 0.8, viewport.height * 0.3, 0]}>
+        {["Work", "Expertise", "About", "Playground"].map((text, i) => (
+          <Text
+            key={text}
+            position={[viewport.width * 0.5 * i, 0, 0]}
+            fontSize={viewport.height * 0.03}
+            color="#38358f"
+            anchorX="center"
+            anchorY="middle"
+            font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+          >
+            {text}
+          </Text>
+        ))}
+      </group>
+
+      {/* Logo SVGs */}
+      <group position={[-viewport.width * 0.1, 0, 0]}>
+        <Svg
+          src="/svgs/C.svg"
+          scale={0.0078}
+          position={[-0.2, 0, 0]}
+          fillMaterial={new THREE.MeshBasicMaterial({ color: "#38358f" })}
+        />
+        <Svg
+          src="/svgs/H.svg"
+          scale={0.0078}
+          position={[0.2, 0, 0]}
+          fillMaterial={new THREE.MeshBasicMaterial({ color: "#38358f" })}
+        />
+      </group>
+
+      {/* Contact Info */}
+      <group position={[-viewport.width * 0.8, -viewport.height * 0.15, 0]}>
+        <Text
+          fontSize={viewport.height * 0.02}
+          color="#38358f"
+          anchorX="left"
+          anchorY="middle"
+          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+        >
+          Christian Hohenbild
+        </Text>
+        <Text
+          position={[0, -viewport.height * 0.03, 0]}
+          fontSize={viewport.height * 0.02}
+          color="#38358f"
+          anchorX="left"
+          anchorY="middle"
+          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+        >
+          Berlin, Germany
+        </Text>
+        <Text
+          position={[0, -viewport.height * 0.06, 0]}
+          fontSize={viewport.height * 0.02}
+          color="#38358f"
+          anchorX="left"
+          anchorY="middle"
+          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+        >
+          mail@christianhohenbild.com
+        </Text>
+        <Text
+          position={[0, -viewport.height * 0.09, 0]}
+          fontSize={viewport.height * 0.02}
+          color="#38358f"
+          anchorX="left"
+          anchorY="middle"
+          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+        >
+          +49 176 123 456 78
+        </Text>
+      </group>
+
+      {/* Social Links */}
+      <group position={[viewport.width * 0.2, -viewport.height * 0.15, 0]}>
+        <Text
+          fontSize={viewport.height * 0.02}
+          color="#38358f"
+          anchorX="left"
+          anchorY="middle"
+          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+        >
+          Instagram
+        </Text>
+        <Text
+          position={[0, -viewport.height * 0.03, 0]}
+          fontSize={viewport.height * 0.02}
+          color="#38358f"
+          anchorX="left"
+          anchorY="middle"
+          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+        >
+          LinkedIn
+        </Text>
+      </group>
+
+      {/* Legal Links */}
+      <group position={[viewport.width * 0.6, -viewport.height * 0.15, 0]}>
+        <Text
+          fontSize={viewport.height * 0.02}
+          color="#38358f"
+          anchorX="left"
+          anchorY="middle"
+          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+        >
+          Imprint
+        </Text>
+        <Text
+          position={[0, -viewport.height * 0.03, 0]}
+          fontSize={viewport.height * 0.02}
+          color="#38358f"
+          anchorX="left"
+          anchorY="middle"
+          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+        >
+          Data Privacy
+        </Text>
+      </group>
+    </group>
+  )
+}
+
 // Content component that uses scroll data
 export default function ScrollContent() {
   const scroll = useScroll()
@@ -127,13 +425,13 @@ export default function ScrollContent() {
 
   useFrame((state, delta) => {
     if (scroll.offset !== undefined) {
-      group.current.position.y = scroll.offset * 2 * viewport.height
+      group.current.position.y = scroll.offset * 3.5 * viewport.height
     }
   })
 
   return (
     <group ref={group}>
-      <Grid />
+      {/* <Grid /> */}
       <Header textStyles={textStyles} />
 
       {/* Large C and H letters */}
@@ -152,11 +450,10 @@ export default function ScrollContent() {
         />
       </group>
 
-      <Description
-        title={textContent.page0.title}
-        paragraphs={textContent.page0.paragraphs}
-        position={[-1.4, -viewport.height * 0.33, 0]}
-      ></Description>
+      <Headline
+        title={textContent.page0.paragraphs}
+        position={[-2.4, -viewport.height * 0.65, 0]}
+      ></Headline>
       <Image
         url="/images/vellum_dance_main.png"
         scale={[viewport.width * 0.4, viewport.height * 0.4, 1]}
@@ -198,6 +495,12 @@ export default function ScrollContent() {
         paragraphs={textContent.page3.paragraphs}
         position={[0.1, -viewport.height * 0.97, 0]}
       ></Description>
+
+      <PlaygroundSection
+        position={[viewport.width * 0.1, -viewport.height * 2.5, 0]}
+      />
+
+      <Footer position={[0, -viewport.height * 3.2, 0]} />
     </group>
   )
 }

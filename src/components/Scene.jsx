@@ -44,7 +44,7 @@ export default function Scene() {
   return (
     <>
       {/* <Perf position="top-left" /> */}
-      <ScrollControls pages={2} damping={0.1}>
+      <ScrollControls pages={3} damping={0.1}>
         {createPortal(
           <>
             <ScrollContent />
