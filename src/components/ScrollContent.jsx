@@ -283,21 +283,24 @@ function PlaygroundSection({ position = [0, 0, 0] }) {
 
 function Footer({ position = [0, 0, 0] }) {
   const { viewport } = useThree()
+  const maxWidth = Math.min(viewport.width * 0.8, 4) // Max width of 4 units or 80% viewport width, whichever is smaller
+  const contentWidth = maxWidth + 0.7
+  const startX = -contentWidth / 2 // Center the content
 
   return (
     <group position={position}>
       {/* Background */}
       <mesh position={[0, 0, -0.1]}>
-        <planeGeometry args={[viewport.width * 2, viewport.height * 0.8]} />
+        <planeGeometry args={[viewport.width * 2, viewport.height * 1.2]} />
         <meshBasicMaterial color="#ffffff" />
       </mesh>
 
       {/* Navigation Links */}
-      <group position={[-viewport.width * 0.8, viewport.height * 0.3, 0]}>
+      <group position={[startX, viewport.height * 0.4, 0]}>
         {["Work", "Expertise", "About", "Playground"].map((text, i) => (
           <Text
             key={text}
-            position={[viewport.width * 0.5 * i, 0, 0]}
+            position={[contentWidth * 0.33 * i, 0, 0]}
             fontSize={viewport.height * 0.03}
             color="#38358f"
             anchorX="center"
@@ -310,23 +313,23 @@ function Footer({ position = [0, 0, 0] }) {
       </group>
 
       {/* Logo SVGs */}
-      <group position={[-viewport.width * 0.1, 0, 0]}>
+      <group position={[-viewport.width * 0.2, 0.95, 0]} visible={true}>
         <Svg
           src="/svgs/C.svg"
           scale={0.0078}
-          position={[-0.2, 0, 0]}
+          position={[-1.8, 0, 0]}
           fillMaterial={new THREE.MeshBasicMaterial({ color: "#38358f" })}
         />
         <Svg
           src="/svgs/H.svg"
           scale={0.0078}
-          position={[0.2, 0, 0]}
+          position={[1.2, 0, 0]}
           fillMaterial={new THREE.MeshBasicMaterial({ color: "#38358f" })}
         />
       </group>
 
       {/* Contact Info */}
-      <group position={[-viewport.width * 0.8, -viewport.height * 0.15, 0]}>
+      <group position={[startX, -viewport.height * 0.35, 0]}>
         <Text
           fontSize={viewport.height * 0.02}
           color="#38358f"
@@ -344,7 +347,7 @@ function Footer({ position = [0, 0, 0] }) {
           anchorY="middle"
           font="/fonts/ibm-plex-mono-latin-400-normal.woff"
         >
-          Berlin, Germany
+          Gleditschstr. 71
         </Text>
         <Text
           position={[0, -viewport.height * 0.06, 0]}
@@ -354,10 +357,20 @@ function Footer({ position = [0, 0, 0] }) {
           anchorY="middle"
           font="/fonts/ibm-plex-mono-latin-400-normal.woff"
         >
+          10781 Berlin
+        </Text>
+        <Text
+          position={[viewport.width * 0.2, -viewport.height * 0.03, 0]}
+          fontSize={viewport.height * 0.02}
+          color="#38358f"
+          anchorX="left"
+          anchorY="middle"
+          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+        >
           mail@christianhohenbild.com
         </Text>
         <Text
-          position={[0, -viewport.height * 0.09, 0]}
+          position={[viewport.width * 0.2, 0, 0]}
           fontSize={viewport.height * 0.02}
           color="#38358f"
           anchorX="left"
@@ -369,7 +382,9 @@ function Footer({ position = [0, 0, 0] }) {
       </group>
 
       {/* Social Links */}
-      <group position={[viewport.width * 0.2, -viewport.height * 0.15, 0]}>
+      <group
+        position={[startX + contentWidth * 0.6, -viewport.height * 0.35, 0]}
+      >
         <Text
           fontSize={viewport.height * 0.02}
           color="#38358f"
@@ -392,7 +407,9 @@ function Footer({ position = [0, 0, 0] }) {
       </group>
 
       {/* Legal Links */}
-      <group position={[viewport.width * 0.6, -viewport.height * 0.15, 0]}>
+      <group
+        position={[startX + contentWidth * 0.85, -viewport.height * 0.35, 0]}
+      >
         <Text
           fontSize={viewport.height * 0.02}
           color="#38358f"
@@ -500,7 +517,7 @@ export default function ScrollContent() {
         position={[viewport.width * 0.1, -viewport.height * 2.5, 0]}
       />
 
-      <Footer position={[0, -viewport.height * 3.2, 0]} />
+      <Footer position={[0, -viewport.height * 3.5, 0]} />
     </group>
   )
 }
