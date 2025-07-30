@@ -63,10 +63,13 @@ export default function Header({ textStyles }) {
               <shaderMaterial
                 transparent
                 uniforms={{
-                  uColor: { value: new THREE.Color("#38354F") },
-                  uOpacity: { value: 0.1 },
-                  uRadius: { value: 0.2 },
-                  uSize: { value: [columnWidth * 1.2, viewport.height * 0.04] },
+                  uColor: { value: new THREE.Color("#38358f") },
+                  uFillColor: { value: new THREE.Color("#f0f0f0") }, // light grey fill
+                  uOpacity: { value: 1.0 },
+                  uRadius: { value: 0.3 },
+                  uSize: { value: [3.5, 3.5] },
+                  //   uSize: { value: [5, 5] },
+                  uBorderWidth: { value: 0.4 },
                 }}
                 vertexShader={`
                     varying vec2 vUv;
@@ -76,22 +79,36 @@ export default function Header({ textStyles }) {
                     }
                   `}
                 fragmentShader={`
-                    uniform vec3 uColor;
+                   uniform vec3 uColor;
+                    uniform vec3 uFillColor;
                     uniform float uOpacity;
                     uniform float uRadius;
                     uniform vec2 uSize;
+                    uniform float uBorderWidth;
                     varying vec2 vUv;
 
-                    float roundedBoxSDF(vec2 centerPosition, vec2 size, float radius) {
-                      return length(max(abs(centerPosition) - size + radius, 0.0)) - radius;
+                    float roundedBoxSDF(vec2 p, vec2 b, float r) {
+                    vec2 q = abs(p) - b + vec2(r);
+                    return length(max(q, 0.0)) - r;
                     }
 
                     void main() {
-                      vec2 pixelPos = (vUv - 0.5) * uSize;
-                      float distance = roundedBoxSDF(pixelPos, uSize * 0.5, uRadius);
-                      float smoothedAlpha = 1.0 - smoothstep(-1.0, 1.0, distance);
-                      gl_FragColor = vec4(uColor, smoothedAlpha * uOpacity);
+                    vec2 pos = (vUv - 0.5) * uSize;
+                    vec2 halfSize = uSize * 0.5 - uBorderWidth * 0.5;
+
+                    float dist = roundedBoxSDF(pos, halfSize, uRadius);
+
+                    float fillAlpha = smoothstep(0.01, 0.0, dist);
+                    float borderAlpha = smoothstep(0.01, 0.0, abs(dist) - uBorderWidth * 0.5);
+                    float alpha = borderAlpha * (1.0 - fillAlpha) + fillAlpha;
+
+                    // Mix fill and border color
+                    vec3 color = mix(uFillColor, uColor, borderAlpha * (1.0 - fillAlpha));
+
+                    gl_FragColor = vec4(color, alpha * uOpacity);
                     }
+
+
                   `}
               />
             </mesh>
