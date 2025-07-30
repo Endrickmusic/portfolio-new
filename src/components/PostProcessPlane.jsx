@@ -2,7 +2,7 @@ import { useRef, useMemo } from "react"
 import { useFrame, useThree } from "@react-three/fiber"
 import { useScroll } from "@react-three/drei"
 import * as THREE from "three"
-import { useControls } from "leva"
+import { useControls, Leva } from "leva"
 
 export default function PostProcessPlane({ texture }) {
   const meshRef = useRef()
@@ -37,7 +37,9 @@ export default function PostProcessPlane({ texture }) {
       aberrationSlide: { value: 0.12, min: 0.01, max: 2.0, step: 0.01 },
       effectDuration: { value: 1.4, min: 0.2, max: 2.0, step: 0.1 },
     },
-    { collapsed: true }
+    {
+      collapsed: true, // Hide Leva panel completely
+    }
   )
 
   // Basic passthrough material for now

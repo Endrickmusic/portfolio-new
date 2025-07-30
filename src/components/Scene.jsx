@@ -2,6 +2,7 @@ import { ScrollControls, useFBO } from "@react-three/drei"
 import { createPortal, useFrame, useThree } from "@react-three/fiber"
 import * as THREE from "three"
 import { useMemo, useEffect, useRef } from "react"
+import { Perf } from "r3f-perf"
 
 import ScrollContent from "./ScrollContent"
 import PostProcessPlane from "./PostProcessPlane"
@@ -40,6 +41,7 @@ export default function Scene() {
 
   return (
     <>
+      {/* <Perf position="top-left" /> */}
       <ScrollControls pages={4} damping={0.1}>
         {createPortal(
           <>

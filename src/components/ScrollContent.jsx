@@ -4,6 +4,25 @@ import { useFrame, useThree } from "@react-three/fiber"
 import { Text } from "@react-three/drei"
 import { useRef } from "react"
 
+// Text styling system (inspired by Tailwind)
+const textStyles = {
+  heading: {
+    fontSize: (viewport) => viewport.height * 0.25,
+    color: "#ffffff",
+    font: "/fonts/SeasonSerifTRIAL-Light.woff",
+    letterSpacing: 0.02,
+    lineHeight: 1.2,
+  },
+  body: {
+    fontSize: (viewport) => viewport.height * 0.03,
+    color: "#ffffff",
+    font: "/fonts/ibm-plex-mono-latin-400-normal.woff",
+    letterSpacing: 0.02,
+    lineHeight: 1.5,
+    maxWidth: 2.2,
+  },
+}
+
 // Separated text content
 const textContent = {
   page1: {
@@ -50,7 +69,7 @@ function Page({ title, paragraphs, position = [0, 0, 0], children }) {
         color="#ffffff"
         anchorX="left"
         anchorY="middle"
-        font="/fonts/open-sans-condensed-v14-latin-300.woff"
+        font="/fonts/SeasonSerifTRIAL-Light.woff"
         letterSpacing={0.02}
         lineHeight={1.2}
       >
@@ -66,7 +85,7 @@ function Page({ title, paragraphs, position = [0, 0, 0], children }) {
           textAlign="left"
           anchorX="center"
           anchorY="middle"
-          font="/fonts/open-sans-condensed-v14-latin-300.woff"
+          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
           letterSpacing={0.02}
           lineHeight={1.5}
         >
