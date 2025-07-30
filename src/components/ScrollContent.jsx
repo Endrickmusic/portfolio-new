@@ -112,24 +112,6 @@ export default function ScrollContent() {
   useFrame((state, delta) => {
     if (scroll.offset !== undefined) {
       group.current.position.y = scroll.offset * 4 * viewport.height
-
-      if (cubeRef.current) {
-        cubeRef.current.rotation.x += delta * 0.3
-        cubeRef.current.rotation.y += delta * 0.3
-      }
-      if (torusRef.current) {
-        torusRef.current.rotation.x += delta * 0.2
-        torusRef.current.rotation.z += delta * 0.4
-      }
-      if (capsuleRef.current) {
-        capsuleRef.current.rotation.y += delta * 0.5
-        capsuleRef.current.rotation.z += delta * 0.2
-      }
-      if (knotRef.current) {
-        knotRef.current.rotation.x += delta * 0.3
-        knotRef.current.rotation.y += delta * 0.3
-        knotRef.current.rotation.z += delta * 0.2
-      }
     }
   })
 
@@ -139,58 +121,22 @@ export default function ScrollContent() {
         title={textContent.page1.title}
         paragraphs={textContent.page1.paragraphs}
         position={[0, 0, 0]}
-      >
-        <mesh
-          ref={torusRef}
-          position={[-0.3, viewport.height * -0.4, -1]}
-          scale={[1 / scaleCompensation, 1, 1]}
-        >
-          <torusGeometry args={[0.15, 0.05, 16, 32]} />
-          <meshNormalMaterial />
-        </mesh>
-      </Page>
+      ></Page>
       <Page
         title={textContent.page2.title}
         paragraphs={textContent.page2.paragraphs}
         position={[0, -viewport.height, 0]}
-      >
-        <mesh
-          ref={capsuleRef}
-          position={[-0.3, viewport.height * -0.4, -1]}
-          scale={[1 / scaleCompensation, 1, 1]}
-        >
-          <capsuleGeometry args={[0.05, 0.2, 16, 32]} />
-          <meshNormalMaterial />
-        </mesh>
-      </Page>
+      ></Page>
       <Page
         title={textContent.page3.title}
         paragraphs={textContent.page3.paragraphs}
         position={[0, -viewport.height * 2, 0]}
-      >
-        <mesh
-          ref={knotRef}
-          position={[-0.3, viewport.height * -0.4, -1]}
-          scale={[1 / scaleCompensation, 1, 1]}
-        >
-          <torusKnotGeometry args={[0.1, 0.04, 128, 32, 2, 3]} />
-          <meshNormalMaterial />
-        </mesh>
-      </Page>
+      ></Page>
       <Page
         title={textContent.page4.title}
         paragraphs={textContent.page4.paragraphs}
         position={[0, -viewport.height * 3, 0]}
-      >
-        <mesh
-          ref={cubeRef}
-          position={[-0.3, viewport.height * -0.4, -1]}
-          scale={[1 / scaleCompensation, 1, 1]}
-        >
-          <boxGeometry args={[0.5, 0.1, 0.1]} />
-          <meshNormalMaterial />
-        </mesh>
-      </Page>
+      ></Page>
     </group>
   )
 }
