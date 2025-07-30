@@ -42,66 +42,70 @@ const textStyles = {
 // Separated text content
 const textContent = {
   page0: {
-    title: "Page Zero",
+    title: "",
     paragraphs: [
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "Hi, I'm Christian Hohenbild, a Berlin-based 3D artist and creative developer specializing in crafting immersive web experiences. Combining art and code, I focus on real-time 3D graphics, shader programming, and interactive visuals.",
     ],
   },
   page1: {
-    title: "Page One",
+    title: "Vellum Dance : The Physics of Fabric & Motion",
     paragraphs: [
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "_ Movement woven into matter. Composing a fabric simulation in real-time, capturing the ephemeral tension between body, force, and material.",
     ],
   },
   page2: {
-    title: "Page Two",
+    title: "Fluid Prism: Bending Light, Shaping Form",
     paragraphs: [
-      "Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.",
+      "_ Investigating how the distortion of light generates form andsubstance, challenging the boundaries between perception and reality.",
     ],
   },
   page3: {
-    title: "Page Three",
+    title: "Swarm Dynamics: Chaos & Control in Motion",
     paragraphs: [
-      "Similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio.",
-    ],
-  },
-  page4: {
-    title: "Page Four",
-    paragraphs: [
-      "Similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio.",
+      "_ From fluid currents to digital flocks, this project sculpts movement from thousands of independent particles, balancing randomness with structured behavior.",
     ],
   },
 }
 
 // Page component for reusability
-function Page({ title, paragraphs, position = [0, 0, 0], children }) {
+function Headline({ title, position = [0, 0, 0] }) {
   const { viewport } = useThree()
   const paragraphSpacing = viewport.height * 0.12
   const firstParagraphOffset = viewport.height * -0.2 // Much lower start for paragraphs
 
   return (
+    <Text
+      position={position} // Title moved down
+      fontSize={viewport.height * 0.04}
+      color="#38358F"
+      maxWidth={viewport.width * 0.35}
+      anchorX="left"
+      anchorY="middle"
+      font="/fonts/SeasonSerifTRIAL-Light.woff"
+      letterSpacing={0.02}
+      lineHeight={1.2}
+    >
+      {title}
+    </Text>
+  )
+}
+
+// Description component for reusability
+function Description({ paragraphs, position = [0, 0, 0], children }) {
+  const { viewport } = useThree()
+  const paragraphSpacing = viewport.height * 0.12
+
+  return (
     <group position={position}>
-      <Text
-        position={[-0.8, viewport.height * 0.3, 0]} // Title moved down
-        fontSize={viewport.height * 0.05}
-        color="#38358F"
-        anchorX="left"
-        anchorY="middle"
-        font="/fonts/SeasonSerifTRIAL-Light.woff"
-        letterSpacing={0.02}
-        lineHeight={1.2}
-      >
-        {title}
-      </Text>
       {paragraphs.map((paragraph, index) => (
         <Text
           key={index}
-          position={[0, firstParagraphOffset - index * paragraphSpacing, 0]}
+          position={position}
           fontSize={viewport.height * 0.023}
           color="#38358f"
-          maxWidth={2.2}
+          maxWidth={viewport.width * 0.25}
           textAlign="left"
-          anchorX="center"
+          anchorX="left"
           anchorY="middle"
           font="/fonts/ibm-plex-mono-latin-400-normal.woff"
           letterSpacing={0.02}
@@ -123,7 +127,7 @@ export default function ScrollContent() {
 
   useFrame((state, delta) => {
     if (scroll.offset !== undefined) {
-      group.current.position.y = scroll.offset * 4 * viewport.height
+      group.current.position.y = scroll.offset * 2 * viewport.height
     }
   })
 
@@ -148,44 +152,52 @@ export default function ScrollContent() {
         />
       </group>
 
-      <Page
+      <Description
         title={textContent.page0.title}
         paragraphs={textContent.page0.paragraphs}
-        position={[0, -viewport.height * 1.5, 0]}
-      ></Page>
+        position={[-1.4, -viewport.height * 0.33, 0]}
+      ></Description>
       <Image
         url="/images/vellum_dance_main.png"
         scale={[viewport.width * 0.4, viewport.height * 0.4, 1]}
-        position={[1, -viewport.height * 1.5, 0]}
-        transparent
+        position={[-1, -viewport.height * 1.05, 0]}
       />
-      <Page
+      <Headline
         title={textContent.page1.title}
+        position={[0.4, -viewport.height * 0.89, 0]}
+      ></Headline>
+      <Description
         paragraphs={textContent.page1.paragraphs}
-        position={[0, -viewport.height * 3, 0]}
-      ></Page>
-      <Image
-        url="/images/particles_main.png"
-        scale={[viewport.width * 0.4, viewport.height * 0.4, 1]}
-        position={[-1, -viewport.height * 3, 0]}
-        transparent
-      />
-      <Page
-        title={textContent.page2.title}
-        paragraphs={textContent.page2.paragraphs}
-        position={[0, -viewport.height * 4.5, 0]}
-      ></Page>
+        position={[0.4, -viewport.height * 0.53, 0]}
+      ></Description>
       <Image
         url="/images/liquid_prism_main.png"
         scale={[viewport.width * 0.4, viewport.height * 0.4, 1]}
-        position={[-1, -viewport.height * 4.5, 0]}
-        transparent
+        position={[1, -viewport.height * 1.45, 0]}
       />
-      <Page
+      <Headline
+        title={textContent.page2.title}
+        position={[-2.2, -viewport.height * 1.32, 0]}
+      ></Headline>
+      <Description
+        paragraphs={textContent.page2.paragraphs}
+        position={[-1.2, -viewport.height * 0.75, 0]}
+      ></Description>
+      <Image
+        url="/images/particles_main.png"
+        scale={[viewport.width * 0.4, viewport.height * 0.4, 1]}
+        position={[-1.2, -viewport.height * 1.85, 0]}
+      />
+      <Headline
         title={textContent.page3.title}
         paragraphs={textContent.page3.paragraphs}
-        position={[0, -viewport.height * 6, 0]}
-      ></Page>
+        position={[0.2, -viewport.height * 1.75, 0]}
+      ></Headline>
+      <Description
+        title={textContent.page3.title}
+        paragraphs={textContent.page3.paragraphs}
+        position={[0.1, -viewport.height * 0.97, 0]}
+      ></Description>
     </group>
   )
 }
