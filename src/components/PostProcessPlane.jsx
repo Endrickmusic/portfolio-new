@@ -1,17 +1,32 @@
 import { useRef, useMemo } from "react"
-import { useFrame, useThree } from "@react-three/fiber"
+import { useFrame, useThree, useLoader } from "@react-three/fiber"
 import { useScroll } from "@react-three/drei"
 import * as THREE from "three"
 import { useControls, Leva } from "leva"
 import postprocessVertex from "../shaders/postprocessVertex"
 import postprocessFragment from "../shaders/postprocessFragment"
+import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader"
 
 export default function PostProcessPlane({ texture }) {
   const meshRef = useRef()
-  const { viewport } = useThree()
+  const { viewport, gl, scene } = useThree()
   const scroll = useScroll()
   const prevScrollRef = useRef(0)
   const distortionTimeRef = useRef(0)
+
+  // Load HDRI environment map
+  const envMapEquirect = useLoader(RGBELoader, "/textures/envmap.hdr")
+  const pmrem = useMemo(() => new THREE.PMREMGenerator(gl), [gl])
+  const envMapTexture = useMemo(
+    () => pmrem.fromEquirectangular(envMapEquirect).texture,
+    [pmrem, envMapEquirect]
+  )
+
+  // Set as scene environment and background
+  useMemo(() => {
+    scene.environment = envMapTexture
+    scene.background = envMapTexture
+  }, [scene, envMapTexture])
 
   // Leva controls
   const {
@@ -27,6 +42,8 @@ export default function PostProcessPlane({ texture }) {
     effectDuration,
     fbmOctaves,
     displacementStrength,
+    roughness,
+    metallic,
   } = useControls(
     "Distortion Effect",
     {
@@ -42,6 +59,8 @@ export default function PostProcessPlane({ texture }) {
       effectDuration: { value: 1.4, min: 0.2, max: 10.0, step: 0.1 },
       fbmOctaves: { value: 3, min: 1, max: 8, step: 1 },
       displacementStrength: { value: 0.2, min: 0.0, max: 10.0, step: 0.01 },
+      roughness: { value: 0.1, min: 0.0, max: 1.0, step: 0.01 },
+      metallic: { value: 0.0, min: 0.0, max: 1.0, step: 0.01 },
     },
     {
       collapsed: true,
@@ -68,6 +87,10 @@ export default function PostProcessPlane({ texture }) {
         uScrollVelocity: { value: 0 },
         uDisplacementStrength: { value: displacementStrength },
         uScrollAmplitude: { value: 0 },
+        uRoughness: { value: roughness },
+        uCameraPosition: { value: [0, 0, 5] },
+        uMetallic: { value: metallic },
+        uEnvMap: { value: envMapTexture },
       },
       vertexShader: postprocessVertex,
       fragmentShader: postprocessFragment,
@@ -85,6 +108,9 @@ export default function PostProcessPlane({ texture }) {
     aberrationSlide,
     fbmOctaves,
     displacementStrength,
+    roughness,
+    metallic,
+    envMapTexture,
   ])
 
   useFrame((state, delta) => {
@@ -102,6 +128,14 @@ export default function PostProcessPlane({ texture }) {
       material.uniforms.uAberrationSlide.value = aberrationSlide
       material.uniforms.uFbmOctaves.value = fbmOctaves
       material.uniforms.uDisplacementStrength.value = displacementStrength
+      material.uniforms.uRoughness.value = roughness
+      material.uniforms.uMetallic.value = metallic
+      material.uniforms.uCameraPosition.value = [
+        state.camera.position.x,
+        state.camera.position.y,
+        state.camera.position.z,
+      ]
+      material.uniforms.uEnvMap.value = envMapTexture
 
       if (scroll.offset !== undefined) {
         material.uniforms.uScroll.value = scroll.offset
@@ -130,7 +164,7 @@ export default function PostProcessPlane({ texture }) {
       ref={meshRef}
       material={material}
     >
-      <planeGeometry args={[1, 1, 128, 128]} />
+      <planeGeometry args={[1, 1, 256, 256]} />
     </mesh>
   )
 }
