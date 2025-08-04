@@ -44,6 +44,7 @@ export default function PostProcessPlane({ texture }) {
     displacementStrength,
     roughness,
     metallic,
+    brightness,
   } = useControls(
     "Distortion Effect",
     {
@@ -61,6 +62,7 @@ export default function PostProcessPlane({ texture }) {
       displacementStrength: { value: 0.2, min: 0.0, max: 10.0, step: 0.01 },
       roughness: { value: 0.1, min: 0.0, max: 1.0, step: 0.01 },
       metallic: { value: 0.0, min: 0.0, max: 1.0, step: 0.01 },
+      brightness: { value: 1.0, min: 0.1, max: 5.0, step: 0.01 },
     },
     {
       collapsed: true,
@@ -91,6 +93,7 @@ export default function PostProcessPlane({ texture }) {
         uCameraPosition: { value: [0, 0, 5] },
         uMetallic: { value: metallic },
         uEnvMap: { value: envMapTexture },
+        uBrightness: { value: brightness },
       },
       vertexShader: postprocessVertex,
       fragmentShader: postprocessFragment,
@@ -111,6 +114,7 @@ export default function PostProcessPlane({ texture }) {
     roughness,
     metallic,
     envMapTexture,
+    brightness,
   ])
 
   useFrame((state, delta) => {
@@ -136,6 +140,7 @@ export default function PostProcessPlane({ texture }) {
         state.camera.position.z,
       ]
       material.uniforms.uEnvMap.value = envMapTexture
+      material.uniforms.uBrightness.value = brightness
 
       if (scroll.offset !== undefined) {
         material.uniforms.uScroll.value = scroll.offset

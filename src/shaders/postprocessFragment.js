@@ -3,6 +3,7 @@ const postprocessFragment = `
   uniform sampler2D uTexture;
   uniform float uRoughness;
   uniform float uMetallic;
+  uniform float uBrightness;
   uniform vec3 uCameraPosition;
   uniform samplerCube uEnvMap;
   varying vec2 vUv;
@@ -86,6 +87,12 @@ const postprocessFragment = `
     vec3 color = (diffuse + specular) * NdotL + reflection + ibl;
     // Increase ambient for visibility
     color += 0.15 * albedo;
+
+    // Apply brightness
+    color *= uBrightness;
+
+    // Gamma correction
+    color = pow(color, vec3(1.0/2.2));
     gl_FragColor = vec4(color, 1.0);
   }
 `
