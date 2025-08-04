@@ -23,6 +23,7 @@ export default function PostProcessPlane({ texture }) {
     aberrationLayers,
     aberrationSlide,
     effectDuration,
+    fbmOctaves,
   } = useControls(
     "Distortion Effect",
     {
@@ -36,6 +37,7 @@ export default function PostProcessPlane({ texture }) {
       aberrationLayers: { value: 4, min: 1, max: 5, step: 1 },
       aberrationSlide: { value: 0.12, min: 0.01, max: 2.0, step: 0.01 },
       effectDuration: { value: 1.4, min: 0.2, max: 2.0, step: 0.1 },
+      fbmOctaves: { value: 3, min: 1, max: 8, step: 1 },
     },
     {
       collapsed: true, // Hide Leva panel completely
@@ -59,6 +61,8 @@ export default function PostProcessPlane({ texture }) {
         uAberrationStrength: { value: aberrationStrength },
         uAberrationLayers: { value: aberrationLayers },
         uAberrationSlide: { value: aberrationSlide },
+        uFbmOctaves: { value: fbmOctaves },
+        uScrollVelocity: { value: 0 },
       },
       vertexShader: `
           varying vec2 vUv;
@@ -82,6 +86,8 @@ export default function PostProcessPlane({ texture }) {
           uniform float uAberrationStrength;
           uniform float uAberrationLayers;
           uniform float uAberrationSlide;
+          uniform float uFbmOctaves;
+          uniform float uScrollVelocity;
 
           varying vec2 vUv;
 
@@ -165,7 +171,8 @@ export default function PostProcessPlane({ texture }) {
             float amplitude = 0.5;
             float frequency = 0.0;
             for (int i = 0; i < 8; i++) {
-              value += amplitude * abs(cnoise(p));
+              if(float(i) >= uFbmOctaves) break;
+              value += amplitude * cnoise(p);
               p *= 1.5;
               amplitude *= 0.6;
             }
@@ -173,22 +180,18 @@ export default function PostProcessPlane({ texture }) {
           }
           
           void main() {
-            // Calculate base noise with larger scale and slower time
-            float noise = fbm(vec3(vUv * uNoiseScale, uTime * uNoiseSpeed));
-            
-            // Create areas of stronger distortion using threshold
-            float strongDistortion = smoothstep(uNoiseThreshold, uNoiseThreshold + uNoiseTransition, noise);
-            
-            // Calculate distortion amount based on time since scroll
-            float baseDistortion = uDistortionTime > 0.0 ? noise * uBaseDistortion * smoothstep(0.0, 1.0, uDistortionTime) : 0.0;
-            float strongDistortionAmount = uDistortionTime > 0.0 ? noise * uStrongDistortion * smoothstep(0.0, 1.0, uDistortionTime) : 0.0;
-            
-            // Mix between normal and strong distortion
-            float distortion = mix(baseDistortion, strongDistortionAmount, strongDistortion);
-            
-            // Apply distortion to UV coordinates
-            vec2 distortedUv = vUv;
-            distortedUv += distortion;
+            // Calculate scroll-based vertical offset for noise
+            float scrollOffset = uScrollVelocity * uTime * 2.0;
+            // 2D distortion: use two different fbm noise values for x and y
+            float noiseX = fbm(vec3(vUv.x, vUv.y + scrollOffset, uTime * uNoiseSpeed));
+            float noiseY = fbm(vec3(vUv.x + 10.0, vUv.y + scrollOffset + 10.0, uTime * uNoiseSpeed));
+            float strongDistortion = smoothstep(uNoiseThreshold, uNoiseThreshold + uNoiseTransition, (noiseX + noiseY) * 0.5);
+            float baseDistortion = uDistortionTime > 0.0 ? uBaseDistortion * smoothstep(0.0, 1.0, uDistortionTime) : 0.0;
+            float strongDistortionAmount = uDistortionTime > 0.0 ? uStrongDistortion * smoothstep(0.0, 1.0, uDistortionTime) : 0.0;
+            float distortionAmount = mix(baseDistortion, strongDistortionAmount, strongDistortion);
+            // Compose 2D distortion vector
+            vec2 distortionVec = vec2(noiseX, noiseY) * distortionAmount;
+            vec2 distortedUv = vUv + distortionVec;
             
             // Chromatic aberration with slide effect
             float aberrationStrength = uDistortionTime > 0.0 ? uAberrationStrength * smoothstep(0.0, 1.0, uDistortionTime) : 0.0;
@@ -212,8 +215,8 @@ export default function PostProcessPlane({ texture }) {
                 
             color += texture2D(uTexture, distortedUv).rgb;
             
-            // gl_FragColor = vec4(color, 1.0);
             gl_FragColor = vec4(color, 1.0);
+            // gl_FragColor = vec4(distortion * 5.0, distortion * 5.0, distortion * 5.0, 1.0);
           }
         `,
     })
@@ -228,6 +231,7 @@ export default function PostProcessPlane({ texture }) {
     aberrationStrength,
     aberrationLayers,
     aberrationSlide,
+    fbmOctaves,
   ])
 
   useFrame((state, delta) => {
@@ -243,13 +247,15 @@ export default function PostProcessPlane({ texture }) {
       material.uniforms.uAberrationStrength.value = aberrationStrength
       material.uniforms.uAberrationLayers.value = aberrationLayers
       material.uniforms.uAberrationSlide.value = aberrationSlide
+      material.uniforms.uFbmOctaves.value = fbmOctaves
 
       if (scroll.offset !== undefined) {
         material.uniforms.uScroll.value = scroll.offset
 
         // Calculate scroll velocity
-        const scrollVelocity =
-          Math.abs(scroll.offset - prevScrollRef.current) / delta
+        const scrollDelta = scroll.offset - prevScrollRef.current
+        material.uniforms.uScrollVelocity.value = scrollDelta
+        const scrollVelocity = Math.abs(scrollDelta) / delta
 
         // Trigger distortion when scroll velocity is high enough
         if (scrollVelocity > 0.1) {
