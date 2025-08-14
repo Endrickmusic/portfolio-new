@@ -3,6 +3,7 @@ import * as THREE from "three"
 import { useFrame, useThree } from "@react-three/fiber"
 import { Text, Svg, Image, useScroll } from "@react-three/drei"
 import TextWithBorder from "./TextWithBorder"
+import { useControls } from "leva"
 
 import Grid from "./Grid"
 import Header from "./Header"
@@ -122,6 +123,15 @@ function Description({ paragraphs, position = [0, 0, 0], children }) {
 
 function PlaygroundSection({ position = [0, 0, 0] }) {
   const { viewport } = useThree()
+  const { borderWidth, roundness, borderColor, padding } = useControls(
+    "Playground Border",
+    {
+      borderWidth: { value: 0.02, min: 0.0, max: 0.2, step: 0.005 },
+      roundness: { value: 0.1, min: 0.0, max: 1.0, step: 0.01 },
+      borderColor: { value: "#38358f" },
+      padding: { value: 0.2, min: 0.0, max: 2.0, step: 0.01 },
+    }
+  )
 
   return (
     <group position={position}>
@@ -132,9 +142,9 @@ function PlaygroundSection({ position = [0, 0, 0] }) {
           transparent
           uniforms={{
             uColor: { value: new THREE.Color("#f0f0f0") },
-            uBorderColor: { value: new THREE.Color("#38358f") },
-            uBorderWidth: { value: 0.02 },
-            uRadius: { value: 0.1 },
+            uBorderColor: { value: new THREE.Color(borderColor) },
+            uBorderWidth: { value: borderWidth },
+            uRadius: { value: roundness },
             uSize: {
               value: new THREE.Vector2(
                 viewport.width * 0.8,
@@ -212,61 +222,6 @@ function PlaygroundSection({ position = [0, 0, 0] }) {
 
       {/* More button */}
       <group position={[-viewport.width * 0.35, -viewport.height * 0.15, 0]}>
-        <mesh>
-          <planeGeometry
-            args={[viewport.width * 0.15, viewport.height * 0.06]}
-          />
-          <shaderMaterial
-            transparent
-            uniforms={{
-              uColor: { value: new THREE.Color("#ffffff") },
-              uBorderColor: { value: new THREE.Color("#38358f") },
-              uBorderWidth: { value: 0.02 },
-              uRadius: { value: 0.1 },
-              uSize: {
-                value: new THREE.Vector2(
-                  viewport.width * 0.15,
-                  viewport.height * 0.06
-                ),
-              },
-            }}
-            vertexShader={`
-              varying vec2 vUv;
-              void main() {
-                vUv = uv;
-                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-              }
-            `}
-            fragmentShader={`
-              uniform vec3 uColor;
-              uniform vec3 uBorderColor;
-              uniform float uBorderWidth;
-              uniform float uRadius;
-              uniform vec2 uSize;
-              varying vec2 vUv;
-
-              float roundedBoxSDF(vec2 p, vec2 b, float r) {
-                vec2 q = abs(p) - b + vec2(r);
-                return length(max(q, 0.0)) - r;
-              }
-
-              void main() {
-                vec2 pos = (vUv - 0.5) * uSize;
-                vec2 halfSize = uSize * 0.5 - uBorderWidth * 0.5;
-
-                float dist = roundedBoxSDF(pos, halfSize, uRadius);
-
-                float fillAlpha = smoothstep(0.01, 0.0, dist);
-                float borderAlpha = smoothstep(0.01, 0.0, abs(dist) - uBorderWidth * 0.5);
-                
-                vec3 color = mix(uColor, uBorderColor, borderAlpha * (1.0 - fillAlpha));
-                float alpha = max(fillAlpha, borderAlpha);
-
-                gl_FragColor = vec4(color, alpha);
-              }
-            `}
-          />
-        </mesh>
         <TextWithBorder
           position={[0, 0, 0.01]}
           fontSize={viewport.height * 0.02}
@@ -274,6 +229,10 @@ function PlaygroundSection({ position = [0, 0, 0] }) {
           anchorX="center"
           anchorY="middle"
           font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+          border={borderWidth}
+          roundness={roundness}
+          borderColor={borderColor}
+          padding={padding}
         >
           MORE
         </TextWithBorder>
