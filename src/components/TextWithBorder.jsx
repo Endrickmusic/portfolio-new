@@ -1,6 +1,7 @@
 // TextWithBorder.jsx
 import { Text } from "@react-three/drei"
 import { useCallback, useMemo, useRef, useEffect } from "react"
+import * as THREE from "three"
 import { borderVertex, borderFragment } from "../shaders/border.jsx"
 
 export default function TextWithBorder({
@@ -20,25 +21,42 @@ export default function TextWithBorder({
 }) {
   const textSize = useRef({ width: 0, height: 0 })
 
-  const uniforms = useMemo(
-    () => ({
-      width: { value: 1 },
-      height: { value: 1 },
-      border: { value: border },
-      roundness: { value: roundness },
-      borderColor: { value: borderColor },
-    }),
-    [border, roundness, borderColor]
-  )
+  // Stable uniforms object; update .value fields instead of replacing the object
+  const uniforms = useRef({
+    width: { value: 1 },
+    height: { value: 0.7 },
+    border: { value: border },
+    roundness: { value: roundness },
+    borderColor: {
+      value: Array.isArray(borderColor)
+        ? borderColor
+        : new THREE.Color(borderColor).toArray(),
+    },
+  }).current
+
+  // Update uniforms when controls change
+  useEffect(() => {
+    uniforms.border.value = border
+  }, [border, uniforms])
+
+  useEffect(() => {
+    uniforms.roundness.value = roundness
+  }, [roundness, uniforms])
+
+  useEffect(() => {
+    uniforms.borderColor.value = Array.isArray(borderColor)
+      ? borderColor
+      : new THREE.Color(borderColor).toArray()
+  }, [borderColor, uniforms])
 
   const updateFromSize = useCallback(() => {
-    const w = textSize.current.width * 2 + padding * 2
-    const h = textSize.current.height * 1.5 + padding * 2
-    uniforms.width.value = w
-    uniforms.height.value = h
-    uniforms.border.value = border
-    uniforms.roundness.value = roundness
-  }, [padding, border, roundness, uniforms])
+    // Compute in the shader's normalized plane space (uv in [-1, 1])
+    // Use text size directly with padding in the same units, without extra multipliers
+    const w = textSize.current.width + padding * 2
+    const h = textSize.current.height + padding * 1.2
+    uniforms.width.value = Math.max(0.0001, w)
+    uniforms.height.value = Math.max(0.0001, h)
+  }, [padding, uniforms])
 
   const onSync = useCallback(
     (mesh) => {

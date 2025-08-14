@@ -1,5 +1,5 @@
 import { Text, Svg } from "@react-three/drei"
-import { useThree, useFrame } from "@react-three/fiber"
+import { useThree } from "@react-three/fiber"
 import * as THREE from "three"
 import { useRef, useState, useEffect } from "react"
 import { useControls } from "leva"
@@ -11,21 +11,13 @@ export default function Header({ textStyles }) {
 
   const controls = useControls("Navigation Buttons", {
     buttonSize: { value: 3.5, min: 1, max: 10, step: 0.1 },
-    radius: { value: 0.1, min: 0.1, max: 1.0, step: 0.1 },
-    borderWidth: { value: 0.02, min: 0.01, max: 0.04, step: 0.01 },
+    radius: { value: 0.1, min: 0.0, max: 1.0, step: 0.01 },
+    borderWidth: { value: 0.02, min: 0.0, max: 0.2, step: 0.005 },
+    padding: { value: 0.2, min: 0.0, max: 2.0, step: 0.01 },
+    borderColor: { value: "#38358f" },
   })
 
-  const { buttonSize, radius, borderWidth } = controls
-  const materialRefs = useRef([])
-
-  useFrame(() => {
-    materialRefs.current.forEach((material) => {
-      if (material) {
-        material.uniforms.uRadius.value = radius
-        material.uniforms.uBorderWidth.value = borderWidth
-      }
-    })
-  })
+  const { buttonSize, radius, borderWidth, padding, borderColor } = controls
 
   return (
     <group position={[0, viewport.height * 0.4, 0]}>
@@ -76,9 +68,8 @@ export default function Header({ textStyles }) {
       >
         {["Work", "Expertise", "About", "Playground"].map((text, i) => {
           const ref = useRef()
-          const [width, setWidth] = useState(1) // default to avoid zero-size on first render
+          const [width, setWidth] = useState(1)
           const fontSize = textStyles.nav.fontSize(viewport)
-          const padding = 0.6
 
           useEffect(() => {
             if (!ref.current?.geometry?.boundingBox) return
@@ -88,7 +79,7 @@ export default function Header({ textStyles }) {
           }, [viewport, text, fontSize])
 
           const size = [
-            width + padding,
+            width + padding * 2,
             viewport.height * 0.04 * (buttonSize / 3.5),
           ]
 
@@ -101,6 +92,10 @@ export default function Header({ textStyles }) {
                 anchorX="center"
                 anchorY="middle"
                 color="#38358f"
+                border={borderWidth}
+                roundness={radius}
+                borderColor={borderColor}
+                padding={padding}
               >
                 {text}
               </TextWithBorder>
