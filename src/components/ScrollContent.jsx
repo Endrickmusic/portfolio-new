@@ -2,6 +2,7 @@ import { useRef } from "react"
 import * as THREE from "three"
 import { useFrame, useThree } from "@react-three/fiber"
 import { Text, Svg, Image, useScroll } from "@react-three/drei"
+import TextWithBorder from "./TextWithBorder"
 
 import Grid from "./Grid"
 import Header from "./Header"
@@ -266,7 +267,7 @@ function PlaygroundSection({ position = [0, 0, 0] }) {
             `}
           />
         </mesh>
-        <Text
+        <TextWithBorder
           position={[0, 0, 0.01]}
           fontSize={viewport.height * 0.02}
           color="#38358f"
@@ -275,7 +276,7 @@ function PlaygroundSection({ position = [0, 0, 0] }) {
           font="/fonts/ibm-plex-mono-latin-400-normal.woff"
         >
           MORE
-        </Text>
+        </TextWithBorder>
       </group>
     </group>
   )

@@ -1,8 +1,7 @@
 // TextWithBorder.jsx
 import { Text } from "@react-three/drei"
 import { useCallback, useMemo, useRef, useEffect } from "react"
-import fragmentShader from "./fragment.glsl?raw"
-import vertexShader from "./vertex.glsl?raw"
+import { borderVertex, borderFragment } from "../shaders/border.jsx"
 
 export default function TextWithBorder({
   children,
@@ -61,8 +60,8 @@ export default function TextWithBorder({
       <mesh position={[0, 0, planeZ]}>
         <planeGeometry args={[1, 1]} />
         <shaderMaterial
-          vertexShader={vertexShader}
-          fragmentShader={fragmentShader}
+          vertexShader={borderVertex}
+          fragmentShader={borderFragment}
           transparent
           depthWrite={false}
           toneMapped={false}

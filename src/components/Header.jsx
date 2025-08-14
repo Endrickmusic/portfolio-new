@@ -1,8 +1,9 @@
 import { Text, Svg } from "@react-three/drei"
 import { useThree, useFrame } from "@react-three/fiber"
 import * as THREE from "three"
-import { useRef, useState, useEffect, useMemo } from "react"
+import { useRef, useState, useEffect } from "react"
 import { useControls } from "leva"
+import TextWithBorder from "./TextWithBorder.jsx"
 
 export default function Header({ textStyles }) {
   const { viewport } = useThree()
@@ -93,66 +94,7 @@ export default function Header({ textStyles }) {
 
           return (
             <group key={text} position={[columnWidth * i * 2, 0, 0]}>
-              <mesh position={[0, 0, -0.01]}>
-                <planeGeometry args={size} />
-                <shaderMaterial
-                  ref={(material) => {
-                    if (material) {
-                      materialRefs.current[i] = material
-                    }
-                  }}
-                  key={size.toString()} // forces remount when size updates
-                  transparent
-                  uniforms={{
-                    uColor: { value: new THREE.Color("#38358f") },
-                    uFillColor: { value: new THREE.Color("#f0f0f0") },
-                    uOpacity: { value: 1.0 },
-                    uRadius: { value: radius },
-                    uSize: { value: new THREE.Vector2(...size) },
-                    uBorderWidth: { value: borderWidth },
-                  }}
-                  vertexShader={`
-                    varying vec2 vUv;
-                    void main() {
-                      vUv = uv;
-                      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-                    }
-                  `}
-                  fragmentShader={`
-                      uniform vec3 uColor;
-                      uniform vec3 uFillColor;
-                      uniform float uOpacity;
-                      uniform float uRadius;
-                      uniform vec2 uSize;
-                      uniform float uBorderWidth;
-                      varying vec2 vUv;
-
-                      float roundedBoxSDF(vec2 p, vec2 b, float r) {
-                        vec2 q = abs(p) - b + vec2(r);
-                        return length(max(q, 0.0)) - r;
-                      }
-
-                      void main() {
-                        vec2 pos = (vUv - 0.5) * uSize;
-                        vec2 halfSize = uSize * 0.5 - uBorderWidth * 0.5;
-
-                        float dist = roundedBoxSDF(pos, halfSize, uRadius);
-
-                        float fillAlpha = smoothstep(0.01, 0.0, dist);
-                        float borderAlpha = smoothstep(0.01, 0.0, abs(dist) - uBorderWidth * 0.5);
-                        float alpha = borderAlpha * (1.0 - fillAlpha) + fillAlpha;
-
-                        // Mix fill and border color
-                        vec3 color = mix(uFillColor, uColor, borderAlpha * (1.0 - fillAlpha));
-
-                        gl_FragColor = vec4(color, alpha * uOpacity);
-                    }
-
-
-                  `}
-                />
-              </mesh>
-              <Text
+              <TextWithBorder
                 ref={ref}
                 {...textStyles.nav}
                 fontSize={fontSize}
@@ -161,7 +103,7 @@ export default function Header({ textStyles }) {
                 color="#38358f"
               >
                 {text}
-              </Text>
+              </TextWithBorder>
             </group>
           )
         })}
