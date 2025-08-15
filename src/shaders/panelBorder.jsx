@@ -28,7 +28,8 @@ void main() {
 
   vec2 halfSize = 0.5 * uPanelSize;
   // apply padding inset
-  vec2 halfOuter = max(vec2(0.0), halfSize - uPad);
+//   vec2 halfOuter = max(vec2(0.0), halfSize - uPad);
+  vec2 halfOuter = max(vec2(0.0), halfSize);
 
   // clamp radius to fit panel, accounting for border
   float maxR = max(0.0, min(halfOuter.x, halfOuter.y));

@@ -9,7 +9,7 @@ import * as THREE from "three"
 export default function BorderBox({
   width,
   height,
-  border = 0.02,
+  border = 0.1,
   roundness = 0.1,
   color = "black",
   paddingX = 0.0,

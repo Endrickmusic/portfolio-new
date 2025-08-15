@@ -29,7 +29,7 @@ export default function TextWithBorder({
 
   // Stable uniforms object; update .value fields instead of replacing the object
   const uniforms = useRef({
-    width: { value: 1 },
+    width: { value: 0.5 },
     height: { value: 0.7 },
     border: { value: border },
     roundness: { value: roundness },
@@ -66,7 +66,8 @@ export default function TextWithBorder({
         ? Math.max(0, paddingY)
         : padding * Math.max(0, paddingYMult)
 
-    const computedW = textSize.current.width + horizPadding * 2
+    // const computedW = textSize.current.width + horizPadding * 2
+    const computedW = textSize.current.width * 2 + horizPadding
     const computedH = textSize.current.height + vertPadding * 2
     const w = Math.max(minWidth, computedW)
     const h = Math.max(minHeight, computedH)
