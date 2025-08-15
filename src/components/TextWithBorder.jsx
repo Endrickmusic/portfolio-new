@@ -1,6 +1,6 @@
 // TextWithBorder.jsx
 import { Text } from "@react-three/drei"
-import { useCallback, useMemo, useRef, useEffect } from "react"
+import { useCallback, useRef, useEffect } from "react"
 import * as THREE from "three"
 import { borderVertex, borderFragment } from "../shaders/border.jsx"
 

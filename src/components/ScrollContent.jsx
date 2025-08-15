@@ -12,10 +12,10 @@ import Header from "./Header"
 // Text styling system (inspired by Tailwind)
 const textStyles = {
   logo: {
-    fontSize: (viewport) => viewport.height * 0.03,
+    fontSize: (viewport) => viewport.height * 0.017,
     color: "#38354f",
     font: "/fonts/ibm-plex-mono-latin-400-normal.woff",
-    letterSpacing: 0.02,
+    letterSpacing: 0.005,
     lineHeight: 1.2,
   },
   nav: {
@@ -73,19 +73,17 @@ const textContent = {
 // Page component for reusability
 function Headline({ title, position = [0, 0, 0] }) {
   const { viewport } = useThree()
-  const paragraphSpacing = viewport.height * 0.12
-  const firstParagraphOffset = viewport.height * -0.2 // Much lower start for paragraphs
 
   return (
     <Text
       position={position} // Title moved down
-      fontSize={viewport.height * 0.04}
+      fontSize={viewport.height * 0.045}
       color="#38358F"
-      maxWidth={viewport.width * 0.35}
+      maxWidth={viewport.width * 0.52}
       anchorX="left"
       anchorY="middle"
       font="/fonts/SeasonSerifTRIAL-Light.woff"
-      letterSpacing={0.02}
+      letterSpacing={0.015}
       lineHeight={1.2}
     >
       {title}
@@ -419,20 +417,20 @@ export default function ScrollContent() {
         <Svg
           src="/svgs/C.svg"
           scale={0.008}
-          position={[-3.02, 0.2, 0]}
+          position={[-3.02, 0.96, 0]}
           fillMaterial={new THREE.MeshBasicMaterial({ color: "#38358f" })}
         />
         <Svg
           src="/svgs/H.svg"
           scale={0.008}
-          position={[0.08, 0.2, 0]}
+          position={[0.08, 0.96, 0]}
           fillMaterial={new THREE.MeshBasicMaterial({ color: "#38358f" })}
         />
       </group>
 
       <Headline
         title={textContent.page0.paragraphs}
-        position={[-2.4, -viewport.height * 0.65, 0]}
+        position={[-3.02, -viewport.height * 0.65, 0]}
       ></Headline>
       <Image
         url="/images/vellum_dance_main.png"

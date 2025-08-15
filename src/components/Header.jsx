@@ -1,4 +1,4 @@
-import { Text, Svg } from "@react-three/drei"
+import { Text, Svg, Image } from "@react-three/drei"
 import { useThree } from "@react-three/fiber"
 import * as THREE from "three"
 import { useRef, useState, useEffect } from "react"
@@ -15,32 +15,51 @@ export default function Header({ textStyles }) {
   })
 
   const controls = useControls("Navigation Buttons", {
-    radius: { value: 0.1, min: 0.0, max: 0.5, step: 0.005 },
-    paddingX: { value: 0.25, min: 0.0, max: 2.0, step: 0.01 },
-    paddingY: { value: 0.09, min: 0.0, max: 1.0, step: 0.01 },
+    radius: { value: 0.04, min: 0.0, max: 0.5, step: 0.005 },
+    paddingX: { value: 0.07, min: 0.0, max: 2.0, step: 0.01 },
+    paddingY: { value: 0.06, min: 0.0, max: 1.0, step: 0.01 },
     borderColor: { value: "#38358f" },
+    gap: { value: -0.08, min: -0.5, max: 0.5, step: 0.01 },
   })
 
-  const { radius, paddingX, paddingY, borderColor } = controls
+  const { radius, paddingX, paddingY, borderColor, gap } = controls
+
+  const labels = ["Work", "Expertise", "About", "Playground"]
+  const [boxWidths, setBoxWidths] = useState({})
+
+  const centers = (() => {
+    const result = []
+    for (let i = 0; i < labels.length; i++) {
+      const w = boxWidths[labels[i]] ?? 0.5
+      if (i === 0) {
+        result.push(0)
+      } else {
+        const prevW = boxWidths[labels[i - 1]] ?? 0.5
+        const nextCenter = result[i - 1] + prevW / 2 + gap + w / 2
+        result.push(nextCenter)
+      }
+    }
+    return result
+  })()
 
   return (
-    <group position={[0, viewport.height * 0.4, 0]}>
+    <group position={[0, viewport.height * 0.48, 0]}>
       {/* Logo */}
-      <Svg
+      {/* <Svg
         src="/svgs/CH_logo.svg"
         scale={0.0045}
-        position={[-viewport.width / 2 + columnWidth, 0, 0]}
+        position={[-viewport.width / 2 + columnWidth * 0.45, 0, 0]}
         fillMaterial={new THREE.MeshBasicMaterial({ color: "#38358f" })}
-      />
+      /> */}
+      <Image
+        url="/images/CH_symbol.png"
+        scale={[0.33, 0.125, 1]}
+        position={[-2.85, -0.07, 0]}
+        transparent
+      ></Image>
 
       {/* Name and Title */}
-      <group
-        position={[
-          -viewport.width / 2 + columnWidth * 3,
-          viewport.height * 0.02,
-          0,
-        ]}
-      >
+      <group position={[-viewport.width / 2 + columnWidth * 1.8, -0.028, 0]}>
         <Text
           {...textStyles.logo}
           fontSize={textStyles.logo.fontSize(viewport)}
@@ -53,7 +72,7 @@ export default function Header({ textStyles }) {
         <Text
           {...textStyles.logo}
           fontSize={textStyles.logo.fontSize(viewport)}
-          position={[0, -viewport.height * 0.03, 0]}
+          position={[0, -viewport.height * 0.025, 0]}
           anchorX="left"
           anchorY="middle"
           color="#38358f"
@@ -63,17 +82,11 @@ export default function Header({ textStyles }) {
       </group>
 
       {/* Navigation Links */}
-      <group
-        position={[
-          viewport.width / 2 - columnWidth * 7.2,
-          viewport.height * 0.02,
-          0,
-        ]}
-      >
+      <group position={[viewport.width / 2 - columnWidth * 4.77, -0.1, 0]}>
         {["Work", "Expertise", "About", "Playground"].map((text, i) => {
           const ref = useRef()
           const [width, setWidth] = useState(1)
-          const fontSize = textStyles.nav.fontSize(viewport)
+          const fontSize = textStyles.nav.fontSize(viewport) * 0.7
 
           useEffect(() => {
             if (!ref.current?.geometry?.boundingBox) return
@@ -83,7 +96,7 @@ export default function Header({ textStyles }) {
           }, [viewport, text, fontSize])
 
           return (
-            <group key={text} position={[columnWidth * i * 2, 0, 0]}>
+            <group key={text} position={[centers[i], 0, 0]}>
               <TextWithBorder
                 ref={ref}
                 {...textStyles.nav}
@@ -96,6 +109,11 @@ export default function Header({ textStyles }) {
                 borderColor={borderColor}
                 paddingX={paddingX}
                 paddingY={paddingY}
+                onBoxSize={({ width }) =>
+                  setBoxWidths((p) =>
+                    p[text] === width ? p : { ...p, [text]: width }
+                  )
+                }
               >
                 {text}
               </TextWithBorder>
