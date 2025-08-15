@@ -418,14 +418,14 @@ export default function ScrollContent() {
       <group position={[0, viewport.height * 0.1, 0]}>
         <Svg
           src="/svgs/C.svg"
-          scale={0.0078}
-          position={[-3, 0.2, 0]}
+          scale={0.008}
+          position={[-3.02, 0.2, 0]}
           fillMaterial={new THREE.MeshBasicMaterial({ color: "#38358f" })}
         />
         <Svg
           src="/svgs/H.svg"
-          scale={0.0078}
-          position={[0.2, 0.2, 0]}
+          scale={0.008}
+          position={[0.08, 0.2, 0]}
           fillMaterial={new THREE.MeshBasicMaterial({ color: "#38358f" })}
         />
       </group>
