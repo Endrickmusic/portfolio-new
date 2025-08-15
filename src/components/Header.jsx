@@ -11,7 +11,7 @@ export default function Header({ textStyles }) {
 
   // Global border thickness used across app
   const { globalBorder } = useControls("Global", {
-    globalBorder: { value: 0.0075, min: 0.0, max: 0.1, step: 0.0025 },
+    globalBorder: { value: 0.2, min: 0.0, max: 1.0, step: 0.01 },
   })
 
   const controls = useControls("Navigation Buttons", {
@@ -91,7 +91,7 @@ export default function Header({ textStyles }) {
                 anchorX="center"
                 anchorY="middle"
                 color="#38358f"
-                border={globalBorder}
+                border={globalBorder * 0.01}
                 roundness={radius}
                 borderColor={borderColor}
                 paddingX={paddingX}
