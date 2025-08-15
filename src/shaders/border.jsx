@@ -8,10 +8,10 @@ void main() {
 
 const borderFragment = `
 precision highp float;
-uniform float width;
-uniform float height;
-uniform float border;
-uniform float roundness;
+uniform float width;    // world width of the plane
+uniform float height;   // world height of the plane
+uniform float border;   // border thickness in world units
+uniform float roundness;// corner radius in world units
 uniform vec3 borderColor;
 varying vec2 vUv;
 

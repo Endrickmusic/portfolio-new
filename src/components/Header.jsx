@@ -9,15 +9,19 @@ export default function Header({ textStyles }) {
   const { viewport } = useThree()
   const columnWidth = viewport.width / 24
 
+  // Global border thickness used across app
+  const { globalBorder } = useControls("Global", {
+    globalBorder: { value: 0.0075, min: 0.0, max: 0.1, step: 0.0025 },
+  })
+
   const controls = useControls("Navigation Buttons", {
-    buttonSize: { value: 3.5, min: 1, max: 10, step: 0.1 },
-    radius: { value: 0.1, min: 0.0, max: 1.0, step: 0.01 },
-    borderWidth: { value: 0.02, min: 0.0, max: 0.2, step: 0.005 },
-    padding: { value: 0.2, min: 0.0, max: 2.0, step: 0.01 },
+    radius: { value: 0.1, min: 0.0, max: 0.5, step: 0.005 },
+    paddingX: { value: 0.25, min: 0.0, max: 2.0, step: 0.01 },
+    paddingY: { value: 0.09, min: 0.0, max: 1.0, step: 0.01 },
     borderColor: { value: "#38358f" },
   })
 
-  const { buttonSize, radius, borderWidth, padding, borderColor } = controls
+  const { radius, paddingX, paddingY, borderColor } = controls
 
   return (
     <group position={[0, viewport.height * 0.4, 0]}>
@@ -78,11 +82,6 @@ export default function Header({ textStyles }) {
             setWidth(size.x)
           }, [viewport, text, fontSize])
 
-          const size = [
-            width + padding * 2,
-            viewport.height * 0.04 * (buttonSize / 3.5),
-          ]
-
           return (
             <group key={text} position={[columnWidth * i * 2, 0, 0]}>
               <TextWithBorder
@@ -92,10 +91,11 @@ export default function Header({ textStyles }) {
                 anchorX="center"
                 anchorY="middle"
                 color="#38358f"
-                border={borderWidth}
+                border={globalBorder}
                 roundness={radius}
                 borderColor={borderColor}
-                padding={padding}
+                paddingX={paddingX}
+                paddingY={paddingY}
               >
                 {text}
               </TextWithBorder>

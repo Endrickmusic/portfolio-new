@@ -1,9 +1,10 @@
-import { useRef } from "react"
+import { useRef, useMemo } from "react"
 import * as THREE from "three"
 import { useFrame, useThree } from "@react-three/fiber"
 import { Text, Svg, Image, useScroll } from "@react-three/drei"
 import TextWithBorder from "./TextWithBorder"
 import { useControls } from "leva"
+import BorderBox from "./BorderBox.jsx"
 
 import Grid from "./Grid"
 import Header from "./Header"
@@ -123,72 +124,71 @@ function Description({ paragraphs, position = [0, 0, 0], children }) {
 
 function PlaygroundSection({ position = [0, 0, 0] }) {
   const { viewport } = useThree()
-  const { borderWidth, roundness, borderColor, padding } = useControls(
-    "Playground Border",
-    {
-      borderWidth: { value: 0.02, min: 0.0, max: 0.2, step: 0.005 },
-      roundness: { value: 0.1, min: 0.0, max: 1.0, step: 0.01 },
-      borderColor: { value: "#38358f" },
-      padding: { value: 0.2, min: 0.0, max: 2.0, step: 0.01 },
-    }
+
+  // Global border thickness
+  const { globalBorder } = useControls("Global", {
+    globalBorder: { value: 0.01, min: 0.0, max: 0.1, step: 0.0025 },
+  })
+
+  const {
+    panelWidth,
+    panelHeight,
+    roundness,
+    borderColor,
+    paddingX,
+    paddingY,
+  } = useControls("Playground Section Border", {
+    panelWidth: {
+      value: viewport.width * 1.2,
+      min: viewport.width * 0.6,
+      max: viewport.width * 5.4,
+      step: 0.1,
+    },
+    panelHeight: {
+      value: viewport.height * 0.8,
+      min: viewport.height * 0.4,
+      max: viewport.height * 4.0,
+      step: 0.1,
+    },
+    roundness: { value: 0.12, min: 0.0, max: 0.5, step: 0.005 },
+    borderColor: { value: "#38358f" },
+    paddingX: { value: 0.2, min: 0.0, max: 0.5, step: 0.005 },
+    paddingY: { value: 0.2, min: 0.0, max: 0.5, step: 0.005 },
+  })
+
+  const {
+    roundness: mbRoundness,
+    borderColor: mbBorderColor,
+    padding: mbPadding,
+    paddingXMult: mbPaddingXMult,
+    paddingYMult: mbPaddingYMult,
+  } = useControls("More Button Border", {
+    roundness: { value: 0.1, min: 0.0, max: 0.5, step: 0.005 },
+    borderColor: { value: "#38358f" },
+    padding: { value: 0.2, min: 0.0, max: 1.0, step: 0.005 },
+    paddingXMult: { value: 1.0, min: 0.0, max: 2.0, step: 0.025 },
+    paddingYMult: { value: 1.0, min: 0.0, max: 2.0, step: 0.025 },
+  })
+
+  const borderColorVec = useMemo(
+    () => new THREE.Color(borderColor).toArray(),
+    [borderColor]
   )
 
   return (
     <group position={position}>
-      {/* Background plane */}
-      <mesh position={[0, 0, -0.1]}>
-        <planeGeometry args={[viewport.width * 0.8, viewport.height * 0.6]} />
-        <shaderMaterial
-          transparent
-          uniforms={{
-            uColor: { value: new THREE.Color("#f0f0f0") },
-            uBorderColor: { value: new THREE.Color(borderColor) },
-            uBorderWidth: { value: borderWidth },
-            uRadius: { value: roundness },
-            uSize: {
-              value: new THREE.Vector2(
-                viewport.width * 0.8,
-                viewport.height * 0.6
-              ),
-            },
-          }}
-          vertexShader={`
-            varying vec2 vUv;
-            void main() {
-              vUv = uv;
-              gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-            }
-          `}
-          fragmentShader={`
-            uniform vec3 uColor;
-            uniform vec3 uBorderColor;
-            uniform float uBorderWidth;
-            uniform float uRadius;
-            uniform vec2 uSize;
-            varying vec2 vUv;
-
-            float roundedBoxSDF(vec2 p, vec2 b, float r) {
-              vec2 q = abs(p) - b + vec2(r);
-              return length(max(q, 0.0)) - r;
-            }
-
-            void main() {
-              vec2 pos = (vUv - 0.5) * uSize;
-              vec2 halfSize = uSize * 0.5 - uBorderWidth * 0.5;
-
-              float dist = roundedBoxSDF(pos, halfSize, uRadius);
-
-              float fillAlpha = smoothstep(0.01, 0.0, dist);
-              float borderAlpha = smoothstep(0.01, 0.0, abs(dist) - uBorderWidth * 0.5);
-              
-              vec3 color = mix(uColor, uBorderColor, borderAlpha * (1.0 - fillAlpha));
-              float alpha = max(fillAlpha, borderAlpha);
-
-              gl_FragColor = vec4(color, alpha);
-            }
-          `}
-        />
-      </mesh>
+      {/* Background border panel via BorderBox */}
+      <BorderBox
+        width={panelWidth}
+        height={panelHeight}
+        border={globalBorder}
+        roundness={roundness}
+        color={borderColorVec}
+        paddingX={paddingX}
+        paddingY={paddingY}
+        position={[0, 0, 0]}
+        zOffset={-0.1}
+      />
 
       {/* Title */}
       <Text
@@ -229,10 +229,13 @@ function PlaygroundSection({ position = [0, 0, 0] }) {
           anchorX="center"
           anchorY="middle"
           font="/fonts/ibm-plex-mono-latin-400-normal.woff"
-          border={borderWidth}
-          roundness={roundness}
-          borderColor={borderColor}
-          padding={padding}
+          border={globalBorder}
+          roundness={mbRoundness}
+          borderColor={mbBorderColor}
+          padding={mbPadding}
+          paddingXMult={mbPaddingXMult}
+          paddingYMult={mbPaddingYMult}
+          minWidth={1.2}
         >
           MORE
         </TextWithBorder>

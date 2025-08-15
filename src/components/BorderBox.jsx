@@ -1,7 +1,10 @@
 // BorderBox.jsx
-import { useMemo } from "react"
-import fragmentShader from "./fragment.glsl?raw"
-import vertexShader from "./vertex.glsl?raw"
+import { useMemo, useRef, useEffect } from "react"
+import {
+  panelBorderVertex,
+  panelBorderFragment,
+} from "../shaders/panelBorder.jsx"
+import * as THREE from "three"
 
 export default function BorderBox({
   width,
@@ -9,33 +12,54 @@ export default function BorderBox({
   border = 0.02,
   roundness = 0.1,
   color = "black",
+  paddingX = 0.0,
+  paddingY = 0.0,
   position = [0, 0, 0],
   zOffset = 0,
 }) {
-  const uniforms = useMemo(
-    () => ({
-      width: { value: width },
-      height: { value: height },
-      border: { value: border },
-      roundness: { value: roundness },
-      borderColor: { value: Array.isArray(color) ? color : null },
-    }),
-    [width, height, border, roundness, color]
+  const colorVec = useMemo(
+    () => (Array.isArray(color) ? color : new THREE.Color(color).toArray()),
+    [color]
   )
+
+  const uniforms = useRef({
+    uPanelSize: { value: new THREE.Vector2(width, height) },
+    uBorder: { value: border },
+    uRadius: { value: roundness },
+    uColor: { value: colorVec },
+    uPad: { value: new THREE.Vector2(paddingX, paddingY) },
+  })
+
+  useEffect(() => {
+    uniforms.current.uPanelSize.value.set(width, height)
+  }, [width, height])
+
+  useEffect(() => {
+    uniforms.current.uBorder.value = border
+  }, [border])
+
+  useEffect(() => {
+    uniforms.current.uRadius.value = roundness
+  }, [roundness])
+
+  useEffect(() => {
+    uniforms.current.uColor.value = colorVec
+  }, [colorVec])
+
+  useEffect(() => {
+    uniforms.current.uPad.value.set(paddingX, paddingY)
+  }, [paddingX, paddingY])
 
   return (
     <mesh position={[position[0], position[1], position[2] + zOffset]}>
-      <planeGeometry args={[1, 1]} />
+      <planeGeometry args={[6, 2]} />
       <shaderMaterial
-        vertexShader={vertexShader}
-        fragmentShader={fragmentShader}
+        vertexShader={panelBorderVertex}
+        fragmentShader={panelBorderFragment}
         transparent
         depthWrite={false}
         toneMapped={false}
-        uniforms={{
-          ...uniforms,
-          borderColor: { value: Array.isArray(color) ? color : [0, 0, 0] },
-        }}
+        uniforms={uniforms.current}
       />
     </mesh>
   )
