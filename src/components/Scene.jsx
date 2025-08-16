@@ -16,12 +16,15 @@ export default function Scene() {
 
   // FBO resolution control
   const { fboScale, adaptiveRes, dprMax, fboSamples } = useControls(
-    "Render Quality",
+    "Canvas and Render Quality",
     {
       fboScale: { value: 3, min: 1, max: 8, step: 1 },
       adaptiveRes: { value: true },
       dprMax: { value: 2, min: 1, max: 3, step: 0.5 },
       fboSamples: { value: 2, min: 0, max: 8, step: 1 },
+    },
+    {
+      collapsed: true,
     }
   )
 

@@ -25,7 +25,7 @@ export default function PostProcessPlane({ texture }) {
     effectDuration,
     fbmOctaves,
   } = useControls(
-    "Distortion Effect",
+    "Canvas and Render Quality",
     {
       noiseScale: { value: 1.5, min: 0.5, max: 3.0, step: 0.1 },
       noiseSpeed: { value: 0.2, min: 0.0, max: 1.0, step: 0.01 },

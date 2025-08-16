@@ -9,24 +9,30 @@ export default function Header({ textStyles }) {
   const { viewport } = useThree()
   const columnWidth = viewport.width / 24
 
-  // Global border thickness used across app
-  const { globalBorder } = useControls("Global", {
-    globalBorder: { value: 0.2, min: 0.0, max: 1.0, step: 0.01 },
-  })
-
-  const controls = useControls("Navigation Buttons", {
-    radius: { value: 0.04, min: 0.0, max: 0.5, step: 0.005 },
-    paddingX: { value: 0.07, min: 0.0, max: 2.0, step: 0.01 },
-    paddingY: { value: 0.06, min: 0.0, max: 1.0, step: 0.01 },
-    borderColor: { value: "#38358f" },
-  })
-
-  const logoControls = useControls("SDF Logo", {
-    thickness: { value: 0.05, min: 0.0, max: 0.5, step: 0.005 },
-  })
-
-  const { radius, paddingX, paddingY, borderColor } = controls
-  const { thickness } = logoControls
+  // All navigation controls organized in one folder
+  const {
+    globalBorder,
+    thickness,
+    radius,
+    paddingX,
+    paddingY,
+    borderColor,
+    spacing,
+  } = useControls(
+    "Navigation",
+    {
+      globalBorder: { value: 0.2, min: 0.0, max: 1.0, step: 0.01 },
+      thickness: { value: 0.05, min: 0.0, max: 0.5, step: 0.005 },
+      radius: { value: 0.04, min: 0.0, max: 0.5, step: 0.005 },
+      paddingX: { value: 0.07, min: 0.0, max: 2.0, step: 0.01 },
+      paddingY: { value: 0.06, min: 0.0, max: 1.0, step: 0.01 },
+      borderColor: { value: "#38358f" },
+      spacing: { value: 0.28, min: 0.25, max: 1.0, step: 0.01 },
+    },
+    {
+      collapsed: true,
+    }
+  )
 
   // SDF texture with high-quality filtering
   const sdfTexture = useMemo(() => {
@@ -40,11 +46,6 @@ export default function Header({ textStyles }) {
   }, [])
 
   const labels = ["Work", "Expertise", "About", "Playground"]
-
-  // 24-column grid system
-  const { spacing } = useControls("Navigation Spacing", {
-    spacing: { value: 0.28, min: 0.25, max: 1.0, step: 0.01 },
-  })
 
   // Grid helper function with padding
   const getColumnPosition = (column) => {
@@ -82,6 +83,7 @@ export default function Header({ textStyles }) {
       >
         <planeGeometry args={[0.66, 0.25]} />
         <shaderMaterial
+          key={thickness} // Force recreation when thickness changes
           transparent
           toneMapped={false}
           depthWrite={false}

@@ -8,20 +8,26 @@ export default function Grid() {
   const columns = 24
 
   // Leva controls for side padding and gaps (world units)
-  const { sidePadding, columnGap } = useControls("Grid", {
-    sidePadding: {
-      value: 0.1,
-      min: 0.0,
-      max: Math.max(0.0, viewport.width * 0.25),
-      step: 0.01,
+  const { sidePadding, columnGap } = useControls(
+    "Grid",
+    {
+      sidePadding: {
+        value: 0.1,
+        min: 0.0,
+        max: Math.max(0.0, viewport.width * 0.25),
+        step: 0.01,
+      },
+      columnGap: {
+        value: 19.0,
+        min: 1.0,
+        max: 25.0,
+        step: 0.1,
+      },
     },
-    columnGap: {
-      value: 19.0,
-      min: 1.0,
-      max: 25.0,
-      step: 0.1,
-    },
-  })
+    {
+      collapsed: true,
+    }
+  )
 
   const fullWidth = viewport.width
   const innerWidth = Math.max(0, fullWidth - sidePadding * 2)

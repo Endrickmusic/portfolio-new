@@ -6,13 +6,19 @@ import Scene from "./components/Scene"
 import "./index.css"
 
 function CanvasWrapper() {
-  const { canvasDpr, canvasAntialias } = useControls("Canvas Quality", {
-    canvasDpr: {
-      value: [1, 2],
-      options: { "1x": [1, 1], "1-2x": [1, 2], "2x": [2, 2], "1-3x": [1, 3] },
+  const { canvasDpr, canvasAntialias } = useControls(
+    "Canvas and Render Quality", 
+    {
+      canvasDpr: {
+        value: [1, 2],
+        options: { "1x": [1, 1], "1-2x": [1, 2], "2x": [2, 2], "1-3x": [1, 3] },
+      },
+      canvasAntialias: { value: true },
     },
-    canvasAntialias: { value: true },
-  })
+    {
+      collapsed: true,
+    }
+  )
 
   return (
     <Canvas
