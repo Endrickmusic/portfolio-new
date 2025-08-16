@@ -409,7 +409,7 @@ export default function ScrollContent() {
 
   return (
     <group ref={group}>
-      <Grid />
+      {/* <Grid /> */}
       <Header textStyles={textStyles} />
 
       {/* Large C and H letters */}

@@ -45,18 +45,19 @@ export default function Header({ textStyles }) {
   return (
     <group position={[0, viewport.height * 0.48, 0]}>
       {/* Logo */}
-      {/* <Svg
+      <Svg
         src="/svgs/CH_logo.svg"
         scale={0.0045}
         position={[-viewport.width / 2 + columnWidth * 0.45, 0, 0]}
         fillMaterial={new THREE.MeshBasicMaterial({ color: "#38358f" })}
-      /> */}
-      <Image
+        strokeWidth={0.01}
+      />
+      {/* <Image
         url="/images/CH_symbol.png"
         scale={[0.33, 0.125, 1]}
         position={[-2.85, -0.07, 0]}
         transparent
-      ></Image>
+      ></Image> */}
 
       {/* Name and Title */}
       <group position={[-viewport.width / 2 + columnWidth * 1.8, -0.028, 0]}>
