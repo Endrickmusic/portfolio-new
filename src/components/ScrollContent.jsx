@@ -427,193 +427,272 @@ export default function ScrollContent() {
     "Content",
     {
       // Global settings
-      Global: folder({
-        globalBorder: { value: 0.01, min: 0.0, max: 0.1, step: 0.0025 },
-      }),
+      Global: folder(
+        {
+          globalBorder: { value: 0.01, min: 0.0, max: 0.1, step: 0.0025 },
+        },
+        { collapsed: true }
+      ),
 
       // Introduction section
-      Introduction: folder({
-        Desktop: folder({
-          deskIntroX: { value: -3.02, min: -5, max: 0, step: 0.01 },
-          deskIntroY: { value: -0.65, min: -2, max: 0, step: 0.01 },
-          deskIntroWidth: { value: 0.52, min: 0.1, max: 1.0, step: 0.01 },
-        }),
-        Tablet: folder({
-          tabIntroX: { value: -3.02, min: -5, max: 0, step: 0.01 },
-          tabIntroY: { value: -0.65, min: -2, max: 0, step: 0.01 },
-          tabIntroWidth: { value: 0.52, min: 0.1, max: 1.0, step: 0.01 },
-        }),
-        Mobile: folder({
-          mobIntroX: { value: -3.02, min: -5, max: 0, step: 0.01 },
-          mobIntroY: { value: -0.65, min: -2, max: 0, step: 0.01 },
-          mobIntroWidth: { value: 0.52, min: 0.1, max: 1.0, step: 0.01 },
-        }),
-      }),
+      Introduction: folder(
+        {
+          Desktop: folder(
+            {
+              deskIntroX: { value: -3.02, min: -5, max: 0, step: 0.01 },
+              deskIntroY: { value: -0.65, min: -2, max: 0, step: 0.01 },
+              deskIntroWidth: { value: 0.52, min: 0.1, max: 1.0, step: 0.01 },
+            },
+            { collapsed: true }
+          ),
+          Tablet: folder(
+            {
+              tabIntroX: { value: -3.02, min: -5, max: 0, step: 0.01 },
+              tabIntroY: { value: -0.65, min: -2, max: 0, step: 0.01 },
+              tabIntroWidth: { value: 0.52, min: 0.1, max: 1.0, step: 0.01 },
+            },
+            { collapsed: true }
+          ),
+          Mobile: folder(
+            {
+              mobIntroX: { value: -3.02, min: -5, max: 0, step: 0.01 },
+              mobIntroY: { value: -0.65, min: -2, max: 0, step: 0.01 },
+              mobIntroWidth: { value: 0.52, min: 0.1, max: 1.0, step: 0.01 },
+            },
+            { collapsed: true }
+          ),
+        },
+        { collapsed: true }
+      ),
 
       // Work sections
-      "Work 1": folder({
-        Desktop: folder({
-          deskW1X: { value: -0.13, min: -3, max: 3, step: 0.01 },
-          deskW1Y: { value: -1.19, min: -3, max: 0, step: 0.01 },
-          deskW1TitleX: { value: 1.55, min: -3, max: 3, step: 0.01 },
-          deskW1TitleY: { value: -0.9, min: -3, max: 0, step: 0.01 },
-          deskW1TitleWidth: {
-            value: 0.2,
-            min: 0.1,
-            max: 2,
-            step: 0.01,
-          },
-          deskW1DescX: { value: 0.77, min: -3, max: 3, step: 0.01 },
-          deskW1DescY: { value: -0.53, min: -3, max: 0, step: 0.01 },
-        }),
-        Tablet: folder({
-          tabW1X: { value: -0.13, min: -3, max: 3, step: 0.01 },
-          tabW1Y: { value: -1.19, min: -3, max: 0, step: 0.01 },
-          tabW1TitleX: { value: 1.55, min: -3, max: 3, step: 0.01 },
-          tabW1TitleY: { value: -0.9, min: -3, max: 0, step: 0.01 },
-          tabW1TitleWidth: { value: 0.2, min: 0.1, max: 2, step: 0.01 },
-          tabW1DescX: { value: 0.77, min: -3, max: 3, step: 0.01 },
-          tabW1DescY: { value: -0.53, min: -3, max: 0, step: 0.01 },
-        }),
-        Mobile: folder({
-          mobW1X: { value: -0.13, min: -3, max: 3, step: 0.01 },
-          mobW1Y: { value: -1.19, min: -3, max: 0, step: 0.01 },
-          mobW1TitleX: { value: 1.55, min: -3, max: 3, step: 0.01 },
-          mobW1TitleY: { value: -0.9, min: -3, max: 0, step: 0.01 },
-          mobW1TitleWidth: { value: 0.2, min: 0.1, max: 2, step: 0.01 },
-          mobW1DescX: { value: 0.77, min: -3, max: 3, step: 0.01 },
-          mobW1DescY: { value: -0.53, min: -3, max: 0, step: 0.01 },
-        }),
-      }),
+      "Work 1": folder(
+        {
+          Desktop: folder(
+            {
+              deskW1X: { value: -0.13, min: -3, max: 3, step: 0.01 },
+              deskW1Y: { value: -1.19, min: -3, max: 0, step: 0.01 },
+              deskW1TitleX: { value: 1.55, min: -3, max: 3, step: 0.01 },
+              deskW1TitleY: { value: -0.9, min: -3, max: 0, step: 0.01 },
+              deskW1TitleWidth: {
+                value: 0.2,
+                min: 0.1,
+                max: 2,
+                step: 0.01,
+              },
+              deskW1DescX: { value: 0.77, min: -3, max: 3, step: 0.01 },
+              deskW1DescY: { value: -0.53, min: -3, max: 0, step: 0.01 },
+            },
+            { collapsed: true }
+          ),
+          Tablet: folder(
+            {
+              tabW1X: { value: -0.13, min: -3, max: 3, step: 0.01 },
+              tabW1Y: { value: -1.19, min: -3, max: 0, step: 0.01 },
+              tabW1TitleX: { value: 1.55, min: -3, max: 3, step: 0.01 },
+              tabW1TitleY: { value: -0.9, min: -3, max: 0, step: 0.01 },
+              tabW1TitleWidth: { value: 0.2, min: 0.1, max: 2, step: 0.01 },
+              tabW1DescX: { value: 0.77, min: -3, max: 3, step: 0.01 },
+              tabW1DescY: { value: -0.53, min: -3, max: 0, step: 0.01 },
+            },
+            { collapsed: true }
+          ),
+          Mobile: folder(
+            {
+              mobW1X: { value: -0.13, min: -3, max: 3, step: 0.01 },
+              mobW1Y: { value: -1.19, min: -3, max: 0, step: 0.01 },
+              mobW1TitleX: { value: 1.55, min: -3, max: 3, step: 0.01 },
+              mobW1TitleY: { value: -0.9, min: -3, max: 0, step: 0.01 },
+              mobW1TitleWidth: { value: 0.2, min: 0.1, max: 2, step: 0.01 },
+              mobW1DescX: { value: 0.77, min: -3, max: 3, step: 0.01 },
+              mobW1DescY: { value: -0.53, min: -3, max: 0, step: 0.01 },
+            },
+            { collapsed: true }
+          ),
+        },
+        { collapsed: true }
+      ),
 
       "Work 2": folder({
-        Desktop: folder({
-          deskW2X: { value: 1, min: -3, max: 3, step: 0.01 },
-          deskW2Y: { value: -1.45, min: -3, max: 0, step: 0.01 },
-          deskW2TitleX: { value: -2.2, min: -3, max: 3, step: 0.01 },
-          deskW2TitleY: { value: -1.32, min: -3, max: 0, step: 0.01 },
-          deskW2TitleWidth: {
-            value: 1.0,
-            min: 0.1,
-            max: 2,
-            step: 0.01,
+        Desktop: folder(
+          {
+            deskW2X: { value: 1, min: -3, max: 3, step: 0.01 },
+            deskW2Y: { value: -1.45, min: -3, max: 0, step: 0.01 },
+            deskW2TitleX: { value: -2.2, min: -3, max: 3, step: 0.01 },
+            deskW2TitleY: { value: -1.32, min: -3, max: 0, step: 0.01 },
+            deskW2TitleWidth: {
+              value: 1.0,
+              min: 0.1,
+              max: 2,
+              step: 0.01,
+            },
+            deskW2DescX: { value: -1.2, min: -3, max: 3, step: 0.01 },
+            deskW2DescY: { value: -0.75, min: -3, max: 0, step: 0.01 },
           },
-          deskW2DescX: { value: -1.2, min: -3, max: 3, step: 0.01 },
-          deskW2DescY: { value: -0.75, min: -3, max: 0, step: 0.01 },
-        }),
-        Tablet: folder({
-          tabW2X: { value: 1, min: -3, max: 3, step: 0.01 },
-          tabW2Y: { value: -1.45, min: -3, max: 0, step: 0.01 },
-          tabW2TitleX: { value: -2.2, min: -3, max: 3, step: 0.01 },
-          tabW2TitleY: { value: -1.32, min: -3, max: 0, step: 0.01 },
-          tabW2TitleWidth: { value: 1.0, min: 0.1, max: 2, step: 0.01 },
-          tabW2DescX: { value: -1.2, min: -3, max: 3, step: 0.01 },
-          tabW2DescY: { value: -0.75, min: -3, max: 0, step: 0.01 },
-        }),
-        Mobile: folder({
-          mobW2X: { value: 1, min: -3, max: 3, step: 0.01 },
-          mobW2Y: { value: -1.45, min: -3, max: 0, step: 0.01 },
-          mobW2TitleX: { value: -2.2, min: -3, max: 3, step: 0.01 },
-          mobW2TitleY: { value: -1.32, min: -3, max: 0, step: 0.01 },
-          mobW2TitleWidth: { value: 1.0, min: 0.1, max: 2, step: 0.01 },
-          mobW2DescX: { value: -1.2, min: -3, max: 3, step: 0.01 },
-          mobW2DescY: { value: -0.75, min: -3, max: 0, step: 0.01 },
-        }),
+
+          { collapsed: true }
+        ),
+        Tablet: folder(
+          {
+            tabW2X: { value: 1, min: -3, max: 3, step: 0.01 },
+            tabW2Y: { value: -1.45, min: -3, max: 0, step: 0.01 },
+            tabW2TitleX: { value: -2.2, min: -3, max: 3, step: 0.01 },
+            tabW2TitleY: { value: -1.32, min: -3, max: 0, step: 0.01 },
+            tabW2TitleWidth: { value: 1.0, min: 0.1, max: 2, step: 0.01 },
+            tabW2DescX: { value: -1.2, min: -3, max: 3, step: 0.01 },
+            tabW2DescY: { value: -0.75, min: -3, max: 0, step: 0.01 },
+          },
+
+          { collapsed: true }
+        ),
+        Mobile: folder(
+          {
+            mobW2X: { value: 1, min: -3, max: 3, step: 0.01 },
+            mobW2Y: { value: -1.45, min: -3, max: 0, step: 0.01 },
+            mobW2TitleX: { value: -2.2, min: -3, max: 3, step: 0.01 },
+            mobW2TitleY: { value: -1.32, min: -3, max: 0, step: 0.01 },
+            mobW2TitleWidth: { value: 1.0, min: 0.1, max: 2, step: 0.01 },
+            mobW2DescX: { value: -1.2, min: -3, max: 3, step: 0.01 },
+            mobW2DescY: { value: -0.75, min: -3, max: 0, step: 0.01 },
+          },
+
+          { collapsed: true }
+        ),
       }),
 
       "Work 3": folder({
-        Desktop: folder({
-          deskW3X: { value: -1.2, min: -3, max: 3, step: 0.01 },
-          deskW3Y: { value: -1.85, min: -3, max: 0, step: 0.01 },
-          deskW3TitleX: { value: 0.2, min: -3, max: 3, step: 0.01 },
-          deskW3TitleY: { value: -1.75, min: -3, max: 0, step: 0.01 },
-          deskW3TitleWidth: {
-            value: 1.0,
-            min: 0.1,
-            max: 2,
-            step: 0.01,
+        Desktop: folder(
+          {
+            deskW3X: { value: -1.2, min: -3, max: 3, step: 0.01 },
+            deskW3Y: { value: -1.85, min: -3, max: 0, step: 0.01 },
+            deskW3TitleX: { value: 0.2, min: -3, max: 3, step: 0.01 },
+            deskW3TitleY: { value: -1.75, min: -3, max: 0, step: 0.01 },
+            deskW3TitleWidth: {
+              value: 1.0,
+              min: 0.1,
+              max: 2,
+              step: 0.01,
+            },
+            deskW3DescX: { value: 0.1, min: -3, max: 3, step: 0.01 },
+            deskW3DescY: { value: -0.97, min: -3, max: 0, step: 0.01 },
           },
-          deskW3DescX: { value: 0.1, min: -3, max: 3, step: 0.01 },
-          deskW3DescY: { value: -0.97, min: -3, max: 0, step: 0.01 },
-        }),
-        Tablet: folder({
-          tabW3X: { value: -1.2, min: -3, max: 3, step: 0.01 },
-          tabW3Y: { value: -1.85, min: -3, max: 0, step: 0.01 },
-          tabW3TitleX: { value: 0.2, min: -3, max: 3, step: 0.01 },
-          tabW3TitleY: { value: -1.75, min: -3, max: 0, step: 0.01 },
-          tabW3TitleWidth: { value: 1.0, min: 0.1, max: 2, step: 0.01 },
-          tabW3DescX: { value: 0.1, min: -3, max: 3, step: 0.01 },
-          tabW3DescY: { value: -0.97, min: -3, max: 0, step: 0.01 },
-        }),
-        Mobile: folder({
-          mobW3X: { value: -1.2, min: -3, max: 3, step: 0.01 },
-          mobW3Y: { value: -1.85, min: -3, max: 0, step: 0.01 },
-          mobW3TitleX: { value: 0.2, min: -3, max: 3, step: 0.01 },
-          mobW3TitleY: { value: -1.75, min: -3, max: 0, step: 0.01 },
-          mobW3TitleWidth: { value: 1.0, min: 0.1, max: 2, step: 0.01 },
-          mobW3DescX: { value: 0.1, min: -3, max: 3, step: 0.01 },
-          mobW3DescY: { value: -0.97, min: -3, max: 0, step: 0.01 },
-        }),
+
+          { collapsed: true }
+        ),
+        Tablet: folder(
+          {
+            tabW3X: { value: -1.2, min: -3, max: 3, step: 0.01 },
+            tabW3Y: { value: -1.85, min: -3, max: 0, step: 0.01 },
+            tabW3TitleX: { value: 0.2, min: -3, max: 3, step: 0.01 },
+            tabW3TitleY: { value: -1.75, min: -3, max: 0, step: 0.01 },
+            tabW3TitleWidth: { value: 1.0, min: 0.1, max: 2, step: 0.01 },
+            tabW3DescX: { value: 0.1, min: -3, max: 3, step: 0.01 },
+            tabW3DescY: { value: -0.97, min: -3, max: 0, step: 0.01 },
+          },
+
+          { collapsed: true }
+        ),
+        Mobile: folder(
+          {
+            mobW3X: { value: -1.2, min: -3, max: 3, step: 0.01 },
+            mobW3Y: { value: -1.85, min: -3, max: 0, step: 0.01 },
+            mobW3TitleX: { value: 0.2, min: -3, max: 3, step: 0.01 },
+            mobW3TitleY: { value: -1.75, min: -3, max: 0, step: 0.01 },
+            mobW3TitleWidth: { value: 1.0, min: 0.1, max: 2, step: 0.01 },
+            mobW3DescX: { value: 0.1, min: -3, max: 3, step: 0.01 },
+            mobW3DescY: { value: -0.97, min: -3, max: 0, step: 0.01 },
+          },
+
+          { collapsed: true }
+        ),
       }),
 
       // Playground section
       Playground: folder({
-        Desktop: folder({
-          deskPlayX: { value: 0.1, min: -3, max: 3, step: 0.01 },
-          deskPlayY: { value: -2.5, min: -5, max: 0, step: 0.01 },
-        }),
-        Tablet: folder({
-          tabPlayX: { value: 0.1, min: -3, max: 3, step: 0.01 },
-          tabPlayY: { value: -2.5, min: -5, max: 0, step: 0.01 },
-        }),
-        Mobile: folder({
-          mobPlayX: { value: 0.1, min: -3, max: 3, step: 0.01 },
-          mobPlayY: { value: -2.5, min: -5, max: 0, step: 0.01 },
-        }),
-        Styling: folder({
-          panelWidth: { value: 1.2, min: 0.6, max: 5.4, step: 0.1 },
-          panelHeight: { value: 0.8, min: 0.4, max: 4.0, step: 0.1 },
-          roundness: { value: 0.12, min: 0.0, max: 0.5, step: 0.005 },
-          borderColor: { value: "#38358f" },
-          paddingX: { value: 0.2, min: 0.0, max: 0.5, step: 0.005 },
-          paddingY: { value: 0.2, min: 0.0, max: 0.5, step: 0.005 },
-          mbRoundness: { value: 0.1, min: 0.0, max: 0.5, step: 0.005 },
-          mbBorderColor: { value: "#38358f" },
-          mbPadding: { value: 0.2, min: 0.0, max: 1.0, step: 0.005 },
-          mbPaddingXMult: { value: 1.0, min: 0.0, max: 2.0, step: 0.025 },
-          mbPaddingYMult: { value: 1.0, min: 0.0, max: 2.0, step: 0.025 },
-        }),
+        Desktop: folder(
+          {
+            deskPlayX: { value: 0.1, min: -3, max: 3, step: 0.01 },
+            deskPlayY: { value: -2.5, min: -5, max: 0, step: 0.01 },
+          },
+
+          { collapsed: true }
+        ),
+        Tablet: folder(
+          {
+            tabPlayX: { value: 0.1, min: -3, max: 3, step: 0.01 },
+            tabPlayY: { value: -2.5, min: -5, max: 0, step: 0.01 },
+          },
+
+          { collapsed: true }
+        ),
+        Mobile: folder(
+          {
+            mobPlayX: { value: 0.1, min: -3, max: 3, step: 0.01 },
+            mobPlayY: { value: -2.5, min: -5, max: 0, step: 0.01 },
+          },
+
+          { collapsed: true }
+        ),
+        Styling: folder(
+          {
+            panelWidth: { value: 1.2, min: 0.6, max: 5.4, step: 0.1 },
+            panelHeight: { value: 0.8, min: 0.4, max: 4.0, step: 0.1 },
+            roundness: { value: 0.12, min: 0.0, max: 0.5, step: 0.005 },
+            borderColor: { value: "#38358f" },
+            paddingX: { value: 0.2, min: 0.0, max: 0.5, step: 0.005 },
+            paddingY: { value: 0.2, min: 0.0, max: 0.5, step: 0.005 },
+            mbRoundness: { value: 0.1, min: 0.0, max: 0.5, step: 0.005 },
+            mbBorderColor: { value: "#38358f" },
+            mbPadding: { value: 0.2, min: 0.0, max: 1.0, step: 0.005 },
+            mbPaddingXMult: { value: 1.0, min: 0.0, max: 2.0, step: 0.025 },
+            mbPaddingYMult: { value: 1.0, min: 0.0, max: 2.0, step: 0.025 },
+          },
+
+          { collapsed: true }
+        ),
       }),
 
       // Get in Contact section
       "Get in Contact": folder({
-        Desktop: folder({
-          deskConX: { value: 0, min: -3, max: 3, step: 0.01 },
-          deskConY: { value: -3.2, min: -5, max: 0, step: 0.01 },
-          deskConButtonX: { value: 0, min: -3, max: 3, step: 0.01 },
-          deskConButtonY: { value: 0.2, min: -1, max: 1, step: 0.01 },
-          deskConDescX: { value: 0, min: -3, max: 3, step: 0.01 },
-          deskConDescY: { value: -0.3, min: -1, max: 1, step: 0.01 },
-          deskConWidth: { value: 2.5, min: 1, max: 5, step: 0.1 },
-        }),
-        Tablet: folder({
-          tabConX: { value: 0, min: -3, max: 3, step: 0.01 },
-          tabConY: { value: -3.2, min: -5, max: 0, step: 0.01 },
-          tabConButtonX: { value: 0, min: -3, max: 3, step: 0.01 },
-          tabConButtonY: { value: 0.2, min: -1, max: 1, step: 0.01 },
-          tabConDescX: { value: 0, min: -3, max: 3, step: 0.01 },
-          tabConDescY: { value: -0.3, min: -1, max: 1, step: 0.01 },
-          tabConWidth: { value: 2.5, min: 1, max: 5, step: 0.1 },
-        }),
-        Mobile: folder({
-          mobConX: { value: 0, min: -3, max: 3, step: 0.01 },
-          mobConY: { value: -3.2, min: -5, max: 0, step: 0.01 },
-          mobConButtonX: { value: 0, min: -3, max: 3, step: 0.01 },
-          mobConButtonY: { value: 0.2, min: -1, max: 1, step: 0.01 },
-          mobConDescX: { value: 0, min: -3, max: 3, step: 0.01 },
-          mobConDescY: { value: -0.3, min: -1, max: 1, step: 0.01 },
-          mobConWidth: { value: 2.5, min: 1, max: 5, step: 0.1 },
-        }),
+        Desktop: folder(
+          {
+            deskConX: { value: 0, min: -3, max: 3, step: 0.01 },
+            deskConY: { value: -3.2, min: -5, max: 0, step: 0.01 },
+            deskConButtonX: { value: 0, min: -3, max: 3, step: 0.01 },
+            deskConButtonY: { value: 0.2, min: -1, max: 1, step: 0.01 },
+            deskConDescX: { value: 0, min: -3, max: 3, step: 0.01 },
+            deskConDescY: { value: -0.3, min: -1, max: 1, step: 0.01 },
+            deskConWidth: { value: 2.5, min: 1, max: 5, step: 0.1 },
+          },
+
+          { collapsed: true }
+        ),
+        Tablet: folder(
+          {
+            tabConX: { value: 0, min: -3, max: 3, step: 0.01 },
+            tabConY: { value: -3.2, min: -5, max: 0, step: 0.01 },
+            tabConButtonX: { value: 0, min: -3, max: 3, step: 0.01 },
+            tabConButtonY: { value: 0.2, min: -1, max: 1, step: 0.01 },
+            tabConDescX: { value: 0, min: -3, max: 3, step: 0.01 },
+            tabConDescY: { value: -0.3, min: -1, max: 1, step: 0.01 },
+            tabConWidth: { value: 2.5, min: 1, max: 5, step: 0.1 },
+          },
+
+          { collapsed: true }
+        ),
+        Mobile: folder(
+          {
+            mobConX: { value: 0, min: -3, max: 3, step: 0.01 },
+            mobConY: { value: -3.2, min: -5, max: 0, step: 0.01 },
+            mobConButtonX: { value: 0, min: -3, max: 3, step: 0.01 },
+            mobConButtonY: { value: 0.2, min: -1, max: 1, step: 0.01 },
+            mobConDescX: { value: 0, min: -3, max: 3, step: 0.01 },
+            mobConDescY: { value: -0.3, min: -1, max: 1, step: 0.01 },
+            mobConWidth: { value: 2.5, min: 1, max: 5, step: 0.1 },
+          },
+
+          { collapsed: true }
+        ),
       }),
     },
     {
@@ -625,36 +704,63 @@ export default function ScrollContent() {
   const footerControls = useControls(
     "Footer",
     {
-      Desktop: folder({
-        deskFooterY: { value: -4.2, min: -6, max: 0, step: 0.1 },
-        deskFooterNavY: { value: 0.4, min: 0.0, max: 1.0, step: 0.01 },
-        deskFooterLogoX: { value: -0.2, min: -1.0, max: 1.0, step: 0.01 },
-        deskFooterLogoY: { value: 0.95, min: 0.0, max: 2.0, step: 0.01 },
-        deskFooterContactY: { value: -0.35, min: -1.0, max: 0.0, step: 0.01 },
-        deskFooterContactEmailX: { value: 0.2, min: 0.0, max: 1.0, step: 0.01 },
-        deskFooterSocialX: { value: 0.6, min: 0.0, max: 1.0, step: 0.01 },
-        deskFooterLegalX: { value: 0.85, min: 0.0, max: 1.0, step: 0.01 },
-      }),
-      Tablet: folder({
-        tabFooterY: { value: -4.2, min: -6, max: 0, step: 0.1 },
-        tabFooterNavY: { value: 0.4, min: 0.0, max: 1.0, step: 0.01 },
-        tabFooterLogoX: { value: -0.2, min: -1.0, max: 1.0, step: 0.01 },
-        tabFooterLogoY: { value: 0.95, min: 0.0, max: 2.0, step: 0.01 },
-        tabFooterContactY: { value: -0.35, min: -1.0, max: 0.0, step: 0.01 },
-        tabFooterContactEmailX: { value: 0.2, min: 0.0, max: 1.0, step: 0.01 },
-        tabFooterSocialX: { value: 0.6, min: 0.0, max: 1.0, step: 0.01 },
-        tabFooterLegalX: { value: 0.85, min: 0.0, max: 1.0, step: 0.01 },
-      }),
-      Mobile: folder({
-        mobFooterY: { value: -4.2, min: -6, max: 0, step: 0.1 },
-        mobFooterNavY: { value: 0.4, min: 0.0, max: 1.0, step: 0.01 },
-        mobFooterLogoX: { value: -0.2, min: -1.0, max: 1.0, step: 0.01 },
-        mobFooterLogoY: { value: 0.95, min: 0.0, max: 2.0, step: 0.01 },
-        mobFooterContactY: { value: -0.35, min: -1.0, max: 0.0, step: 0.01 },
-        mobFooterContactEmailX: { value: 0.15, min: 0.0, max: 1.0, step: 0.01 },
-        mobFooterSocialX: { value: 0.45, min: 0.0, max: 1.0, step: 0.01 },
-        mobFooterLegalX: { value: 0.7, min: 0.0, max: 1.0, step: 0.01 },
-      }),
+      Desktop: folder(
+        {
+          deskFooterY: { value: -4.2, min: -6, max: 0, step: 0.1 },
+          deskFooterNavY: { value: 0.4, min: 0.0, max: 1.0, step: 0.01 },
+          deskFooterLogoX: { value: -0.2, min: -1.0, max: 1.0, step: 0.01 },
+          deskFooterLogoY: { value: 0.95, min: 0.0, max: 2.0, step: 0.01 },
+          deskFooterContactY: { value: -0.35, min: -1.0, max: 0.0, step: 0.01 },
+          deskFooterContactEmailX: {
+            value: 0.2,
+            min: 0.0,
+            max: 1.0,
+            step: 0.01,
+          },
+          deskFooterSocialX: { value: 0.6, min: 0.0, max: 1.0, step: 0.01 },
+          deskFooterLegalX: { value: 0.85, min: 0.0, max: 1.0, step: 0.01 },
+        },
+
+        { collapsed: true }
+      ),
+      Tablet: folder(
+        {
+          tabFooterY: { value: -4.2, min: -6, max: 0, step: 0.1 },
+          tabFooterNavY: { value: 0.4, min: 0.0, max: 1.0, step: 0.01 },
+          tabFooterLogoX: { value: -0.2, min: -1.0, max: 1.0, step: 0.01 },
+          tabFooterLogoY: { value: 0.95, min: 0.0, max: 2.0, step: 0.01 },
+          tabFooterContactY: { value: -0.35, min: -1.0, max: 0.0, step: 0.01 },
+          tabFooterContactEmailX: {
+            value: 0.2,
+            min: 0.0,
+            max: 1.0,
+            step: 0.01,
+          },
+          tabFooterSocialX: { value: 0.6, min: 0.0, max: 1.0, step: 0.01 },
+          tabFooterLegalX: { value: 0.85, min: 0.0, max: 1.0, step: 0.01 },
+        },
+
+        { collapsed: true }
+      ),
+      Mobile: folder(
+        {
+          mobFooterY: { value: -4.2, min: -6, max: 0, step: 0.1 },
+          mobFooterNavY: { value: 0.4, min: 0.0, max: 1.0, step: 0.01 },
+          mobFooterLogoX: { value: -0.2, min: -1.0, max: 1.0, step: 0.01 },
+          mobFooterLogoY: { value: 0.95, min: 0.0, max: 2.0, step: 0.01 },
+          mobFooterContactY: { value: -0.35, min: -1.0, max: 0.0, step: 0.01 },
+          mobFooterContactEmailX: {
+            value: 0.15,
+            min: 0.0,
+            max: 1.0,
+            step: 0.01,
+          },
+          mobFooterSocialX: { value: 0.45, min: 0.0, max: 1.0, step: 0.01 },
+          mobFooterLegalX: { value: 0.7, min: 0.0, max: 1.0, step: 0.01 },
+        },
+
+        { collapsed: true }
+      ),
     },
     {
       collapsed: true,

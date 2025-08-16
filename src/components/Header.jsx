@@ -16,46 +16,61 @@ export default function Header({ textStyles }) {
     "Navigation",
     {
       // Global styling (non-responsive)
-      Styling: folder({
-        globalBorder: { value: 0.2, min: 0.0, max: 1.0, step: 0.01 },
-        thickness: { value: 0.05, min: 0.0, max: 0.5, step: 0.005 },
-        radius: { value: 0.04, min: 0.0, max: 0.5, step: 0.005 },
-        paddingX: { value: 0.07, min: 0.0, max: 2.0, step: 0.01 },
-        paddingY: { value: 0.06, min: 0.0, max: 1.0, step: 0.01 },
-        borderColor: { value: "#38358f" },
-        spacing: { value: 0.28, min: 0.25, max: 1.0, step: 0.01 },
-      }),
+      Styling: folder(
+        {
+          globalBorder: { value: 0.2, min: 0.0, max: 1.0, step: 0.01 },
+          thickness: { value: 0.05, min: 0.0, max: 0.5, step: 0.005 },
+          radius: { value: 0.04, min: 0.0, max: 0.5, step: 0.005 },
+          paddingX: { value: 0.07, min: 0.0, max: 2.0, step: 0.01 },
+          paddingY: { value: 0.06, min: 0.0, max: 1.0, step: 0.01 },
+          borderColor: { value: "#38358f" },
+          spacing: { value: 0.28, min: 0.25, max: 1.0, step: 0.01 },
+        },
+        { collapsed: true }
+      ),
 
       // Responsive positioning
-      Desktop: folder({
-        deskHeaderY: { value: 0.48, min: 0.0, max: 1.0, step: 0.01 },
-        deskLogoX: { value: 1, min: 1, max: 24, step: 1 }, // Column number
-        deskLogoY: { value: -0.069, min: -0.2, max: 0.2, step: 0.001 },
-        deskNameX: { value: 2, min: 1, max: 24, step: 1 }, // Column number
-        deskNameY: { value: -0.028, min: -0.2, max: 0.2, step: 0.001 },
-        deskNavStartCol: { value: 20, min: 15, max: 24, step: 1 },
-        deskNavY: { value: -0.1, min: -0.3, max: 0.1, step: 0.01 },
-      }),
+      Desktop: folder(
+        {
+          deskHeaderY: { value: 0.48, min: 0.0, max: 1.0, step: 0.01 },
+          deskLogoX: { value: 1, min: 1, max: 24, step: 1 }, // Column number
+          deskLogoY: { value: -0.069, min: -0.2, max: 0.2, step: 0.001 },
+          deskNameX: { value: 2, min: 1, max: 24, step: 1 }, // Column number
+          deskNameY: { value: -0.028, min: -0.2, max: 0.2, step: 0.001 },
+          deskNavStartCol: { value: 20, min: 15, max: 24, step: 1 },
+          deskNavY: { value: -0.1, min: -0.3, max: 0.1, step: 0.01 },
+        },
 
-      Tablet: folder({
-        tabHeaderY: { value: 0.48, min: 0.0, max: 1.0, step: 0.01 },
-        tabLogoX: { value: 1, min: 1, max: 24, step: 1 },
-        tabLogoY: { value: -0.069, min: -0.2, max: 0.2, step: 0.001 },
-        tabNameX: { value: 2, min: 1, max: 24, step: 1 },
-        tabNameY: { value: -0.028, min: -0.2, max: 0.2, step: 0.001 },
-        tabNavStartCol: { value: 18, min: 15, max: 24, step: 1 },
-        tabNavY: { value: -0.1, min: -0.3, max: 0.1, step: 0.01 },
-      }),
+        { collapsed: true }
+      ),
 
-      Mobile: folder({
-        mobHeaderY: { value: 0.48, min: 0.0, max: 1.0, step: 0.01 },
-        mobLogoX: { value: 1, min: 1, max: 24, step: 1 },
-        mobLogoY: { value: -0.069, min: -0.2, max: 0.2, step: 0.001 },
-        mobNameX: { value: 2, min: 1, max: 24, step: 1 },
-        mobNameY: { value: -0.028, min: -0.2, max: 0.2, step: 0.001 },
-        mobNavStartCol: { value: 16, min: 10, max: 24, step: 1 },
-        mobNavY: { value: -0.1, min: -0.3, max: 0.1, step: 0.01 },
-      }),
+      Tablet: folder(
+        {
+          tabHeaderY: { value: 0.48, min: 0.0, max: 1.0, step: 0.01 },
+          tabLogoX: { value: 1, min: 1, max: 24, step: 1 },
+          tabLogoY: { value: -0.069, min: -0.2, max: 0.2, step: 0.001 },
+          tabNameX: { value: 2, min: 1, max: 24, step: 1 },
+          tabNameY: { value: -0.028, min: -0.2, max: 0.2, step: 0.001 },
+          tabNavStartCol: { value: 18, min: 15, max: 24, step: 1 },
+          tabNavY: { value: -0.1, min: -0.3, max: 0.1, step: 0.01 },
+        },
+
+        { collapsed: true }
+      ),
+
+      Mobile: folder(
+        {
+          mobHeaderY: { value: 0.48, min: 0.0, max: 1.0, step: 0.01 },
+          mobLogoX: { value: 1, min: 1, max: 24, step: 1 },
+          mobLogoY: { value: -0.069, min: -0.2, max: 0.2, step: 0.001 },
+          mobNameX: { value: 2, min: 1, max: 24, step: 1 },
+          mobNameY: { value: -0.028, min: -0.2, max: 0.2, step: 0.001 },
+          mobNavStartCol: { value: 16, min: 10, max: 24, step: 1 },
+          mobNavY: { value: -0.1, min: -0.3, max: 0.1, step: 0.01 },
+        },
+
+        { collapsed: true }
+      ),
     },
     {
       collapsed: true,
