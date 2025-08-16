@@ -216,11 +216,22 @@ function PlaygroundSection({
   )
 }
 
-function Footer({ position = [0, 0, 0] }) {
+function Footer({ position = [0, 0, 0], footerControls }) {
   const { viewport } = useThree()
   const maxWidth = Math.min(viewport.width * 0.8, 4) // Max width of 4 units or 80% viewport width, whichever is smaller
   const contentWidth = maxWidth + 0.7
   const startX = -contentWidth / 2 // Center the content
+
+  // Helper function to get responsive footer values
+  const getFooterResponsiveValue = (controlName) => {
+    return useResponsiveValue({
+      mobile: footerControls[`mobFooter${controlName}`],
+      tablet: footerControls[`tabFooter${controlName}`],
+      desktop: footerControls[`deskFooter${controlName}`],
+      large: footerControls[`deskFooter${controlName}`],
+      ultrawide: footerControls[`deskFooter${controlName}`],
+    })
+  }
 
   return (
     <group position={position}>
@@ -231,7 +242,13 @@ function Footer({ position = [0, 0, 0] }) {
       </mesh>
 
       {/* Navigation Links */}
-      <group position={[startX, viewport.height * 0.4, 0]}>
+      <group
+        position={[
+          startX,
+          viewport.height * getFooterResponsiveValue("NavY"),
+          0,
+        ]}
+      >
         {["Work", "Expertise", "About", "Playground"].map((text, i) => (
           <Text
             key={text}
@@ -248,7 +265,14 @@ function Footer({ position = [0, 0, 0] }) {
       </group>
 
       {/* Logo SVGs */}
-      <group position={[-viewport.width * 0.2, 0.95, 0]} visible={true}>
+      <group
+        position={[
+          viewport.width * getFooterResponsiveValue("LogoX"),
+          getFooterResponsiveValue("LogoY"),
+          0,
+        ]}
+        visible={true}
+      >
         <Svg
           src="/svgs/C.svg"
           scale={0.0078}
@@ -264,7 +288,13 @@ function Footer({ position = [0, 0, 0] }) {
       </group>
 
       {/* Contact Info */}
-      <group position={[startX, -viewport.height * 0.35, 0]}>
+      <group
+        position={[
+          startX,
+          viewport.height * getFooterResponsiveValue("ContactY"),
+          0,
+        ]}
+      >
         <Text
           fontSize={viewport.height * 0.02}
           color="#38358f"
@@ -295,7 +325,11 @@ function Footer({ position = [0, 0, 0] }) {
           10781 Berlin
         </Text>
         <Text
-          position={[viewport.width * 0.2, -viewport.height * 0.03, 0]}
+          position={[
+            viewport.width * getFooterResponsiveValue("ContactEmailX"),
+            -viewport.height * 0.03,
+            0,
+          ]}
           fontSize={viewport.height * 0.02}
           color="#38358f"
           anchorX="left"
@@ -305,7 +339,11 @@ function Footer({ position = [0, 0, 0] }) {
           mail@christianhohenbild.com
         </Text>
         <Text
-          position={[viewport.width * 0.2, 0, 0]}
+          position={[
+            viewport.width * getFooterResponsiveValue("ContactEmailX"),
+            0,
+            0,
+          ]}
           fontSize={viewport.height * 0.02}
           color="#38358f"
           anchorX="left"
@@ -318,7 +356,11 @@ function Footer({ position = [0, 0, 0] }) {
 
       {/* Social Links */}
       <group
-        position={[startX + contentWidth * 0.6, -viewport.height * 0.35, 0]}
+        position={[
+          startX + contentWidth * getFooterResponsiveValue("SocialX"),
+          viewport.height * getFooterResponsiveValue("ContactY"),
+          0,
+        ]}
       >
         <Text
           fontSize={viewport.height * 0.02}
@@ -343,7 +385,11 @@ function Footer({ position = [0, 0, 0] }) {
 
       {/* Legal Links */}
       <group
-        position={[startX + contentWidth * 0.85, -viewport.height * 0.35, 0]}
+        position={[
+          startX + contentWidth * getFooterResponsiveValue("LegalX"),
+          viewport.height * getFooterResponsiveValue("ContactY"),
+          0,
+        ]}
       >
         <Text
           fontSize={viewport.height * 0.02}
@@ -383,6 +429,25 @@ export default function ScrollContent() {
       // Global settings
       Global: folder({
         globalBorder: { value: 0.01, min: 0.0, max: 0.1, step: 0.0025 },
+      }),
+
+      // Introduction section
+      Introduction: folder({
+        Desktop: folder({
+          deskIntroX: { value: -3.02, min: -5, max: 0, step: 0.01 },
+          deskIntroY: { value: -0.65, min: -2, max: 0, step: 0.01 },
+          deskIntroWidth: { value: 0.52, min: 0.1, max: 1.0, step: 0.01 },
+        }),
+        Tablet: folder({
+          tabIntroX: { value: -3.02, min: -5, max: 0, step: 0.01 },
+          tabIntroY: { value: -0.65, min: -2, max: 0, step: 0.01 },
+          tabIntroWidth: { value: 0.52, min: 0.1, max: 1.0, step: 0.01 },
+        }),
+        Mobile: folder({
+          mobIntroX: { value: -3.02, min: -5, max: 0, step: 0.01 },
+          mobIntroY: { value: -0.65, min: -2, max: 0, step: 0.01 },
+          mobIntroWidth: { value: 0.52, min: 0.1, max: 1.0, step: 0.01 },
+        }),
       }),
 
       // Work sections
@@ -562,12 +627,33 @@ export default function ScrollContent() {
     {
       Desktop: folder({
         deskFooterY: { value: -4.2, min: -6, max: 0, step: 0.1 },
+        deskFooterNavY: { value: 0.4, min: 0.0, max: 1.0, step: 0.01 },
+        deskFooterLogoX: { value: -0.2, min: -1.0, max: 1.0, step: 0.01 },
+        deskFooterLogoY: { value: 0.95, min: 0.0, max: 2.0, step: 0.01 },
+        deskFooterContactY: { value: -0.35, min: -1.0, max: 0.0, step: 0.01 },
+        deskFooterContactEmailX: { value: 0.2, min: 0.0, max: 1.0, step: 0.01 },
+        deskFooterSocialX: { value: 0.6, min: 0.0, max: 1.0, step: 0.01 },
+        deskFooterLegalX: { value: 0.85, min: 0.0, max: 1.0, step: 0.01 },
       }),
       Tablet: folder({
         tabFooterY: { value: -4.2, min: -6, max: 0, step: 0.1 },
+        tabFooterNavY: { value: 0.4, min: 0.0, max: 1.0, step: 0.01 },
+        tabFooterLogoX: { value: -0.2, min: -1.0, max: 1.0, step: 0.01 },
+        tabFooterLogoY: { value: 0.95, min: 0.0, max: 2.0, step: 0.01 },
+        tabFooterContactY: { value: -0.35, min: -1.0, max: 0.0, step: 0.01 },
+        tabFooterContactEmailX: { value: 0.2, min: 0.0, max: 1.0, step: 0.01 },
+        tabFooterSocialX: { value: 0.6, min: 0.0, max: 1.0, step: 0.01 },
+        tabFooterLegalX: { value: 0.85, min: 0.0, max: 1.0, step: 0.01 },
       }),
       Mobile: folder({
         mobFooterY: { value: -4.2, min: -6, max: 0, step: 0.1 },
+        mobFooterNavY: { value: 0.4, min: 0.0, max: 1.0, step: 0.01 },
+        mobFooterLogoX: { value: -0.2, min: -1.0, max: 1.0, step: 0.01 },
+        mobFooterLogoY: { value: 0.95, min: 0.0, max: 2.0, step: 0.01 },
+        mobFooterContactY: { value: -0.35, min: -1.0, max: 0.0, step: 0.01 },
+        mobFooterContactEmailX: { value: 0.15, min: 0.0, max: 1.0, step: 0.01 },
+        mobFooterSocialX: { value: 0.45, min: 0.0, max: 1.0, step: 0.01 },
+        mobFooterLegalX: { value: 0.7, min: 0.0, max: 1.0, step: 0.01 },
       }),
     },
     {
@@ -575,16 +661,249 @@ export default function ScrollContent() {
     }
   )
 
-  // Helper function to get responsive values
-  const getResponsiveValue = (controlName) => {
-    return useResponsiveValue({
-      mobile: controls[`mob${controlName}`],
-      tablet: controls[`tab${controlName}`],
-      desktop: controls[`desk${controlName}`],
-      large: controls[`desk${controlName}`], // fallback to desktop
-      ultrawide: controls[`desk${controlName}`], // fallback to desktop
-    })
-  }
+  // Responsive values - all hooks must be called at component level
+  // Introduction
+  const introX = useResponsiveValue({
+    mobile: controls.mobIntroX,
+    tablet: controls.tabIntroX,
+    desktop: controls.deskIntroX,
+    large: controls.deskIntroX,
+    ultrawide: controls.deskIntroX,
+  })
+  const introY = useResponsiveValue({
+    mobile: controls.mobIntroY,
+    tablet: controls.tabIntroY,
+    desktop: controls.deskIntroY,
+    large: controls.deskIntroY,
+    ultrawide: controls.deskIntroY,
+  })
+  const introWidth = useResponsiveValue({
+    mobile: controls.mobIntroWidth,
+    tablet: controls.tabIntroWidth,
+    desktop: controls.deskIntroWidth,
+    large: controls.deskIntroWidth,
+    ultrawide: controls.deskIntroWidth,
+  })
+
+  // Work 1
+  const w1X = useResponsiveValue({
+    mobile: controls.mobW1X,
+    tablet: controls.tabW1X,
+    desktop: controls.deskW1X,
+    large: controls.deskW1X,
+    ultrawide: controls.deskW1X,
+  })
+  const w1Y = useResponsiveValue({
+    mobile: controls.mobW1Y,
+    tablet: controls.tabW1Y,
+    desktop: controls.deskW1Y,
+    large: controls.deskW1Y,
+    ultrawide: controls.deskW1Y,
+  })
+  const w1TitleX = useResponsiveValue({
+    mobile: controls.mobW1TitleX,
+    tablet: controls.tabW1TitleX,
+    desktop: controls.deskW1TitleX,
+    large: controls.deskW1TitleX,
+    ultrawide: controls.deskW1TitleX,
+  })
+  const w1TitleY = useResponsiveValue({
+    mobile: controls.mobW1TitleY,
+    tablet: controls.tabW1TitleY,
+    desktop: controls.deskW1TitleY,
+    large: controls.deskW1TitleY,
+    ultrawide: controls.deskW1TitleY,
+  })
+  const w1TitleWidth = useResponsiveValue({
+    mobile: controls.mobW1TitleWidth,
+    tablet: controls.tabW1TitleWidth,
+    desktop: controls.deskW1TitleWidth,
+    large: controls.deskW1TitleWidth,
+    ultrawide: controls.deskW1TitleWidth,
+  })
+  const w1DescX = useResponsiveValue({
+    mobile: controls.mobW1DescX,
+    tablet: controls.tabW1DescX,
+    desktop: controls.deskW1DescX,
+    large: controls.deskW1DescX,
+    ultrawide: controls.deskW1DescX,
+  })
+  const w1DescY = useResponsiveValue({
+    mobile: controls.mobW1DescY,
+    tablet: controls.tabW1DescY,
+    desktop: controls.deskW1DescY,
+    large: controls.deskW1DescY,
+    ultrawide: controls.deskW1DescY,
+  })
+
+  // Work 2
+  const w2X = useResponsiveValue({
+    mobile: controls.mobW2X,
+    tablet: controls.tabW2X,
+    desktop: controls.deskW2X,
+    large: controls.deskW2X,
+    ultrawide: controls.deskW2X,
+  })
+  const w2Y = useResponsiveValue({
+    mobile: controls.mobW2Y,
+    tablet: controls.tabW2Y,
+    desktop: controls.deskW2Y,
+    large: controls.deskW2Y,
+    ultrawide: controls.deskW2Y,
+  })
+  const w2TitleX = useResponsiveValue({
+    mobile: controls.mobW2TitleX,
+    tablet: controls.tabW2TitleX,
+    desktop: controls.deskW2TitleX,
+    large: controls.deskW2TitleX,
+    ultrawide: controls.deskW2TitleX,
+  })
+  const w2TitleY = useResponsiveValue({
+    mobile: controls.mobW2TitleY,
+    tablet: controls.tabW2TitleY,
+    desktop: controls.deskW2TitleY,
+    large: controls.deskW2TitleY,
+    ultrawide: controls.deskW2TitleY,
+  })
+  const w2TitleWidth = useResponsiveValue({
+    mobile: controls.mobW2TitleWidth,
+    tablet: controls.tabW2TitleWidth,
+    desktop: controls.deskW2TitleWidth,
+    large: controls.deskW2TitleWidth,
+    ultrawide: controls.deskW2TitleWidth,
+  })
+  const w2DescX = useResponsiveValue({
+    mobile: controls.mobW2DescX,
+    tablet: controls.tabW2DescX,
+    desktop: controls.deskW2DescX,
+    large: controls.deskW2DescX,
+    ultrawide: controls.deskW2DescX,
+  })
+  const w2DescY = useResponsiveValue({
+    mobile: controls.mobW2DescY,
+    tablet: controls.tabW2DescY,
+    desktop: controls.deskW2DescY,
+    large: controls.deskW2DescY,
+    ultrawide: controls.deskW2DescY,
+  })
+
+  // Work 3
+  const w3X = useResponsiveValue({
+    mobile: controls.mobW3X,
+    tablet: controls.tabW3X,
+    desktop: controls.deskW3X,
+    large: controls.deskW3X,
+    ultrawide: controls.deskW3X,
+  })
+  const w3Y = useResponsiveValue({
+    mobile: controls.mobW3Y,
+    tablet: controls.tabW3Y,
+    desktop: controls.deskW3Y,
+    large: controls.deskW3Y,
+    ultrawide: controls.deskW3Y,
+  })
+  const w3TitleX = useResponsiveValue({
+    mobile: controls.mobW3TitleX,
+    tablet: controls.tabW3TitleX,
+    desktop: controls.deskW3TitleX,
+    large: controls.deskW3TitleX,
+    ultrawide: controls.deskW3TitleX,
+  })
+  const w3TitleY = useResponsiveValue({
+    mobile: controls.mobW3TitleY,
+    tablet: controls.tabW3TitleY,
+    desktop: controls.deskW3TitleY,
+    large: controls.deskW3TitleY,
+    ultrawide: controls.deskW3TitleY,
+  })
+  const w3TitleWidth = useResponsiveValue({
+    mobile: controls.mobW3TitleWidth,
+    tablet: controls.tabW3TitleWidth,
+    desktop: controls.deskW3TitleWidth,
+    large: controls.deskW3TitleWidth,
+    ultrawide: controls.deskW3TitleWidth,
+  })
+  const w3DescX = useResponsiveValue({
+    mobile: controls.mobW3DescX,
+    tablet: controls.tabW3DescX,
+    desktop: controls.deskW3DescX,
+    large: controls.deskW3DescX,
+    ultrawide: controls.deskW3DescX,
+  })
+  const w3DescY = useResponsiveValue({
+    mobile: controls.mobW3DescY,
+    tablet: controls.tabW3DescY,
+    desktop: controls.deskW3DescY,
+    large: controls.deskW3DescY,
+    ultrawide: controls.deskW3DescY,
+  })
+
+  // Playground
+  const playX = useResponsiveValue({
+    mobile: controls.mobPlayX,
+    tablet: controls.tabPlayX,
+    desktop: controls.deskPlayX,
+    large: controls.deskPlayX,
+    ultrawide: controls.deskPlayX,
+  })
+  const playY = useResponsiveValue({
+    mobile: controls.mobPlayY,
+    tablet: controls.tabPlayY,
+    desktop: controls.deskPlayY,
+    large: controls.deskPlayY,
+    ultrawide: controls.deskPlayY,
+  })
+
+  // Contact
+  const conX = useResponsiveValue({
+    mobile: controls.mobConX,
+    tablet: controls.tabConX,
+    desktop: controls.deskConX,
+    large: controls.deskConX,
+    ultrawide: controls.deskConX,
+  })
+  const conY = useResponsiveValue({
+    mobile: controls.mobConY,
+    tablet: controls.tabConY,
+    desktop: controls.deskConY,
+    large: controls.deskConY,
+    ultrawide: controls.deskConY,
+  })
+  const conButtonX = useResponsiveValue({
+    mobile: controls.mobConButtonX,
+    tablet: controls.tabConButtonX,
+    desktop: controls.deskConButtonX,
+    large: controls.deskConButtonX,
+    ultrawide: controls.deskConButtonX,
+  })
+  const conButtonY = useResponsiveValue({
+    mobile: controls.mobConButtonY,
+    tablet: controls.tabConButtonY,
+    desktop: controls.deskConButtonY,
+    large: controls.deskConButtonY,
+    ultrawide: controls.deskConButtonY,
+  })
+  const conDescX = useResponsiveValue({
+    mobile: controls.mobConDescX,
+    tablet: controls.tabConDescX,
+    desktop: controls.deskConDescX,
+    large: controls.deskConDescX,
+    ultrawide: controls.deskConDescX,
+  })
+  const conDescY = useResponsiveValue({
+    mobile: controls.mobConDescY,
+    tablet: controls.tabConDescY,
+    desktop: controls.deskConDescY,
+    large: controls.deskConDescY,
+    ultrawide: controls.deskConDescY,
+  })
+  const conWidth = useResponsiveValue({
+    mobile: controls.mobConWidth,
+    tablet: controls.tabConWidth,
+    desktop: controls.deskConWidth,
+    large: controls.deskConWidth,
+    ultrawide: controls.deskConWidth,
+  })
 
   useFrame((state, delta) => {
     if (scroll.offset !== undefined) {
@@ -613,104 +932,65 @@ export default function ScrollContent() {
         />
       </group>
 
+      {/* Introduction */}
       <Headline
         title={textContent.page0.paragraphs}
-        position={[-3.02, -viewport.height * 0.65, 0]}
-        maxWidth={viewport.width * 0.52}
+        position={[introX, viewport.height * introY, 0]}
+        maxWidth={viewport.width * introWidth}
       ></Headline>
 
       {/* Work 1 */}
       <Image
         url="/images/vellum_dance_main.png"
         scale={[viewport.width * 0.515, viewport.height * 0.73, 1]}
-        position={[
-          getResponsiveValue("W1X"),
-          viewport.height * getResponsiveValue("W1Y"),
-          0,
-        ]}
+        position={[w1X, viewport.height * w1Y, 0]}
       />
       <Headline
         title={textContent.page1.title}
-        position={[
-          getResponsiveValue("W1TitleX"),
-          viewport.height * getResponsiveValue("W1TitleY"),
-          0,
-        ]}
-        maxWidth={viewport.width * getResponsiveValue("W1TitleWidth")}
+        position={[w1TitleX, viewport.height * w1TitleY, 0]}
+        maxWidth={viewport.width * w1TitleWidth}
       ></Headline>
       <Description
         paragraphs={textContent.page1.paragraphs}
-        position={[
-          getResponsiveValue("W1DescX"),
-          viewport.height * getResponsiveValue("W1DescY"),
-          0,
-        ]}
+        position={[w1DescX, viewport.height * w1DescY, 0]}
       ></Description>
 
       {/* Work 2 */}
       <Image
         url="/images/liquid_prism_main.png"
         scale={[viewport.width * 0.4, viewport.height * 0.4, 1]}
-        position={[
-          getResponsiveValue("W2X"),
-          viewport.height * getResponsiveValue("W2Y"),
-          0,
-        ]}
+        position={[w2X, viewport.height * w2Y, 0]}
       />
       <Headline
         title={textContent.page2.title}
-        position={[
-          getResponsiveValue("W2TitleX"),
-          viewport.height * getResponsiveValue("W2TitleY"),
-          0,
-        ]}
-        maxWidth={viewport.width * getResponsiveValue("W2TitleWidth")}
+        position={[w2TitleX, viewport.height * w2TitleY, 0]}
+        maxWidth={viewport.width * w2TitleWidth}
       ></Headline>
       <Description
         paragraphs={textContent.page2.paragraphs}
-        position={[
-          getResponsiveValue("W2DescX"),
-          viewport.height * getResponsiveValue("W2DescY"),
-          0,
-        ]}
+        position={[w2DescX, viewport.height * w2DescY, 0]}
       ></Description>
 
       {/* Work 3 */}
       <Image
         url="/images/particles_main.png"
         scale={[viewport.width * 0.4, viewport.height * 0.4, 1]}
-        position={[
-          getResponsiveValue("W3X"),
-          viewport.height * getResponsiveValue("W3Y"),
-          0,
-        ]}
+        position={[w3X, viewport.height * w3Y, 0]}
       />
       <Headline
         title={textContent.page3.title}
         paragraphs={textContent.page3.paragraphs}
-        position={[
-          getResponsiveValue("W3TitleX"),
-          viewport.height * getResponsiveValue("W3TitleY"),
-          0,
-        ]}
-        maxWidth={viewport.width * getResponsiveValue("W3TitleWidth")}
+        position={[w3TitleX, viewport.height * w3TitleY, 0]}
+        maxWidth={viewport.width * w3TitleWidth}
       ></Headline>
       <Description
         title={textContent.page3.title}
         paragraphs={textContent.page3.paragraphs}
-        position={[
-          getResponsiveValue("W3DescX"),
-          viewport.height * getResponsiveValue("W3DescY"),
-          0,
-        ]}
+        position={[w3DescX, viewport.height * w3DescY, 0]}
       ></Description>
 
       <PlaygroundSection
-        position={[
-          viewport.width * getResponsiveValue("PlayX"),
-          viewport.height * getResponsiveValue("PlayY"),
-          0,
-        ]}
+        position={[viewport.width * playX, viewport.height * playY, 0]}
         panelWidth={viewport.width * controls.panelWidth}
         panelHeight={viewport.height * controls.panelHeight}
         roundness={controls.roundness}
@@ -726,19 +1006,9 @@ export default function ScrollContent() {
       />
 
       {/* Get in Contact section */}
-      <group
-        position={[
-          getResponsiveValue("ConX"),
-          viewport.height * getResponsiveValue("ConY"),
-          0,
-        ]}
-      >
+      <group position={[conX, viewport.height * conY, 0]}>
         <TextWithBorder
-          position={[
-            getResponsiveValue("ConButtonX"),
-            getResponsiveValue("ConButtonY"),
-            0,
-          ]}
+          position={[conButtonX, conButtonY, 0]}
           fontSize={viewport.height * 0.025}
           color="#38358f"
           anchorX="center"
@@ -757,12 +1027,8 @@ export default function ScrollContent() {
           paragraphs={[
             "Ready to create something amazing together? Let's talk.",
           ]}
-          position={[
-            getResponsiveValue("ConDescX"),
-            getResponsiveValue("ConDescY"),
-            0,
-          ]}
-          maxWidth={getResponsiveValue("ConWidth")}
+          position={[conDescX, conDescY, 0]}
+          maxWidth={conWidth}
         />
       </group>
 
@@ -779,6 +1045,7 @@ export default function ScrollContent() {
             }),
           0,
         ]}
+        footerControls={footerControls}
       />
     </group>
   )

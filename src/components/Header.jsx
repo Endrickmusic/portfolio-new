@@ -2,37 +2,122 @@ import { Text, Svg, Image } from "@react-three/drei"
 import { useThree } from "@react-three/fiber"
 import * as THREE from "three"
 import { useRef, useState, useEffect, useMemo } from "react"
-import { useControls } from "leva"
+import { useControls, folder } from "leva"
 import TextWithBorder from "./TextWithBorder.jsx"
+import { useBreakpoint, useResponsiveValue } from "../hooks/useBreakpoint"
 
 export default function Header({ textStyles }) {
   const { viewport } = useThree()
   const columnWidth = viewport.width / 24
+  const { breakpoint } = useBreakpoint()
 
-  // All navigation controls organized in one folder
-  const {
-    globalBorder,
-    thickness,
-    radius,
-    paddingX,
-    paddingY,
-    borderColor,
-    spacing,
-  } = useControls(
+  // Responsive navigation controls organized by breakpoint
+  const controls = useControls(
     "Navigation",
     {
-      globalBorder: { value: 0.2, min: 0.0, max: 1.0, step: 0.01 },
-      thickness: { value: 0.05, min: 0.0, max: 0.5, step: 0.005 },
-      radius: { value: 0.04, min: 0.0, max: 0.5, step: 0.005 },
-      paddingX: { value: 0.07, min: 0.0, max: 2.0, step: 0.01 },
-      paddingY: { value: 0.06, min: 0.0, max: 1.0, step: 0.01 },
-      borderColor: { value: "#38358f" },
-      spacing: { value: 0.28, min: 0.25, max: 1.0, step: 0.01 },
+      // Global styling (non-responsive)
+      Styling: folder({
+        globalBorder: { value: 0.2, min: 0.0, max: 1.0, step: 0.01 },
+        thickness: { value: 0.05, min: 0.0, max: 0.5, step: 0.005 },
+        radius: { value: 0.04, min: 0.0, max: 0.5, step: 0.005 },
+        paddingX: { value: 0.07, min: 0.0, max: 2.0, step: 0.01 },
+        paddingY: { value: 0.06, min: 0.0, max: 1.0, step: 0.01 },
+        borderColor: { value: "#38358f" },
+        spacing: { value: 0.28, min: 0.25, max: 1.0, step: 0.01 },
+      }),
+
+      // Responsive positioning
+      Desktop: folder({
+        deskHeaderY: { value: 0.48, min: 0.0, max: 1.0, step: 0.01 },
+        deskLogoX: { value: 1, min: 1, max: 24, step: 1 }, // Column number
+        deskLogoY: { value: -0.069, min: -0.2, max: 0.2, step: 0.001 },
+        deskNameX: { value: 2, min: 1, max: 24, step: 1 }, // Column number
+        deskNameY: { value: -0.028, min: -0.2, max: 0.2, step: 0.001 },
+        deskNavStartCol: { value: 20, min: 15, max: 24, step: 1 },
+        deskNavY: { value: -0.1, min: -0.3, max: 0.1, step: 0.01 },
+      }),
+
+      Tablet: folder({
+        tabHeaderY: { value: 0.48, min: 0.0, max: 1.0, step: 0.01 },
+        tabLogoX: { value: 1, min: 1, max: 24, step: 1 },
+        tabLogoY: { value: -0.069, min: -0.2, max: 0.2, step: 0.001 },
+        tabNameX: { value: 2, min: 1, max: 24, step: 1 },
+        tabNameY: { value: -0.028, min: -0.2, max: 0.2, step: 0.001 },
+        tabNavStartCol: { value: 18, min: 15, max: 24, step: 1 },
+        tabNavY: { value: -0.1, min: -0.3, max: 0.1, step: 0.01 },
+      }),
+
+      Mobile: folder({
+        mobHeaderY: { value: 0.48, min: 0.0, max: 1.0, step: 0.01 },
+        mobLogoX: { value: 1, min: 1, max: 24, step: 1 },
+        mobLogoY: { value: -0.069, min: -0.2, max: 0.2, step: 0.001 },
+        mobNameX: { value: 2, min: 1, max: 24, step: 1 },
+        mobNameY: { value: -0.028, min: -0.2, max: 0.2, step: 0.001 },
+        mobNavStartCol: { value: 16, min: 10, max: 24, step: 1 },
+        mobNavY: { value: -0.1, min: -0.3, max: 0.1, step: 0.01 },
+      }),
     },
     {
       collapsed: true,
     }
   )
+
+  // Responsive values - all hooks must be called at component level
+  const headerY = useResponsiveValue({
+    mobile: controls.mobHeaderY,
+    tablet: controls.tabHeaderY,
+    desktop: controls.deskHeaderY,
+    large: controls.deskHeaderY,
+    ultrawide: controls.deskHeaderY,
+  })
+
+  const logoX = useResponsiveValue({
+    mobile: controls.mobLogoX,
+    tablet: controls.tabLogoX,
+    desktop: controls.deskLogoX,
+    large: controls.deskLogoX,
+    ultrawide: controls.deskLogoX,
+  })
+
+  const logoY = useResponsiveValue({
+    mobile: controls.mobLogoY,
+    tablet: controls.tabLogoY,
+    desktop: controls.deskLogoY,
+    large: controls.deskLogoY,
+    ultrawide: controls.deskLogoY,
+  })
+
+  const nameX = useResponsiveValue({
+    mobile: controls.mobNameX,
+    tablet: controls.tabNameX,
+    desktop: controls.deskNameX,
+    large: controls.deskNameX,
+    ultrawide: controls.deskNameX,
+  })
+
+  const nameY = useResponsiveValue({
+    mobile: controls.mobNameY,
+    tablet: controls.tabNameY,
+    desktop: controls.deskNameY,
+    large: controls.deskNameY,
+    ultrawide: controls.deskNameY,
+  })
+
+  const navStartCol = useResponsiveValue({
+    mobile: controls.mobNavStartCol,
+    tablet: controls.tabNavStartCol,
+    desktop: controls.deskNavStartCol,
+    large: controls.deskNavStartCol,
+    ultrawide: controls.deskNavStartCol,
+  })
+
+  const navY = useResponsiveValue({
+    mobile: controls.mobNavY,
+    tablet: controls.tabNavY,
+    desktop: controls.deskNavY,
+    large: controls.deskNavY,
+    ultrawide: controls.deskNavY,
+  })
 
   // SDF texture with high-quality filtering
   const sdfTexture = useMemo(() => {
@@ -61,36 +146,36 @@ export default function Header({ textStyles }) {
   }
 
   const positions = useMemo(() => {
-    // Start at column 19, then space evenly
-    const startColumn = 20
-    const startPosition = getColumnPosition(startColumn)
+    // Use responsive start column
+    const startPosition = getColumnPosition(navStartCol)
+    const spacing = controls.spacing
 
     return [
-      startPosition, // Work (column 19)
+      startPosition, // Work
       startPosition + spacing, // Expertise
       startPosition + spacing * 2.05, // About
       startPosition + spacing * 3.17, // Playground
     ]
-  }, [spacing, viewport.width, columnWidth])
+  }, [controls.spacing, viewport.width, columnWidth, navStartCol])
 
   return (
     // Header group
-    <group position={[0, viewport.height * 0.48, 0]}>
+    <group position={[0, viewport.height * headerY, 0]}>
       {/* Logo */}
       <mesh
-        position={[getColumnPosition(1), -0.069, 0]}
+        position={[getColumnPosition(logoX), logoY, 0]}
         scale={[0.5, 0.5, 0.5]}
       >
         <planeGeometry args={[0.66, 0.25]} />
         <shaderMaterial
-          key={thickness} // Force recreation when thickness changes
+          key={controls.thickness} // Force recreation when thickness changes
           transparent
           toneMapped={false}
           depthWrite={false}
           uniforms={{
             uSDF: { value: sdfTexture },
             uColor: { value: new THREE.Color("#38358f") },
-            uThickness: { value: thickness },
+            uThickness: { value: controls.thickness },
           }}
           vertexShader={`
               varying vec2 vUv;
@@ -116,7 +201,7 @@ export default function Header({ textStyles }) {
       </mesh>
 
       {/* Name and Profession */}
-      <group position={[getColumnPosition(2), -0.028, 0]}>
+      <group position={[getColumnPosition(nameX), nameY, 0]}>
         <Text
           {...textStyles.logo}
           fontSize={textStyles.logo.fontSize(viewport)}
@@ -143,7 +228,7 @@ export default function Header({ textStyles }) {
       </group>
 
       {/* Navigation Links */}
-      <group position={[0, -0.1, 0]}>
+      <group position={[0, navY, 0]}>
         {labels.map((text, i) => {
           const fontSize = textStyles.nav.fontSize(viewport) * 0.7
 
@@ -155,11 +240,11 @@ export default function Header({ textStyles }) {
                 anchorX="center"
                 anchorY="middle"
                 color="#38358f"
-                border={globalBorder * 0.01}
-                roundness={radius}
-                borderColor={borderColor}
-                paddingX={paddingX}
-                paddingY={paddingY}
+                border={controls.globalBorder * 0.01}
+                roundness={controls.radius}
+                borderColor={controls.borderColor}
+                paddingX={controls.paddingX}
+                paddingY={controls.paddingY}
               >
                 {text}
               </TextWithBorder>
