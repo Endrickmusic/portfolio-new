@@ -7,7 +7,7 @@ import "./index.css"
 
 function CanvasWrapper() {
   const { canvasDpr, canvasAntialias } = useControls(
-    "Canvas and Render Quality", 
+    "Canvas and Render Quality",
     {
       canvasDpr: {
         value: [1, 2],
@@ -42,7 +42,7 @@ function CanvasWrapper() {
 export default function App() {
   return (
     <div className="w-screen h-screen overflow-hidden">
-      <Leva collapsed />
+      <Leva collapsed oneLineLabels />
       <CanvasWrapper />
     </div>
   )
