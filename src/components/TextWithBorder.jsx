@@ -122,6 +122,12 @@ export default function TextWithBorder({
         anchorX={anchorX}
         anchorY={anchorY}
         onSync={onSync}
+        glyphGeometryDetail={64}
+        renderOrder={1}
+        outlineWidth={0}
+        outlineColor="transparent"
+        strokeWidth={0}
+        strokeColor="transparent"
       >
         {children}
       </Text>

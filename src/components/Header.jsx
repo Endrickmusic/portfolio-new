@@ -1,7 +1,7 @@
 import { Text, Svg, Image } from "@react-three/drei"
 import { useThree } from "@react-three/fiber"
 import * as THREE from "three"
-import { useRef, useState, useEffect } from "react"
+import { useRef, useState, useEffect, useMemo } from "react"
 import { useControls } from "leva"
 import TextWithBorder from "./TextWithBorder.jsx"
 
@@ -22,7 +22,23 @@ export default function Header({ textStyles }) {
     gap: { value: -0.08, min: -0.5, max: 0.5, step: 0.01 },
   })
 
+  const logoControls = useControls("SDF Logo", {
+    thickness: { value: 0.05, min: 0.0, max: 0.5, step: 0.005 },
+  })
+
   const { radius, paddingX, paddingY, borderColor, gap } = controls
+  const { thickness } = logoControls
+
+  // SDF texture with high-quality filtering
+  const sdfTexture = useMemo(() => {
+    const texture = new THREE.TextureLoader().load("/images/sdf_logo.png")
+    texture.generateMipmaps = false
+    texture.minFilter = THREE.LinearFilter
+    texture.magFilter = THREE.LinearFilter
+    texture.wrapS = THREE.ClampToEdgeWrapping
+    texture.wrapT = THREE.ClampToEdgeWrapping
+    return texture
+  }, [])
 
   const labels = ["Work", "Expertise", "About", "Playground"]
   const [boxWidths, setBoxWidths] = useState({})
@@ -45,19 +61,39 @@ export default function Header({ textStyles }) {
   return (
     <group position={[0, viewport.height * 0.48, 0]}>
       {/* Logo */}
-      <Svg
-        src="/svgs/CH_logo.svg"
-        scale={0.0045}
-        position={[-viewport.width / 2 + columnWidth * 0.45, 0, 0]}
-        fillMaterial={new THREE.MeshBasicMaterial({ color: "#38358f" })}
-        strokeWidth={0.01}
-      />
-      {/* <Image
-        url="/images/CH_symbol.png"
-        scale={[0.33, 0.125, 1]}
-        position={[-2.85, -0.07, 0]}
-        transparent
-      ></Image> */}
+      <mesh position={[-2.858, -0.069, 0]} scale={[0.5, 0.5, 0.5]}>
+        <planeGeometry args={[0.66, 0.25]} />
+        <shaderMaterial
+          transparent
+          toneMapped={false}
+          depthWrite={false}
+          uniforms={{
+            uSDF: { value: sdfTexture },
+            uColor: { value: new THREE.Color("#38358f") },
+            uThickness: { value: thickness },
+          }}
+          vertexShader={`
+              varying vec2 vUv;
+              void main() {
+              vUv = uv;
+              gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+            }
+          `}
+          fragmentShader={`
+              uniform sampler2D uSDF;
+              uniform vec3 uColor;
+              uniform float uThickness;
+              varying vec2 vUv;
+
+              void main() {
+                  float dist = texture2D(uSDF, vUv).a;
+                  float alpha = smoothstep(0.5 - uThickness, 0.5 + uThickness, dist);
+                  gl_FragColor = vec4(uColor, alpha);
+              }
+
+          `}
+        />
+      </mesh>
 
       {/* Name and Title */}
       <group position={[-viewport.width / 2 + columnWidth * 1.8, -0.028, 0]}>
@@ -67,6 +103,8 @@ export default function Header({ textStyles }) {
           anchorX="left"
           anchorY="middle"
           color="#38358f"
+          glyphGeometryDetail={128}
+          renderOrder={1}
         >
           Christian Hohenbild
         </Text>
@@ -77,6 +115,8 @@ export default function Header({ textStyles }) {
           anchorX="left"
           anchorY="middle"
           color="#38358f"
+          glyphGeometryDetail={256}
+          renderOrder={1}
         >
           3D Artist and Creative Developer
         </Text>

@@ -85,6 +85,8 @@ function Headline({ title, position = [0, 0, 0], maxWidth }) {
       font="/fonts/SeasonSerifTRIAL-Light.woff"
       letterSpacing={0.015}
       lineHeight={1.2}
+      glyphGeometryDetail={64}
+      renderOrder={1}
     >
       {title}
     </Text>
@@ -111,6 +113,8 @@ function Description({ paragraphs, position = [0, 0, 0], children }) {
           font="/fonts/ibm-plex-mono-latin-400-normal.woff"
           letterSpacing={0.02}
           lineHeight={1.5}
+          glyphGeometryDetail={64}
+          renderOrder={1}
         >
           {paragraph}
         </Text>
@@ -409,7 +413,7 @@ export default function ScrollContent() {
 
   return (
     <group ref={group}>
-      {/* <Grid /> */}
+      <Grid />
       <Header textStyles={textStyles} />
 
       {/* Large C and H letters */}

@@ -3,6 +3,7 @@ import { createPortal, useFrame, useThree } from "@react-three/fiber"
 import * as THREE from "three"
 import { useMemo, useEffect, useRef } from "react"
 import { Perf } from "r3f-perf"
+import { useControls } from "leva"
 
 import ScrollContent from "./ScrollContent"
 import PostProcessPlane from "./PostProcessPlane"
@@ -12,7 +13,42 @@ export default function Scene() {
   const boxRef = useRef()
   const boxRef2 = useRef()
   const { viewport, size } = useThree()
-  const fbo = useFBO(size.width * 2, size.height)
+
+  // FBO resolution control
+  const { fboScale, adaptiveRes, dprMax, fboSamples } = useControls(
+    "Render Quality",
+    {
+      fboScale: { value: 3, min: 1, max: 8, step: 1 },
+      adaptiveRes: { value: true },
+      dprMax: { value: 2, min: 1, max: 3, step: 0.5 },
+      fboSamples: { value: 2, min: 0, max: 8, step: 1 },
+    }
+  )
+
+  const fbo = useFBO(
+    adaptiveRes
+      ? Math.min(
+          size.width *
+            Math.min(Math.min(window.devicePixelRatio, dprMax) * fboScale, 8),
+          8192
+        )
+      : size.width * fboScale,
+    adaptiveRes
+      ? Math.min(
+          size.height *
+            Math.min(Math.min(window.devicePixelRatio, dprMax) * fboScale, 8),
+          8192
+        )
+      : size.height * fboScale,
+    {
+      samples: fboSamples, // Controllable MSAA
+      type: THREE.HalfFloatType,
+      format: THREE.RGBAFormat,
+      generateMipmaps: false,
+      minFilter: THREE.LinearFilter,
+      magFilter: THREE.LinearFilter,
+    }
+  )
   const virtualScene = useMemo(() => {
     const scene = new THREE.Scene()
     scene.background = new THREE.Color("#f2f2f2")
