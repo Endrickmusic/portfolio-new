@@ -14,7 +14,7 @@ export default function Grid() {
       sidePadding: {
         value: 0.1,
         min: 0.0,
-        max: Math.max(0.0, viewport.width * 0.25),
+        max: 1.0, // Removed viewport multiplication - now applied in component
         step: 0.01,
       },
       columnGap: {
@@ -30,7 +30,8 @@ export default function Grid() {
   )
 
   const fullWidth = viewport.width
-  const innerWidth = Math.max(0, fullWidth - sidePadding * 2)
+  const actualSidePadding = sidePadding * viewport.width // Apply viewport multiplication here
+  const innerWidth = Math.max(0, fullWidth - actualSidePadding * 2)
 
   // For N columns there are N-1 gaps between them
   const gaps = Math.max(0, columns - 1)
@@ -40,24 +41,24 @@ export default function Grid() {
   const lines = []
 
   // Solid gray padding areas (no gradient) on left/right
-  const startX = -fullWidth / 2 + sidePadding
-  const endX = fullWidth / 2 - sidePadding
+  const startX = -fullWidth / 2 + actualSidePadding
+  const endX = fullWidth / 2 - actualSidePadding
   const padHeight = viewport.height * 6
   const padZ = 0
 
   lines.push(
     <mesh
       key="pad-left"
-      position={[-fullWidth / 2 + sidePadding * 0.5, 0, padZ]}
+      position={[-fullWidth / 2 + actualSidePadding * 0.5, 0, padZ]}
     >
-      <planeGeometry args={[sidePadding, padHeight]} />
+      <planeGeometry args={[actualSidePadding, padHeight]} />
       <meshBasicMaterial color="#f0f0f0" />
     </mesh>,
     <mesh
       key="pad-right"
-      position={[fullWidth / 2 - sidePadding * 0.5, 0, padZ]}
+      position={[fullWidth / 2 - actualSidePadding * 0.5, 0, padZ]}
     >
-      <planeGeometry args={[sidePadding, padHeight]} />
+      <planeGeometry args={[actualSidePadding, padHeight]} />
       <meshBasicMaterial color="#f0f0f0" />
     </mesh>
   )

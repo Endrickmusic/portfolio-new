@@ -8,6 +8,7 @@ import BorderBox from "./BorderBox.jsx"
 
 import Grid from "./Grid"
 import Header from "./Header"
+import { useBreakpoint, useResponsiveValue } from "../hooks/useBreakpoint"
 
 // Text styling system (inspired by Tailwind)
 const textStyles = {
@@ -124,20 +125,20 @@ function Description({ paragraphs, position = [0, 0, 0], maxWidth, children }) {
   )
 }
 
-function PlaygroundSection({ 
-  position = [0, 0, 0], 
-  panelWidth, 
-  panelHeight, 
-  roundness, 
-  borderColor, 
-  paddingX, 
+function PlaygroundSection({
+  position = [0, 0, 0],
+  panelWidth,
+  panelHeight,
+  roundness,
+  borderColor,
+  paddingX,
   paddingY,
   globalBorder,
   mbRoundness,
   mbBorderColor,
   mbPadding,
   mbPaddingXMult,
-  mbPaddingYMult 
+  mbPaddingYMult,
 }) {
   const { viewport } = useThree()
 
@@ -373,8 +374,9 @@ export default function ScrollContent() {
   const scroll = useScroll()
   const group = useRef()
   const { viewport } = useThree()
+  const { breakpoint } = useBreakpoint()
 
-  // Comprehensive control structure
+  // Responsive control structure with dedicated values for each breakpoint
   const controls = useControls(
     "Content",
     {
@@ -385,51 +387,118 @@ export default function ScrollContent() {
 
       // Work sections
       "Work 1": folder({
-        work1ImageX: { value: -0.13, min: -3, max: 3, step: 0.01 },
-        work1ImageY: { value: -1.19, min: -3, max: 0, step: 0.01 },
-        work1TitleX: { value: 1.55, min: -3, max: 3, step: 0.01 },
-        work1TitleY: { value: -0.9, min: -3, max: 0, step: 0.01 },
-        work1TitleMaxWidth: { value: 0.2, min: 0.1, max: 2, step: 0.01 },
-        work1DescX: { value: 0.77, min: -3, max: 3, step: 0.01 },
-        work1DescY: { value: -0.53, min: -3, max: 0, step: 0.01 },
+        // Mobile values
+        mobW1X: { value: -0.13, min: -3, max: 3, step: 0.01 },
+        mobW1Y: { value: -1.19, min: -3, max: 0, step: 0.01 },
+        mobW1TitleX: { value: 1.55, min: -3, max: 3, step: 0.01 },
+        mobW1TitleY: { value: -0.9, min: -3, max: 0, step: 0.01 },
+        mobW1TitleWidth: { value: 0.2, min: 0.1, max: 2, step: 0.01 },
+        mobW1DescX: { value: 0.77, min: -3, max: 3, step: 0.01 },
+        mobW1DescY: { value: -0.53, min: -3, max: 0, step: 0.01 },
+
+        // Tablet values
+        tabW1X: { value: -0.13, min: -3, max: 3, step: 0.01 },
+        tabW1Y: { value: -1.19, min: -3, max: 0, step: 0.01 },
+        tabW1TitleX: { value: 1.55, min: -3, max: 3, step: 0.01 },
+        tabW1TitleY: { value: -0.9, min: -3, max: 0, step: 0.01 },
+        tabW1TitleWidth: { value: 0.2, min: 0.1, max: 2, step: 0.01 },
+        tabW1DescX: { value: 0.77, min: -3, max: 3, step: 0.01 },
+        tabW1DescY: { value: -0.53, min: -3, max: 0, step: 0.01 },
+
+        // Desktop values
+        deskW1X: { value: -0.13, min: -3, max: 3, step: 0.01 },
+        deskW1Y: { value: -1.19, min: -3, max: 0, step: 0.01 },
+        deskW1TitleX: { value: 1.55, min: -3, max: 3, step: 0.01 },
+        deskW1TitleY: { value: -0.9, min: -3, max: 0, step: 0.01 },
+        deskW1TitleWidth: {
+          value: 0.2,
+          min: 0.1,
+          max: 2,
+          step: 0.01,
+        },
+        deskW1DescX: { value: 0.77, min: -3, max: 3, step: 0.01 },
+        deskW1DescY: { value: -0.53, min: -3, max: 0, step: 0.01 },
       }),
 
       "Work 2": folder({
-        work2ImageX: { value: 1, min: -3, max: 3, step: 0.01 },
-        work2ImageY: { value: -1.45, min: -3, max: 0, step: 0.01 },
-        work2TitleX: { value: -2.2, min: -3, max: 3, step: 0.01 },
-        work2TitleY: { value: -1.32, min: -3, max: 0, step: 0.01 },
-        work2TitleMaxWidth: { value: 1.0, min: 0.1, max: 2, step: 0.01 },
-        work2DescX: { value: -1.2, min: -3, max: 3, step: 0.01 },
-        work2DescY: { value: -0.75, min: -3, max: 0, step: 0.01 },
+        // Mobile values
+        mobW2X: { value: 1, min: -3, max: 3, step: 0.01 },
+        mobW2Y: { value: -1.45, min: -3, max: 0, step: 0.01 },
+        mobW2TitleX: { value: -2.2, min: -3, max: 3, step: 0.01 },
+        mobW2TitleY: { value: -1.32, min: -3, max: 0, step: 0.01 },
+        mobW2TitleWidth: { value: 1.0, min: 0.1, max: 2, step: 0.01 },
+        mobW2DescX: { value: -1.2, min: -3, max: 3, step: 0.01 },
+        mobW2DescY: { value: -0.75, min: -3, max: 0, step: 0.01 },
+
+        // Tablet values
+        tabW2X: { value: 1, min: -3, max: 3, step: 0.01 },
+        tabW2Y: { value: -1.45, min: -3, max: 0, step: 0.01 },
+        tabW2TitleX: { value: -2.2, min: -3, max: 3, step: 0.01 },
+        tabW2TitleY: { value: -1.32, min: -3, max: 0, step: 0.01 },
+        tabW2TitleWidth: { value: 1.0, min: 0.1, max: 2, step: 0.01 },
+        tabW2DescX: { value: -1.2, min: -3, max: 3, step: 0.01 },
+        tabW2DescY: { value: -0.75, min: -3, max: 0, step: 0.01 },
+
+        // Desktop values
+        deskW2X: { value: 1, min: -3, max: 3, step: 0.01 },
+        deskW2Y: { value: -1.45, min: -3, max: 0, step: 0.01 },
+        deskW2TitleX: { value: -2.2, min: -3, max: 3, step: 0.01 },
+        deskW2TitleY: { value: -1.32, min: -3, max: 0, step: 0.01 },
+        deskW2TitleWidth: {
+          value: 1.0,
+          min: 0.1,
+          max: 2,
+          step: 0.01,
+        },
+        deskW2DescX: { value: -1.2, min: -3, max: 3, step: 0.01 },
+        deskW2DescY: { value: -0.75, min: -3, max: 0, step: 0.01 },
       }),
 
       "Work 3": folder({
-        work3ImageX: { value: -1.2, min: -3, max: 3, step: 0.01 },
-        work3ImageY: { value: -1.85, min: -3, max: 0, step: 0.01 },
-        work3TitleX: { value: 0.2, min: -3, max: 3, step: 0.01 },
-        work3TitleY: { value: -1.75, min: -3, max: 0, step: 0.01 },
-        work3TitleMaxWidth: { value: 1.0, min: 0.1, max: 2, step: 0.01 },
-        work3DescX: { value: 0.1, min: -3, max: 3, step: 0.01 },
-        work3DescY: { value: -0.97, min: -3, max: 0, step: 0.01 },
+        // Mobile values
+        mobW3X: { value: -1.2, min: -3, max: 3, step: 0.01 },
+        mobW3Y: { value: -1.85, min: -3, max: 0, step: 0.01 },
+        mobW3TitleX: { value: 0.2, min: -3, max: 3, step: 0.01 },
+        mobW3TitleY: { value: -1.75, min: -3, max: 0, step: 0.01 },
+        mobW3TitleWidth: { value: 1.0, min: 0.1, max: 2, step: 0.01 },
+        mobW3DescX: { value: 0.1, min: -3, max: 3, step: 0.01 },
+        mobW3DescY: { value: -0.97, min: -3, max: 0, step: 0.01 },
+
+        // Tablet values
+        tabW3X: { value: -1.2, min: -3, max: 3, step: 0.01 },
+        tabW3Y: { value: -1.85, min: -3, max: 0, step: 0.01 },
+        tabW3TitleX: { value: 0.2, min: -3, max: 3, step: 0.01 },
+        tabW3TitleY: { value: -1.75, min: -3, max: 0, step: 0.01 },
+        tabW3TitleWidth: { value: 1.0, min: 0.1, max: 2, step: 0.01 },
+        tabW3DescX: { value: 0.1, min: -3, max: 3, step: 0.01 },
+        tabW3DescY: { value: -0.97, min: -3, max: 0, step: 0.01 },
+
+        // Desktop values
+        deskW3X: { value: -1.2, min: -3, max: 3, step: 0.01 },
+        deskW3Y: { value: -1.85, min: -3, max: 0, step: 0.01 },
+        deskW3TitleX: { value: 0.2, min: -3, max: 3, step: 0.01 },
+        deskW3TitleY: { value: -1.75, min: -3, max: 0, step: 0.01 },
+        deskW3TitleWidth: {
+          value: 1.0,
+          min: 0.1,
+          max: 2,
+          step: 0.01,
+        },
+        deskW3DescX: { value: 0.1, min: -3, max: 3, step: 0.01 },
+        deskW3DescY: { value: -0.97, min: -3, max: 0, step: 0.01 },
       }),
 
       // Playground section
       Playground: folder({
-        playgroundX: { value: 0.1, min: -3, max: 3, step: 0.01 },
-        playgroundY: { value: -2.5, min: -5, max: 0, step: 0.01 },
-        panelWidth: {
-          value: viewport.width * 1.2,
-          min: viewport.width * 0.6,
-          max: viewport.width * 5.4,
-          step: 0.1,
-        },
-        panelHeight: {
-          value: viewport.height * 0.8,
-          min: viewport.height * 0.4,
-          max: viewport.height * 4.0,
-          step: 0.1,
-        },
+        mobPlayX: { value: 0.1, min: -3, max: 3, step: 0.01 },
+        mobPlayY: { value: -2.5, min: -5, max: 0, step: 0.01 },
+        tabPlayX: { value: 0.1, min: -3, max: 3, step: 0.01 },
+        tabPlayY: { value: -2.5, min: -5, max: 0, step: 0.01 },
+        deskPlayX: { value: 0.1, min: -3, max: 3, step: 0.01 },
+        deskPlayY: { value: -2.5, min: -5, max: 0, step: 0.01 },
+
+        panelWidth: { value: 1.2, min: 0.6, max: 5.4, step: 0.1 },
+        panelHeight: { value: 0.8, min: 0.4, max: 4.0, step: 0.1 },
         roundness: { value: 0.12, min: 0.0, max: 0.5, step: 0.005 },
         borderColor: { value: "#38358f" },
         paddingX: { value: 0.2, min: 0.0, max: 0.5, step: 0.005 },
@@ -443,13 +512,29 @@ export default function ScrollContent() {
 
       // Get in Contact section
       "Get in Contact": folder({
-        contactX: { value: 0, min: -3, max: 3, step: 0.01 },
-        contactY: { value: -3.2, min: -5, max: 0, step: 0.01 },
-        contactButtonX: { value: 0, min: -3, max: 3, step: 0.01 },
-        contactButtonY: { value: 0.2, min: -1, max: 1, step: 0.01 },
-        contactDescX: { value: 0, min: -3, max: 3, step: 0.01 },
-        contactDescY: { value: -0.3, min: -1, max: 1, step: 0.01 },
-        contactDescMaxWidth: { value: 2.5, min: 1, max: 5, step: 0.1 },
+        mobConX: { value: 0, min: -3, max: 3, step: 0.01 },
+        mobConY: { value: -3.2, min: -5, max: 0, step: 0.01 },
+        mobConButtonX: { value: 0, min: -3, max: 3, step: 0.01 },
+        mobConButtonY: { value: 0.2, min: -1, max: 1, step: 0.01 },
+        mobConDescX: { value: 0, min: -3, max: 3, step: 0.01 },
+        mobConDescY: { value: -0.3, min: -1, max: 1, step: 0.01 },
+        mobConWidth: { value: 2.5, min: 1, max: 5, step: 0.1 },
+
+        tabConX: { value: 0, min: -3, max: 3, step: 0.01 },
+        tabConY: { value: -3.2, min: -5, max: 0, step: 0.01 },
+        tabConButtonX: { value: 0, min: -3, max: 3, step: 0.01 },
+        tabConButtonY: { value: 0.2, min: -1, max: 1, step: 0.01 },
+        tabConDescX: { value: 0, min: -3, max: 3, step: 0.01 },
+        tabConDescY: { value: -0.3, min: -1, max: 1, step: 0.01 },
+        tabConWidth: { value: 2.5, min: 1, max: 5, step: 0.1 },
+
+        deskConX: { value: 0, min: -3, max: 3, step: 0.01 },
+        deskConY: { value: -3.2, min: -5, max: 0, step: 0.01 },
+        deskConButtonX: { value: 0, min: -3, max: 3, step: 0.01 },
+        deskConButtonY: { value: 0.2, min: -1, max: 1, step: 0.01 },
+        deskConDescX: { value: 0, min: -3, max: 3, step: 0.01 },
+        deskConDescY: { value: -0.3, min: -1, max: 1, step: 0.01 },
+        deskConWidth: { value: 2.5, min: 1, max: 5, step: 0.1 },
       }),
     },
     {
@@ -461,12 +546,25 @@ export default function ScrollContent() {
   const footerControls = useControls(
     "Footer",
     {
-      footerY: { value: -4.2, min: -6, max: 0, step: 0.1 },
+      mobFooterY: { value: -4.2, min: -6, max: 0, step: 0.1 },
+      tabFooterY: { value: -4.2, min: -6, max: 0, step: 0.1 },
+      deskFooterY: { value: -4.2, min: -6, max: 0, step: 0.1 },
     },
     {
       collapsed: true,
     }
   )
+
+  // Helper function to get responsive values
+  const getResponsiveValue = (controlName) => {
+    return useResponsiveValue({
+      mobile: controls[`mob${controlName}`],
+      tablet: controls[`tab${controlName}`],
+      desktop: controls[`desk${controlName}`],
+      large: controls[`desk${controlName}`], // fallback to desktop
+      ultrawide: controls[`desk${controlName}`], // fallback to desktop
+    })
+  }
 
   useFrame((state, delta) => {
     if (scroll.offset !== undefined) {
@@ -500,61 +598,101 @@ export default function ScrollContent() {
         position={[-3.02, -viewport.height * 0.65, 0]}
         maxWidth={viewport.width * 0.52}
       ></Headline>
-      
+
       {/* Work 1 */}
       <Image
         url="/images/vellum_dance_main.png"
         scale={[viewport.width * 0.515, viewport.height * 0.73, 1]}
-        position={[controls.work1ImageX, viewport.height * controls.work1ImageY, 0]}
+        position={[
+          getResponsiveValue("W1X"),
+          viewport.height * getResponsiveValue("W1Y"),
+          0,
+        ]}
       />
       <Headline
         title={textContent.page1.title}
-        position={[controls.work1TitleX, viewport.height * controls.work1TitleY, 0]}
-        maxWidth={viewport.width * controls.work1TitleMaxWidth}
+        position={[
+          getResponsiveValue("W1TitleX"),
+          viewport.height * getResponsiveValue("W1TitleY"),
+          0,
+        ]}
+        maxWidth={viewport.width * getResponsiveValue("W1TitleWidth")}
       ></Headline>
       <Description
         paragraphs={textContent.page1.paragraphs}
-        position={[controls.work1DescX, viewport.height * controls.work1DescY, 0]}
+        position={[
+          getResponsiveValue("W1DescX"),
+          viewport.height * getResponsiveValue("W1DescY"),
+          0,
+        ]}
       ></Description>
-      
+
       {/* Work 2 */}
       <Image
         url="/images/liquid_prism_main.png"
         scale={[viewport.width * 0.4, viewport.height * 0.4, 1]}
-        position={[controls.work2ImageX, viewport.height * controls.work2ImageY, 0]}
+        position={[
+          getResponsiveValue("W2X"),
+          viewport.height * getResponsiveValue("W2Y"),
+          0,
+        ]}
       />
       <Headline
         title={textContent.page2.title}
-        position={[controls.work2TitleX, viewport.height * controls.work2TitleY, 0]}
-        maxWidth={viewport.width * controls.work2TitleMaxWidth}
+        position={[
+          getResponsiveValue("W2TitleX"),
+          viewport.height * getResponsiveValue("W2TitleY"),
+          0,
+        ]}
+        maxWidth={viewport.width * getResponsiveValue("W2TitleWidth")}
       ></Headline>
       <Description
         paragraphs={textContent.page2.paragraphs}
-        position={[controls.work2DescX, viewport.height * controls.work2DescY, 0]}
+        position={[
+          getResponsiveValue("W2DescX"),
+          viewport.height * getResponsiveValue("W2DescY"),
+          0,
+        ]}
       ></Description>
-      
+
       {/* Work 3 */}
       <Image
         url="/images/particles_main.png"
         scale={[viewport.width * 0.4, viewport.height * 0.4, 1]}
-        position={[controls.work3ImageX, viewport.height * controls.work3ImageY, 0]}
+        position={[
+          getResponsiveValue("W3X"),
+          viewport.height * getResponsiveValue("W3Y"),
+          0,
+        ]}
       />
       <Headline
         title={textContent.page3.title}
         paragraphs={textContent.page3.paragraphs}
-        position={[controls.work3TitleX, viewport.height * controls.work3TitleY, 0]}
-        maxWidth={viewport.width * controls.work3TitleMaxWidth}
+        position={[
+          getResponsiveValue("W3TitleX"),
+          viewport.height * getResponsiveValue("W3TitleY"),
+          0,
+        ]}
+        maxWidth={viewport.width * getResponsiveValue("W3TitleWidth")}
       ></Headline>
       <Description
         title={textContent.page3.title}
         paragraphs={textContent.page3.paragraphs}
-        position={[controls.work3DescX, viewport.height * controls.work3DescY, 0]}
+        position={[
+          getResponsiveValue("W3DescX"),
+          viewport.height * getResponsiveValue("W3DescY"),
+          0,
+        ]}
       ></Description>
 
       <PlaygroundSection
-        position={[viewport.width * controls.playgroundX, viewport.height * controls.playgroundY, 0]}
-        panelWidth={controls.panelWidth}
-        panelHeight={controls.panelHeight}
+        position={[
+          viewport.width * getResponsiveValue("PlayX"),
+          viewport.height * getResponsiveValue("PlayY"),
+          0,
+        ]}
+        panelWidth={viewport.width * controls.panelWidth}
+        panelHeight={viewport.height * controls.panelHeight}
         roundness={controls.roundness}
         borderColor={controls.borderColor}
         paddingX={controls.paddingX}
@@ -568,9 +706,19 @@ export default function ScrollContent() {
       />
 
       {/* Get in Contact section */}
-      <group position={[controls.contactX, viewport.height * controls.contactY, 0]}>
+      <group
+        position={[
+          getResponsiveValue("ConX"),
+          viewport.height * getResponsiveValue("ConY"),
+          0,
+        ]}
+      >
         <TextWithBorder
-          position={[controls.contactButtonX, controls.contactButtonY, 0]}
+          position={[
+            getResponsiveValue("ConButtonX"),
+            getResponsiveValue("ConButtonY"),
+            0,
+          ]}
           fontSize={viewport.height * 0.025}
           color="#38358f"
           anchorX="center"
@@ -589,12 +737,29 @@ export default function ScrollContent() {
           paragraphs={[
             "Ready to create something amazing together? Let's talk.",
           ]}
-          position={[controls.contactDescX, controls.contactDescY, 0]}
-          maxWidth={controls.contactDescMaxWidth}
+          position={[
+            getResponsiveValue("ConDescX"),
+            getResponsiveValue("ConDescY"),
+            0,
+          ]}
+          maxWidth={getResponsiveValue("ConWidth")}
         />
       </group>
 
-      <Footer position={[0, viewport.height * footerControls.footerY, 0]} />
+      <Footer
+        position={[
+          0,
+          viewport.height *
+            useResponsiveValue({
+              mobile: footerControls.mobFooterY,
+              tablet: footerControls.tabFooterY,
+              desktop: footerControls.deskFooterY,
+              large: footerControls.deskFooterY,
+              ultrawide: footerControls.deskFooterY,
+            }),
+          0,
+        ]}
+      />
     </group>
   )
 }
