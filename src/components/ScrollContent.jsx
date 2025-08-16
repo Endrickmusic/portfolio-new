@@ -71,7 +71,7 @@ const textContent = {
 }
 
 // Page component for reusability
-function Headline({ title, position = [0, 0, 0] }) {
+function Headline({ title, position = [0, 0, 0], maxWidth }) {
   const { viewport } = useThree()
 
   return (
@@ -79,7 +79,7 @@ function Headline({ title, position = [0, 0, 0] }) {
       position={position} // Title moved down
       fontSize={viewport.height * 0.045}
       color="#38358F"
-      maxWidth={viewport.width * 0.52}
+      maxWidth={maxWidth}
       anchorX="left"
       anchorY="middle"
       font="/fonts/SeasonSerifTRIAL-Light.woff"
@@ -431,19 +431,21 @@ export default function ScrollContent() {
       <Headline
         title={textContent.page0.paragraphs}
         position={[-3.02, -viewport.height * 0.65, 0]}
+        maxWidth={viewport.width * 0.52}
       ></Headline>
       <Image
         url="/images/vellum_dance_main.png"
-        scale={[viewport.width * 0.4, viewport.height * 0.4, 1]}
-        position={[-1, -viewport.height * 1.05, 0]}
+        scale={[viewport.width * 0.515, viewport.height * 0.73, 1]}
+        position={[-0.13, -viewport.height * 1.19, 0]}
       />
       <Headline
         title={textContent.page1.title}
-        position={[0.4, -viewport.height * 0.89, 0]}
+        position={[1.55, -viewport.height * 0.9, 0]}
+        maxWidth={viewport.width * 0.2}
       ></Headline>
       <Description
         paragraphs={textContent.page1.paragraphs}
-        position={[0.4, -viewport.height * 0.53, 0]}
+        position={[0.77, -viewport.height * 0.53, 0]}
       ></Description>
       <Image
         url="/images/liquid_prism_main.png"
