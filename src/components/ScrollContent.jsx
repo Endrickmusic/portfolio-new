@@ -407,7 +407,7 @@ export default function ScrollContent() {
 
   useFrame((state, delta) => {
     if (scroll.offset !== undefined) {
-      group.current.position.y = scroll.offset * 3.5 * viewport.height
+      group.current.position.y = scroll.offset * 4.2 * viewport.height
     }
   })
 
@@ -484,7 +484,33 @@ export default function ScrollContent() {
         position={[viewport.width * 0.1, -viewport.height * 2.5, 0]}
       />
 
-      <Footer position={[0, -viewport.height * 3.5, 0]} />
+      {/* Get in Contact section */}
+      <group position={[0, -viewport.height * 3.2, 0]}>
+        <TextWithBorder
+          position={[0, 0.2, 0]}
+          fontSize={viewport.height * 0.025}
+          color="#38358f"
+          anchorX="center"
+          anchorY="middle"
+          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+          border={0.01}
+          roundness={0.1}
+          borderColor="#38358f"
+          padding={0.15}
+          paddingXMult={1.5}
+          paddingYMult={1.0}
+        >
+          GET IN CONTACT
+        </TextWithBorder>
+        <Description
+          paragraphs={[
+            "Ready to create something amazing together? Let's talk.",
+          ]}
+          position={[0, -0.3, 0]}
+        />
+      </group>
+
+      <Footer position={[0, -viewport.height * 4.2, 0]} />
     </group>
   )
 }
