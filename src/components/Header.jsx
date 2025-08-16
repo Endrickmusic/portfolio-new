@@ -19,14 +19,13 @@ export default function Header({ textStyles }) {
     paddingX: { value: 0.07, min: 0.0, max: 2.0, step: 0.01 },
     paddingY: { value: 0.06, min: 0.0, max: 1.0, step: 0.01 },
     borderColor: { value: "#38358f" },
-    gap: { value: -0.08, min: -0.5, max: 0.5, step: 0.01 },
   })
 
   const logoControls = useControls("SDF Logo", {
     thickness: { value: 0.05, min: 0.0, max: 0.5, step: 0.005 },
   })
 
-  const { radius, paddingX, paddingY, borderColor, gap } = controls
+  const { radius, paddingX, paddingY, borderColor } = controls
   const { thickness } = logoControls
 
   // SDF texture with high-quality filtering
@@ -41,27 +40,46 @@ export default function Header({ textStyles }) {
   }, [])
 
   const labels = ["Work", "Expertise", "About", "Playground"]
-  const [boxWidths, setBoxWidths] = useState({})
 
-  const centers = (() => {
-    const result = []
-    for (let i = 0; i < labels.length; i++) {
-      const w = boxWidths[labels[i]] ?? 0.5
-      if (i === 0) {
-        result.push(0)
-      } else {
-        const prevW = boxWidths[labels[i - 1]] ?? 0.5
-        const nextCenter = result[i - 1] + prevW / 2 + gap + w / 2
-        result.push(nextCenter)
-      }
-    }
-    return result
-  })()
+  // 24-column grid system
+  const { spacing } = useControls("Navigation Spacing", {
+    spacing: { value: 0.28, min: 0.25, max: 1.0, step: 0.01 },
+  })
+
+  // Grid helper function with padding
+  const getColumnPosition = (column) => {
+    // Account for 0.1 padding on each side
+    const gridPadding = 0.1
+    const availableWidth = viewport.width - gridPadding * 2
+    const adjustedColumnWidth = availableWidth / 24
+
+    // Convert column (1-24) to world position with padding
+    return (
+      -viewport.width / 2 + gridPadding + adjustedColumnWidth * (column - 0.5)
+    )
+  }
+
+  const positions = useMemo(() => {
+    // Start at column 19, then space evenly
+    const startColumn = 20
+    const startPosition = getColumnPosition(startColumn)
+
+    return [
+      startPosition, // Work (column 19)
+      startPosition + spacing, // Expertise
+      startPosition + spacing * 2.05, // About
+      startPosition + spacing * 3.17, // Playground
+    ]
+  }, [spacing, viewport.width, columnWidth])
 
   return (
+    // Header group
     <group position={[0, viewport.height * 0.48, 0]}>
       {/* Logo */}
-      <mesh position={[-2.858, -0.069, 0]} scale={[0.5, 0.5, 0.5]}>
+      <mesh
+        position={[getColumnPosition(1), -0.069, 0]}
+        scale={[0.5, 0.5, 0.5]}
+      >
         <planeGeometry args={[0.66, 0.25]} />
         <shaderMaterial
           transparent
@@ -95,8 +113,8 @@ export default function Header({ textStyles }) {
         />
       </mesh>
 
-      {/* Name and Title */}
-      <group position={[-viewport.width / 2 + columnWidth * 1.8, -0.028, 0]}>
+      {/* Name and Profession */}
+      <group position={[getColumnPosition(2), -0.028, 0]}>
         <Text
           {...textStyles.logo}
           fontSize={textStyles.logo.fontSize(viewport)}
@@ -123,23 +141,13 @@ export default function Header({ textStyles }) {
       </group>
 
       {/* Navigation Links */}
-      <group position={[viewport.width / 2 - columnWidth * 4.77, -0.1, 0]}>
-        {["Work", "Expertise", "About", "Playground"].map((text, i) => {
-          const ref = useRef()
-          const [width, setWidth] = useState(1)
+      <group position={[0, -0.1, 0]}>
+        {labels.map((text, i) => {
           const fontSize = textStyles.nav.fontSize(viewport) * 0.7
 
-          useEffect(() => {
-            if (!ref.current?.geometry?.boundingBox) return
-            const size = new THREE.Vector3()
-            ref.current.geometry.boundingBox.getSize(size)
-            setWidth(size.x)
-          }, [viewport, text, fontSize])
-
           return (
-            <group key={text} position={[centers[i], 0, 0]}>
+            <group key={text} position={[positions[i], 0, 0]}>
               <TextWithBorder
-                ref={ref}
                 {...textStyles.nav}
                 fontSize={fontSize}
                 anchorX="center"
@@ -150,11 +158,6 @@ export default function Header({ textStyles }) {
                 borderColor={borderColor}
                 paddingX={paddingX}
                 paddingY={paddingY}
-                onBoxSize={({ width }) =>
-                  setBoxWidths((p) =>
-                    p[text] === width ? p : { ...p, [text]: width }
-                  )
-                }
               >
                 {text}
               </TextWithBorder>
