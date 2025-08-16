@@ -422,6 +422,56 @@ export default function ScrollContent() {
   const { viewport } = useThree()
   const { breakpoint } = useBreakpoint()
 
+  // Header controls (C and H SVGs)
+  const headerControls = useControls(
+    "Header",
+    {
+      // C and H SVGs
+      "C and H Letters": folder(
+        {
+          Desktop: folder(
+            {
+              deskCHGroupY: { value: 0.1, min: -0.5, max: 1.0, step: 0.01 },
+              deskCScale: { value: 0.008, min: 0.001, max: 0.02, step: 0.0001 },
+              deskCX: { value: -3.02, min: -5, max: 0, step: 0.01 },
+              deskCY: { value: 0.96, min: 0, max: 2, step: 0.01 },
+              deskHScale: { value: 0.008, min: 0.001, max: 0.02, step: 0.0001 },
+              deskHX: { value: 0.08, min: -2, max: 2, step: 0.01 },
+              deskHY: { value: 0.96, min: 0, max: 2, step: 0.01 },
+            },
+            { collapsed: true }
+          ),
+          Tablet: folder(
+            {
+              tabCHGroupY: { value: 0.1, min: -0.5, max: 1.0, step: 0.01 },
+              tabCScale: { value: 0.008, min: 0.001, max: 0.02, step: 0.0001 },
+              tabCX: { value: -3.02, min: -5, max: 0, step: 0.01 },
+              tabCY: { value: 0.96, min: 0, max: 2, step: 0.01 },
+              tabHScale: { value: 0.008, min: 0.001, max: 0.02, step: 0.0001 },
+              tabHX: { value: 0.08, min: -2, max: 2, step: 0.01 },
+              tabHY: { value: 0.96, min: 0, max: 2, step: 0.01 },
+            },
+            { collapsed: true }
+          ),
+          Mobile: folder(
+            {
+              mobCHGroupY: { value: 0.06, min: -0.5, max: 1.0, step: 0.01 },
+              mobCScale: { value: 0.006, min: 0.001, max: 0.02, step: 0.0001 },
+              mobCX: { value: -0.8, min: -5, max: 0, step: 0.01 },
+              mobCY: { value: 0.8, min: 0, max: 2, step: 0.01 },
+              mobHScale: { value: 0.006, min: 0.001, max: 0.02, step: 0.0001 },
+              mobHX: { value: -0.7, min: -2, max: 2, step: 0.01 },
+              mobHY: { value: -0.5, min: -4, max: 2, step: 0.01 },
+            },
+            { collapsed: true }
+          ),
+        },
+        { collapsed: true }
+      ),
+    },
+    { collapsed: true }
+  )
+
   // Responsive control structure with dedicated values for each breakpoint
   const controls = useControls(
     "Content",
@@ -768,6 +818,57 @@ export default function ScrollContent() {
   )
 
   // Responsive values - all hooks must be called at component level
+  // C and H SVGs
+  const chGroupY = useResponsiveValue({
+    mobile: headerControls.mobCHGroupY,
+    tablet: headerControls.tabCHGroupY,
+    desktop: headerControls.deskCHGroupY,
+    large: headerControls.deskCHGroupY,
+    ultrawide: headerControls.deskCHGroupY,
+  })
+  const cScale = useResponsiveValue({
+    mobile: headerControls.mobCScale,
+    tablet: headerControls.tabCScale,
+    desktop: headerControls.deskCScale,
+    large: headerControls.deskCScale,
+    ultrawide: headerControls.deskCScale,
+  })
+  const cX = useResponsiveValue({
+    mobile: headerControls.mobCX,
+    tablet: headerControls.tabCX,
+    desktop: headerControls.deskCX,
+    large: headerControls.deskCX,
+    ultrawide: headerControls.deskCX,
+  })
+  const cY = useResponsiveValue({
+    mobile: headerControls.mobCY,
+    tablet: headerControls.tabCY,
+    desktop: headerControls.deskCY,
+    large: headerControls.deskCY,
+    ultrawide: headerControls.deskCY,
+  })
+  const hScale = useResponsiveValue({
+    mobile: headerControls.mobHScale,
+    tablet: headerControls.tabHScale,
+    desktop: headerControls.deskHScale,
+    large: headerControls.deskHScale,
+    ultrawide: headerControls.deskHScale,
+  })
+  const hX = useResponsiveValue({
+    mobile: headerControls.mobHX,
+    tablet: headerControls.tabHX,
+    desktop: headerControls.deskHX,
+    large: headerControls.deskHX,
+    ultrawide: headerControls.deskHX,
+  })
+  const hY = useResponsiveValue({
+    mobile: headerControls.mobHY,
+    tablet: headerControls.tabHY,
+    desktop: headerControls.deskHY,
+    large: headerControls.deskHY,
+    ultrawide: headerControls.deskHY,
+  })
+
   // Introduction
   const introX = useResponsiveValue({
     mobile: controls.mobIntroX,
@@ -1023,17 +1124,17 @@ export default function ScrollContent() {
       <Header textStyles={textStyles} />
 
       {/* Large C and H letters */}
-      <group position={[0, viewport.height * 0.1, 0]}>
+      <group position={[0, viewport.height * chGroupY, 0]}>
         <Svg
           src="/svgs/C.svg"
-          scale={0.008}
-          position={[-3.02, 0.96, 0]}
+          scale={cScale}
+          position={[cX, cY, 0]}
           fillMaterial={new THREE.MeshBasicMaterial({ color: "#38358f" })}
         />
         <Svg
           src="/svgs/H.svg"
-          scale={0.008}
-          position={[0.08, 0.96, 0]}
+          scale={hScale}
+          position={[hX, hY, 0]}
           fillMaterial={new THREE.MeshBasicMaterial({ color: "#38358f" })}
         />
       </group>
