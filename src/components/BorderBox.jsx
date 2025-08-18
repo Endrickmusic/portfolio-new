@@ -52,7 +52,7 @@ export default function BorderBox({
 
   return (
     <mesh position={[position[0], position[1], position[2] + zOffset]}>
-      <planeGeometry args={[6, 2]} />
+      <planeGeometry args={[width, height]} />
       <shaderMaterial
         vertexShader={panelBorderVertex}
         fragmentShader={panelBorderFragment}
