@@ -27,16 +27,16 @@ export default function PostProcessPlane({ texture }) {
   } = useControls(
     "Noise",
     {
-      noiseScale: { value: 1.5, min: 0.5, max: 3.0, step: 0.1 },
-      noiseSpeed: { value: 0.2, min: 0.0, max: 1.0, step: 0.01 },
-      noiseThreshold: { value: 0.5, min: 0.3, max: 0.7, step: 0.05 },
-      noiseTransition: { value: 0.15, min: 0.05, max: 0.3, step: 0.05 },
-      baseDistortion: { value: 0.09, min: 0.01, max: 0.2, step: 0.01 },
+      noiseScale: { value: 2.5, min: 0.5, max: 3.0, step: 0.1 },
+      noiseSpeed: { value: 0.57, min: 0.0, max: 1.0, step: 0.01 },
+      noiseThreshold: { value: 0.7, min: 0.3, max: 0.7, step: 0.05 },
+      noiseTransition: { value: 0.3, min: 0.05, max: 0.3, step: 0.05 },
+      baseDistortion: { value: 0.19, min: 0.01, max: 0.2, step: 0.01 },
       strongDistortion: { value: 0.45, min: 0.1, max: 0.5, step: 0.05 },
       aberrationStrength: { value: 0.01, min: 0.001, max: 0.01, step: 0.001 },
-      aberrationLayers: { value: 4, min: 1, max: 5, step: 1 },
+      aberrationLayers: { value: 1, min: 1, max: 5, step: 1 },
       aberrationSlide: { value: 0.12, min: 0.01, max: 2.0, step: 0.01 },
-      effectDuration: { value: 1.4, min: 0.2, max: 2.0, step: 0.1 },
+      effectDuration: { value: 2.0, min: 0.2, max: 2.0, step: 0.1 },
       fbmOctaves: { value: 3, min: 1, max: 8, step: 1 },
     },
     {
@@ -183,8 +183,11 @@ export default function PostProcessPlane({ texture }) {
             // Calculate scroll-based vertical offset for noise
             float scrollOffset = uScrollVelocity * uTime * 2.0;
             // 2D distortion: use two different fbm noise values for x and y
-            float noiseX = fbm(vec3(vUv.x, vUv.y + scrollOffset, uTime * uNoiseSpeed));
-            float noiseY = fbm(vec3(vUv.x + 10.0, vUv.y + scrollOffset + 10.0, uTime * uNoiseSpeed));
+            // Apply noiseScale to control the scale of the noise pattern
+            // Use modulo to prevent the time from growing indefinitely and causing acceleration
+            float controlledTime = mod(uTime * uNoiseSpeed, 1000.0);
+            float noiseX = fbm(vec3(vUv.x * uNoiseScale, vUv.y * uNoiseScale + scrollOffset, controlledTime));
+            float noiseY = fbm(vec3((vUv.x + 10.0) * uNoiseScale, (vUv.y + scrollOffset + 10.0) * uNoiseScale, controlledTime));
             float strongDistortion = smoothstep(uNoiseThreshold, uNoiseThreshold + uNoiseTransition, (noiseX + noiseY) * 0.5);
             float baseDistortion = uDistortionTime > 0.0 ? uBaseDistortion * smoothstep(0.0, 1.0, uDistortionTime) : 0.0;
             float strongDistortionAmount = uDistortionTime > 0.0 ? uStrongDistortion * smoothstep(0.0, 1.0, uDistortionTime) : 0.0;
