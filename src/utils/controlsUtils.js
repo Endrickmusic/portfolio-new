@@ -7,10 +7,19 @@ import { folder } from "leva"
  * @returns {Object} Generated controls object
  */
 export const generateControlsFromConfig = (config, folderFn = folder) => {
+  // Safety check for null/undefined config
+  if (!config || typeof config !== "object") {
+    console.error(
+      "generateControlsFromConfig: config is null, undefined, or not an object:",
+      config
+    )
+    return {}
+  }
+
   const controls = {}
 
   Object.entries(config).forEach(([sectionKey, sectionConfig]) => {
-    if (sectionConfig.properties) {
+    if (sectionConfig && sectionConfig.properties) {
       // Generate responsive controls for desktop, tablet, mobile
       const ranges = ["desktop", "tablet", "mobile"]
       const folders = {}
@@ -30,8 +39,8 @@ export const generateControlsFromConfig = (config, folderFn = folder) => {
           const controlName = `${rangePrefix}${
             prop.charAt(0).toUpperCase() + prop.slice(1)
           }`
-          const defaultValue = sectionConfig.defaults[range][prop]
-          const rangeConfig = sectionConfig.ranges[prop]
+          const defaultValue = sectionConfig.defaults?.[range]?.[prop]
+          const rangeConfig = sectionConfig.ranges?.[prop]
 
           if (defaultValue !== undefined && rangeConfig) {
             rangeControls[controlName] = {
@@ -75,11 +84,20 @@ export const generateResponsiveHooks = (
   config,
   useResponsiveValue
 ) => {
+  // Safety check for null/undefined config
+  if (!config || typeof config !== "object") {
+    console.error(
+      "generateResponsiveHooks: config is null, undefined, or not an object:",
+      config
+    )
+    return {}
+  }
+
   const hooks = {}
 
   // Handle both nested and flat config structures
   const processConfig = (configSection) => {
-    if (configSection.properties) {
+    if (configSection && configSection.properties) {
       configSection.properties.forEach((prop) => {
         const hookName = prop
         const capitalizedProp = prop.charAt(0).toUpperCase() + prop.slice(1)
@@ -108,9 +126,9 @@ export const generateResponsiveHooks = (
 
   Object.entries(config).forEach(([sectionKey, sectionConfig]) => {
     // Handle nested structure (like header.chLetters)
-    if (sectionConfig.properties) {
+    if (sectionConfig && sectionConfig.properties) {
       processConfig(sectionConfig)
-    } else {
+    } else if (sectionConfig && typeof sectionConfig === "object") {
       // Handle deeper nesting
       Object.values(sectionConfig).forEach(processConfig)
     }
@@ -126,15 +144,24 @@ export const generateResponsiveHooks = (
  * @returns {Object} Generated controls object
  */
 export const generateSimpleControlsFromConfig = (config, folderFn = folder) => {
+  // Safety check for null/undefined config
+  if (!config || typeof config !== "object") {
+    console.error(
+      "generateSimpleControlsFromConfig: config is null, undefined, or not an object:",
+      config
+    )
+    return {}
+  }
+
   const controls = {}
 
   Object.entries(config).forEach(([sectionKey, sectionConfig]) => {
-    if (sectionConfig.properties) {
+    if (sectionConfig && sectionConfig.properties) {
       const folders = {}
 
       sectionConfig.properties.forEach((prop) => {
-        const defaultValue = sectionConfig.defaults.desktop[prop] // Use desktop as default
-        const rangeConfig = sectionConfig.ranges[prop]
+        const defaultValue = sectionConfig.defaults?.desktop?.[prop] // Use desktop as default
+        const rangeConfig = sectionConfig.ranges?.[prop]
 
         if (defaultValue !== undefined && rangeConfig) {
           folders[prop] = {
@@ -159,9 +186,23 @@ export const generateSimpleControlsFromConfig = (config, folderFn = folder) => {
  * @returns {Array} Array of validation errors (empty if valid)
  */
 export const validateConfig = (config) => {
+  // Safety check for null/undefined config
+  if (!config || typeof config !== "object") {
+    console.error(
+      "validateConfig: config is null, undefined, or not an object:",
+      config
+    )
+    return ["Configuration is null, undefined, or not an object"]
+  }
+
   const errors = []
 
   Object.entries(config).forEach(([sectionKey, sectionConfig]) => {
+    if (!sectionConfig || typeof sectionConfig !== "object") {
+      errors.push(`Section ${sectionKey} is null, undefined, or not an object`)
+      return
+    }
+
     if (!sectionConfig.section) {
       errors.push(`Section ${sectionKey} missing 'section' property`)
     }
@@ -196,14 +237,39 @@ export const validateConfig = (config) => {
  * @returns {Object} Merged configuration
  */
 export const mergeConfig = (defaultConfig, overrides) => {
+  // Safety check for null/undefined configs
+  if (!defaultConfig || typeof defaultConfig !== "object") {
+    console.error(
+      "mergeConfig: defaultConfig is null, undefined, or not an object:",
+      defaultConfig
+    )
+    return overrides || {}
+  }
+
+  if (!overrides || typeof overrides !== "object") {
+    console.error(
+      "mergeConfig: overrides is null, undefined, or not an object:",
+      overrides
+    )
+    return defaultConfig
+  }
+
   const merged = JSON.parse(JSON.stringify(defaultConfig)) // Deep clone
 
   Object.entries(overrides).forEach(([sectionKey, overrideSection]) => {
-    if (merged[sectionKey]) {
+    if (
+      merged[sectionKey] &&
+      overrideSection &&
+      typeof overrideSection === "object"
+    ) {
       // Merge defaults
       if (overrideSection.defaults) {
         Object.entries(overrideSection.defaults).forEach(([range, values]) => {
-          if (merged[sectionKey].defaults[range]) {
+          if (
+            merged[sectionKey].defaults?.[range] &&
+            values &&
+            typeof values === "object"
+          ) {
             merged[sectionKey].defaults[range] = {
               ...merged[sectionKey].defaults[range],
               ...values,

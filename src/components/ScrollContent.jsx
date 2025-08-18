@@ -85,6 +85,7 @@ function Headline({
   position = [0, 0, 0],
   maxWidth,
   fontMultiplier = 0.045,
+  fontColor,
 }) {
   const { viewport } = useThree()
 
@@ -92,15 +93,13 @@ function Headline({
     <Text
       position={position}
       fontSize={viewport.height * fontMultiplier}
-      color="#38358F"
+      color={fontColor}
       maxWidth={maxWidth}
       anchorX="left"
       anchorY="middle"
       font="/fonts/SeasonSerifTRIAL-Light.woff"
       letterSpacing={0.015}
       lineHeight={1.2}
-      glyphGeometryDetail={64}
-      renderOrder={1}
     >
       {title}
     </Text>
@@ -112,35 +111,25 @@ function Description({
   paragraphs,
   position = [0, 0, 0],
   maxWidth,
-  children,
   fontMultiplier = 0.023,
+  fontColor,
 }) {
   const { viewport } = useThree()
-  const paragraphSpacing = viewport.height * 0.12
 
   return (
-    <group position={position}>
-      {paragraphs.map((paragraph, index) => (
-        <Text
-          key={index}
-          position={position}
-          fontSize={viewport.height * fontMultiplier}
-          color="#38358f"
-          maxWidth={maxWidth || viewport.width * 0.25}
-          textAlign="left"
-          anchorX="left"
-          anchorY="middle"
-          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
-          letterSpacing={0.02}
-          lineHeight={1.5}
-          glyphGeometryDetail={64}
-          renderOrder={1}
-        >
-          {paragraph}
-        </Text>
-      ))}
-      {children}
-    </group>
+    <Text
+      position={position}
+      fontSize={viewport.height * fontMultiplier}
+      color={fontColor}
+      maxWidth={maxWidth}
+      anchorX="left"
+      anchorY="middle"
+      font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+      letterSpacing={0.02}
+      lineHeight={1.5}
+    >
+      {paragraphs.join("\n\n")}
+    </Text>
   )
 }
 
@@ -166,6 +155,10 @@ function PlaygroundSection({
   moreButtonPaddingX,
   moreButtonPaddingY,
   globalBorder,
+  borderX,
+  borderY,
+  globalFontColor,
+  globalBorderColor,
 }) {
   const { viewport } = useThree()
 
@@ -182,10 +175,10 @@ function PlaygroundSection({
         height={panelHeight}
         border={globalBorder}
         roundness={roundness}
-        color={borderColorVec}
+        color={globalBorderColor}
         paddingX={paddingX}
         paddingY={paddingY}
-        position={[0, 0, 0]}
+        position={[borderX, borderY, 0]}
         zOffset={-0.1}
       />
 
@@ -193,7 +186,7 @@ function PlaygroundSection({
       <Text
         position={[-viewport.width * 0.35, viewport.height * 0.2, 0]}
         fontSize={viewport.height * playHeaderFont}
-        color="#38358f"
+        color={globalFontColor}
         anchorX="left"
         anchorY="middle"
         font="/fonts/SeasonSerifTRIAL-Light.woff"
@@ -206,7 +199,7 @@ function PlaygroundSection({
       <Text
         position={[-viewport.width * 0.35, 0, 0]}
         fontSize={viewport.height * descFont}
-        color="#38358f"
+        color={globalFontColor}
         maxWidth={viewport.width * 0.6}
         anchorX="left"
         anchorY="middle"
@@ -223,7 +216,7 @@ function PlaygroundSection({
       <TextWithBorder
         position={[moreX, viewport.height * moreY, 0]}
         roundness={0.1}
-        color="#38358f"
+        color={globalFontColor}
         padding={moreButtonPaddingY}
         paddingXMult={moreButtonPaddingX / moreButtonPaddingY}
         paddingYMult={1.0}
@@ -236,7 +229,12 @@ function PlaygroundSection({
   )
 }
 
-function Footer({ position = [0, 0, 0], footerControls }) {
+function Footer({
+  position = [0, 0, 0],
+  footerControls,
+  globalFontColor,
+  globalSvgColor,
+}) {
   const { viewport } = useThree()
   const maxWidth = Math.min(viewport.width * 0.8, 4)
   const contentWidth = maxWidth + 0.7
@@ -272,7 +270,7 @@ function Footer({ position = [0, 0, 0], footerControls }) {
         <Text
           position={[contentWidth * getFooterResponsiveValue("NavWorkX"), 0, 0]}
           fontSize={viewport.height * 0.03}
-          color="#38358f"
+          color={globalFontColor}
           anchorX="center"
           anchorY="middle"
           font="/fonts/ibm-plex-mono-latin-400-normal.woff"
@@ -286,7 +284,7 @@ function Footer({ position = [0, 0, 0], footerControls }) {
             0,
           ]}
           fontSize={viewport.height * 0.03}
-          color="#38358f"
+          color={globalFontColor}
           anchorX="center"
           anchorY="middle"
           font="/fonts/ibm-plex-mono-latin-400-normal.woff"
@@ -300,7 +298,7 @@ function Footer({ position = [0, 0, 0], footerControls }) {
             0,
           ]}
           fontSize={viewport.height * 0.03}
-          color="#38358f"
+          color={globalFontColor}
           anchorX="center"
           anchorY="middle"
           font="/fonts/ibm-plex-mono-latin-400-normal.woff"
@@ -314,7 +312,7 @@ function Footer({ position = [0, 0, 0], footerControls }) {
             0,
           ]}
           fontSize={viewport.height * 0.03}
-          color="#38358f"
+          color={globalFontColor}
           anchorX="center"
           anchorY="middle"
           font="/fonts/ibm-plex-mono-latin-400-normal.woff"
@@ -355,11 +353,11 @@ function Footer({ position = [0, 0, 0], footerControls }) {
         <Text
           position={[
             contentWidth * getFooterResponsiveValue("AddressX"),
-            viewport.height * getFooterResponsiveValue("TextY"),
+            viewport.height * getFooterResponsiveValue("AddressY"),
             0,
           ]}
           fontSize={viewport.height * getFooterResponsiveValue("TextFont")}
-          color="#38358f"
+          color={globalFontColor}
           anchorX="left"
           anchorY="middle"
           font="/fonts/ibm-plex-mono-latin-400-normal.woff"
@@ -372,11 +370,11 @@ function Footer({ position = [0, 0, 0], footerControls }) {
         <Text
           position={[
             contentWidth * getFooterResponsiveValue("ContactEmailX"),
-            viewport.height * getFooterResponsiveValue("TextY"),
+            viewport.height * getFooterResponsiveValue("EmailY"),
             0,
           ]}
           fontSize={viewport.height * getFooterResponsiveValue("TextFont")}
-          color="#38358f"
+          color={globalFontColor}
           anchorX="left"
           anchorY="middle"
           font="/fonts/ibm-plex-mono-latin-400-normal.woff"
@@ -390,11 +388,11 @@ function Footer({ position = [0, 0, 0], footerControls }) {
         <Text
           position={[
             contentWidth * getFooterResponsiveValue("SocialX"),
-            viewport.height * getFooterResponsiveValue("TextY"),
+            viewport.height * getFooterResponsiveValue("SocialY"),
             0,
           ]}
           fontSize={viewport.height * getFooterResponsiveValue("TextFont")}
-          color="#38358f"
+          color={globalFontColor}
           anchorX="left"
           anchorY="middle"
           font="/fonts/ibm-plex-mono-latin-400-normal.woff"
@@ -406,11 +404,11 @@ function Footer({ position = [0, 0, 0], footerControls }) {
         <Text
           position={[
             contentWidth * getFooterResponsiveValue("LegalX"),
-            viewport.height * getFooterResponsiveValue("TextY"),
+            viewport.height * getFooterResponsiveValue("LegalY"),
             0,
           ]}
           fontSize={viewport.height * getFooterResponsiveValue("TextFont")}
-          color="#38358f"
+          color={globalFontColor}
           anchorX="left"
           anchorY="middle"
           font="/fonts/ibm-plex-mono-latin-400-normal.woff"
@@ -428,20 +426,20 @@ export default function ScrollContent() {
   const { viewport } = useThree()
 
   // 🎯 GENERATE ALL CONTROLS FROM CONFIG (10 lines instead of 800+)
+  // Generate controls from config
   const headerControls = useControls(
-    "Header",
     generateControlsFromConfig(controlsConfig.header, folder),
     { collapsed: true }
   )
-
   const controls = useControls(
-    "Content",
     generateControlsFromConfig(controlsConfig.content, folder),
     { collapsed: true }
   )
-
+  const gridControls = useControls(
+    generateControlsFromConfig(controlsConfig.content.grid, folder),
+    { collapsed: true }
+  )
   const footerControls = useControls(
-    "Footer",
     generateControlsFromConfig({ footer: controlsConfig.footer }, folder),
     { collapsed: true }
   )
@@ -818,6 +816,20 @@ export default function ScrollContent() {
     large: controls.deskPlayBorderHeight,
     ultrawide: controls.deskPlayBorderHeight,
   })
+  const playBorderX = useResponsiveValue({
+    mobile: controls.mobPlayBorderX,
+    tablet: controls.tabPlayBorderX,
+    desktop: controls.deskPlayBorderX,
+    large: controls.deskPlayBorderX,
+    ultrawide: controls.deskPlayBorderX,
+  })
+  const playBorderY = useResponsiveValue({
+    mobile: controls.mobPlayBorderY,
+    tablet: controls.tabPlayBorderY,
+    desktop: controls.deskPlayBorderY,
+    large: controls.deskPlayBorderY,
+    ultrawide: controls.deskPlayBorderY,
+  })
 
   // Global MORE button padding controls
   const moreButtonPaddingX = useResponsiveValue({
@@ -835,13 +847,36 @@ export default function ScrollContent() {
     ultrawide: controls.deskMoreButtonPaddingY,
   })
 
+  // Global color controls
+  const globalFontColor = useResponsiveValue({
+    mobile: controls.mobGlobalFontColor,
+    tablet: controls.tabGlobalFontColor,
+    desktop: controls.deskGlobalFontColor,
+    large: controls.deskGlobalFontColor,
+    ultrawide: controls.deskGlobalFontColor,
+  })
+  const globalBorderColor = useResponsiveValue({
+    mobile: controls.mobGlobalBorderColor,
+    tablet: controls.tabGlobalBorderColor,
+    desktop: controls.deskGlobalBorderColor,
+    large: controls.deskGlobalBorderColor,
+    ultrawide: controls.deskGlobalBorderColor,
+  })
+  const globalSvgColor = useResponsiveValue({
+    mobile: controls.mobGlobalSvgColor,
+    tablet: controls.tabGlobalSvgColor,
+    desktop: controls.deskGlobalSvgColor,
+    large: controls.deskGlobalSvgColor,
+    ultrawide: controls.deskGlobalSvgColor,
+  })
+
   // Grid visibility control
   const gridVisible = useResponsiveValue({
-    mobile: controls.mobGridVisible,
-    tablet: controls.tabGridVisible,
-    desktop: controls.deskGridVisible,
-    large: controls.deskGridVisible,
-    ultrawide: controls.deskGridVisible,
+    mobile: gridControls.mobGridVisible,
+    tablet: gridControls.tabGridVisible,
+    desktop: gridControls.deskGridVisible,
+    large: gridControls.deskGridVisible,
+    ultrawide: gridControls.deskGridVisible,
   })
 
   // Contact hooks
@@ -1040,6 +1075,14 @@ export default function ScrollContent() {
     ultrawide: footerControls.deskFooterAddressY,
   })
 
+  const footerEmailY = useResponsiveValue({
+    mobile: footerControls.mobFooterEmailY,
+    tablet: footerControls.tabFooterEmailY,
+    desktop: footerControls.deskFooterEmailY,
+    large: footerControls.deskFooterEmailY,
+    ultrawide: footerControls.deskFooterEmailY,
+  })
+
   const footerSocialX = useResponsiveValue({
     mobile: footerControls.mobFooterSocialX,
     tablet: footerControls.tabFooterSocialX,
@@ -1048,12 +1091,28 @@ export default function ScrollContent() {
     ultrawide: footerControls.deskFooterSocialX,
   })
 
+  const footerSocialY = useResponsiveValue({
+    mobile: footerControls.mobFooterSocialY,
+    tablet: footerControls.tabFooterSocialY,
+    desktop: footerControls.deskFooterSocialY,
+    large: footerControls.deskFooterSocialY,
+    ultrawide: footerControls.deskFooterSocialY,
+  })
+
   const footerLegalX = useResponsiveValue({
     mobile: footerControls.mobFooterLegalX,
     tablet: footerControls.tabFooterLegalX,
     desktop: footerControls.deskFooterLegalX,
     large: footerControls.deskFooterLegalX,
     ultrawide: footerControls.deskFooterLegalX,
+  })
+
+  const footerLegalY = useResponsiveValue({
+    mobile: footerControls.mobFooterLegalY,
+    tablet: footerControls.tabFooterLegalY,
+    desktop: footerControls.deskFooterLegalY,
+    large: footerControls.deskFooterLegalY,
+    ultrawide: footerControls.deskFooterLegalY,
   })
 
   const footerTextY = useResponsiveValue({
@@ -1307,6 +1366,12 @@ export default function ScrollContent() {
     deskPlayBorderHeight: controls.deskPlayBorderHeight,
     tabPlayBorderHeight: controls.tabPlayBorderHeight,
     mobPlayBorderHeight: controls.mobPlayBorderHeight,
+    deskPlayBorderX: controls.deskPlayBorderX,
+    tabPlayBorderX: controls.tabPlayBorderX,
+    mobPlayBorderX: controls.mobPlayBorderX,
+    deskPlayBorderY: controls.deskPlayBorderY,
+    tabPlayBorderY: controls.tabPlayBorderY,
+    mobPlayBorderY: controls.mobPlayBorderY,
     deskMoreButtonPaddingX: controls.deskMoreButtonPaddingX,
     tabMoreButtonPaddingX: controls.tabMoreButtonPaddingX,
     mobMoreButtonPaddingX: controls.mobMoreButtonPaddingX,
@@ -1316,6 +1381,9 @@ export default function ScrollContent() {
     deskGridVisible: controls.deskGridVisible,
     tabGridVisible: controls.tabGridVisible,
     mobGridVisible: controls.mobGridVisible,
+    deskSidePadding: gridControls.deskSidePadding,
+    tabSidePadding: gridControls.tabSidePadding,
+    mobSidePadding: gridControls.mobSidePadding,
 
     // Contact
     deskConX: controls.deskConX,
@@ -1396,18 +1464,36 @@ export default function ScrollContent() {
     deskFooterAddressY: footerControls.deskFooterAddressY,
     tabFooterAddressY: footerControls.tabFooterAddressY,
     mobFooterAddressY: footerControls.mobFooterAddressY,
+    deskFooterEmailY: footerControls.deskFooterEmailY,
+    tabFooterEmailY: footerControls.tabFooterEmailY,
+    mobFooterEmailY: footerControls.mobFooterEmailY,
     deskFooterSocialX: footerControls.deskFooterSocialX,
     tabFooterSocialX: footerControls.tabFooterSocialX,
     mobFooterSocialX: footerControls.mobFooterSocialX,
+    deskFooterSocialY: footerControls.deskFooterSocialY,
+    tabFooterSocialY: footerControls.tabFooterSocialY,
+    mobFooterSocialY: footerControls.mobFooterSocialY,
     deskFooterLegalX: footerControls.deskFooterLegalX,
     tabFooterLegalX: footerControls.tabFooterLegalX,
     mobFooterLegalX: footerControls.mobFooterLegalX,
+    deskFooterLegalY: footerControls.deskFooterLegalY,
+    tabFooterLegalY: footerControls.tabFooterLegalY,
+    mobFooterLegalY: footerControls.mobFooterLegalY,
     deskFooterTextFont: footerControls.deskFooterTextFont,
     tabFooterTextFont: footerControls.tabFooterTextFont,
     mobFooterTextFont: footerControls.mobFooterTextFont,
     deskFooterTextY: footerControls.deskFooterTextY,
     tabFooterTextY: footerControls.tabFooterTextY,
     mobFooterTextY: footerControls.mobFooterTextY,
+    mobGlobalFontColor: controls.mobGlobalFontColor,
+    tabGlobalFontColor: controls.tabGlobalFontColor,
+    deskGlobalFontColor: controls.deskGlobalFontColor,
+    mobGlobalBorderColor: controls.mobGlobalBorderColor,
+    tabGlobalBorderColor: controls.tabGlobalBorderColor,
+    deskGlobalBorderColor: controls.deskGlobalBorderColor,
+    mobGlobalSvgColor: controls.mobGlobalSvgColor,
+    tabGlobalSvgColor: controls.tabGlobalSvgColor,
+    deskGlobalSvgColor: controls.deskGlobalSvgColor,
   })
 
   // Animation
@@ -1441,6 +1527,7 @@ export default function ScrollContent() {
         title={textContent.page0.paragraphs}
         position={[introX, viewport.height * introY, 0]}
         maxWidth={viewport.width * introWidth}
+        fontColor={globalFontColor}
       />
 
       {/* Work 1 - Vellum Dance */}
@@ -1454,17 +1541,19 @@ export default function ScrollContent() {
         position={[w1TitleX, viewport.height * w1TitleY, 0]}
         maxWidth={viewport.width * w1TitleWidth}
         fontMultiplier={controls.deskHeadlineFont}
+        fontColor={globalFontColor}
       />
       <Description
         paragraphs={textContent.page1.paragraphs}
         position={[w1DescX, viewport.height * w1DescY, 0]}
         maxWidth={viewport.width * w1DescWidth}
         fontMultiplier={controls.deskDescFont}
+        fontColor={globalFontColor}
       />
       <TextWithBorder
         position={[w1MoreX, viewport.height * w1MoreY, 0]}
         roundness={0.1}
-        color="#38358f"
+        color={globalFontColor}
         padding={moreButtonPaddingY}
         paddingXMult={moreButtonPaddingX / moreButtonPaddingY}
         paddingYMult={1.0}
@@ -1485,17 +1574,19 @@ export default function ScrollContent() {
         position={[w2TitleX, viewport.height * w2TitleY, 0]}
         maxWidth={viewport.width * w2TitleWidth}
         fontMultiplier={controls.deskHeadlineFont}
+        fontColor={globalFontColor}
       />
       <Description
         paragraphs={textContent.page2.paragraphs}
         position={[w2DescX, viewport.height * w2DescY, 0]}
         maxWidth={viewport.width * w2DescWidth}
         fontMultiplier={controls.deskDescFont}
+        fontColor={globalFontColor}
       />
       <TextWithBorder
         position={[w2MoreX, viewport.height * w2MoreY, 0]}
         roundness={0.1}
-        color="#38358f"
+        color={globalFontColor}
         padding={moreButtonPaddingY}
         paddingXMult={moreButtonPaddingX / moreButtonPaddingY}
         paddingYMult={1.0}
@@ -1516,17 +1607,19 @@ export default function ScrollContent() {
         position={[w3TitleX, viewport.height * w3TitleY, 0]}
         maxWidth={viewport.width * w3TitleWidth}
         fontMultiplier={controls.deskHeadlineFont}
+        fontColor={globalFontColor}
       />
       <Description
         paragraphs={textContent.page3.paragraphs}
         position={[w3DescX, viewport.height * w3DescY, 0]}
         maxWidth={viewport.width * w3DescWidth}
         fontMultiplier={controls.deskDescFont}
+        fontColor={globalFontColor}
       />
       <TextWithBorder
         position={[w3MoreX, viewport.height * w3MoreY, 0]}
         roundness={0.1}
-        color="#38358f"
+        color={globalFontColor}
         padding={moreButtonPaddingY}
         paddingXMult={moreButtonPaddingX / moreButtonPaddingY}
         paddingYMult={1.0}
@@ -1559,6 +1652,10 @@ export default function ScrollContent() {
         moreButtonPaddingX={moreButtonPaddingX}
         moreButtonPaddingY={moreButtonPaddingY}
         globalBorder={controls.deskGlobalBorder}
+        borderX={playBorderX}
+        borderY={playBorderY}
+        globalFontColor={globalFontColor}
+        globalBorderColor={globalBorderColor}
       />
 
       {/* Get in Contact */}
@@ -1566,11 +1663,12 @@ export default function ScrollContent() {
         <TextWithBorder
           position={[conButtonX, conButtonY, 0]}
           roundness={0.1}
-          color="#38358f"
+          color={globalFontColor}
           padding={moreButtonPaddingY}
           paddingXMult={moreButtonPaddingX / moreButtonPaddingY}
           paddingYMult={1.0}
           border={controls.deskGlobalBorder}
+          fontSize={viewport.height * 0.02}
         >
           GET IN CONTACT
         </TextWithBorder>
@@ -1580,6 +1678,7 @@ export default function ScrollContent() {
           ]}
           position={[conDescX, conDescY, 0]}
           maxWidth={conWidth}
+          fontColor={globalFontColor}
         />
       </group>
 
@@ -1631,19 +1730,39 @@ export default function ScrollContent() {
           mobFooterAddressY: footerControls.mobFooterAddressY,
           tabFooterAddressY: footerControls.tabFooterAddressY,
           deskFooterAddressY: footerControls.deskFooterAddressY,
+          mobFooterEmailY: footerControls.mobFooterEmailY,
+          tabFooterEmailY: footerControls.tabFooterEmailY,
+          deskFooterEmailY: footerControls.deskFooterEmailY,
           mobFooterSocialX: footerControls.mobFooterSocialX,
           tabFooterSocialX: footerControls.tabFooterSocialX,
           deskFooterSocialX: footerControls.deskFooterSocialX,
+          mobFooterSocialY: footerControls.mobFooterSocialY,
+          tabFooterSocialY: footerControls.tabFooterSocialY,
+          deskFooterSocialY: footerControls.deskFooterSocialY,
           mobFooterLegalX: footerControls.mobFooterLegalX,
           tabFooterLegalX: footerControls.tabFooterLegalX,
           deskFooterLegalX: footerControls.deskFooterLegalX,
+          mobFooterLegalY: footerControls.mobFooterLegalY,
+          tabFooterLegalY: footerControls.tabFooterLegalY,
+          deskFooterLegalY: footerControls.deskFooterLegalY,
           mobFooterTextY: footerControls.mobFooterTextY,
           tabFooterTextY: footerControls.tabFooterTextY,
           deskFooterTextY: footerControls.deskFooterTextY,
           mobFooterTextFont: footerControls.mobFooterTextFont,
           tabFooterTextFont: footerControls.tabFooterTextFont,
           deskFooterTextFont: footerControls.deskFooterTextFont,
+          mobGlobalFontColor: controls.mobGlobalFontColor,
+          tabGlobalFontColor: controls.tabGlobalFontColor,
+          deskGlobalFontColor: controls.deskGlobalFontColor,
+          mobGlobalBorderColor: controls.mobGlobalBorderColor,
+          tabGlobalBorderColor: controls.tabGlobalBorderColor,
+          deskGlobalBorderColor: controls.deskGlobalBorderColor,
+          mobGlobalSvgColor: controls.mobGlobalSvgColor,
+          tabGlobalSvgColor: controls.tabGlobalSvgColor,
+          deskGlobalSvgColor: controls.deskGlobalSvgColor,
         }}
+        globalFontColor={globalFontColor}
+        globalSvgColor={globalSvgColor}
       />
     </group>
   )
