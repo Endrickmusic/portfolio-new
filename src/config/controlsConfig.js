@@ -12,9 +12,9 @@ export const controlsConfig = {
           cScale: 0.0011,
           cX: -0.42,
           cY: 0.17,
-          hScale: 0.01,
-          hX: 0.08,
-          hY: 0.96,
+          hScale: 0.001,
+          hX: 0.03,
+          hY: 0.17,
         },
         tablet: {
           chGroupY: 0.1,
@@ -102,7 +102,7 @@ export const controlsConfig = {
       properties: ["introX", "introY", "introWidth"],
       defaults: {
         desktop: {
-          introX: -3.02,
+          introX: -2.46,
           introY: -0.65,
           introWidth: 0.52,
         },
@@ -150,13 +150,13 @@ export const controlsConfig = {
       defaults: {
         desktop: {
           w1X: -0.13,
-          w1Y: -1.19,
-          w1TitleX: 1.55,
-          w1TitleY: -1,
+          w1Y: -0.96,
+          w1TitleX: 0.99,
+          w1TitleY: -0.89,
           w1TitleWidth: 0.2,
-          w1DescX: 0.77,
+          w1DescX: 0.49,
           w1DescY: -0.53,
-          w1DescWidth: 1.5,
+          w1DescWidth: 0.28,
         },
         tablet: {
           w1X: -0.13,
@@ -236,14 +236,14 @@ export const controlsConfig = {
       ],
       defaults: {
         desktop: {
-          w2X: 1,
+          w2X: 0.38,
           w2Y: -1.45,
           w2TitleX: -2.2,
           w2TitleY: -1.32,
-          w2TitleWidth: 1,
-          w2DescX: -1.2,
+          w2TitleWidth: 0.19,
+          w2DescX: -1.14,
           w2DescY: -0.75,
-          w2DescWidth: 1.5,
+          w2DescWidth: 0.3,
         },
         tablet: {
           w2X: 1,
@@ -327,10 +327,10 @@ export const controlsConfig = {
           w3Y: -1.85,
           w3TitleX: 0.2,
           w3TitleY: -1.75,
-          w3TitleWidth: 1,
+          w3TitleWidth: 0.24,
           w3DescX: 0.1,
           w3DescY: -0.97,
-          w3DescWidth: 1.5,
+          w3DescWidth: 0.21,
         },
         tablet: {
           w3X: -1.2,
@@ -402,7 +402,7 @@ export const controlsConfig = {
       defaults: {
         desktop: {
           playX: 0.1,
-          playY: -3.5,
+          playY: -2.43,
         },
         tablet: {
           playX: 0.1,
@@ -439,13 +439,13 @@ export const controlsConfig = {
       ],
       defaults: {
         desktop: {
-          conX: 0,
-          conY: -3.2,
-          conButtonX: 0,
-          conButtonY: 0.2,
-          conDescX: 0,
-          conDescY: -0.3,
-          conWidth: 2.5,
+          conX: 3.78,
+          conY: -3.03,
+          conButtonX: -3.67,
+          conButtonY: 0.03,
+          conDescX: -2.52,
+          conDescY: -0.29,
+          conWidth: 1.95,
         },
         tablet: {
           conX: 0,

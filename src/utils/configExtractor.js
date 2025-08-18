@@ -28,6 +28,18 @@ export const useLevaExtractor = (liveValues) => {
       return out
     }
 
+    // Collect and round values by key prefix (desk/tab/mob)
+    const collectByPrefix = (obj, prefix) => {
+      const out = {}
+      Object.keys(obj).forEach((key) => {
+        if (key.startsWith(prefix)) {
+          const cleanKey = key.slice(prefix.length).toLowerCase()
+          out[cleanKey] = round(obj[key])
+        }
+      })
+      return out
+    }
+
     const rangePrefixFor = (range) =>
       ({ desktop: "desk", tablet: "tab", mobile: "mob" }[range] ||
       range.slice(0, 3))
@@ -88,67 +100,45 @@ export const useLevaExtractor = (liveValues) => {
       logDesktopValues: () => {
         const current = getAll()
         console.log("🖥️ Desktop Values:")
-        const desktopValues = {}
-        Object.keys(current).forEach((key) => {
-          if (key.startsWith("desk")) {
-            const cleanKey = key.replace("desk", "").toLowerCase()
-            desktopValues[cleanKey] = round(current[key])
-          }
-        })
-        console.log(desktopValues)
+        console.log(collectByPrefix(current, "desk"))
       },
 
       logTabletValues: () => {
         const current = getAll()
         console.log("📱 Tablet Values:")
-        const tabletValues = {}
-        Object.keys(current).forEach((key) => {
-          if (key.startsWith("tab")) {
-            const cleanKey = key.replace("tab", "").toLowerCase()
-            tabletValues[cleanKey] = round(current[key])
-          }
-        })
-        console.log(tabletValues)
+        console.log(collectByPrefix(current, "tab"))
       },
 
       logMobileValues: () => {
         const current = getAll()
         console.log("📱 Mobile Values:")
-        const mobileValues = {}
-        Object.keys(current).forEach((key) => {
-          if (key.startsWith("mob")) {
-            const cleanKey = key.replace("mob", "").toLowerCase()
-            mobileValues[cleanKey] = round(current[key])
-          }
-        })
-        console.log(mobileValues)
+        console.log(collectByPrefix(current, "mob"))
       },
 
       // Build a full controlsConfig with current values as defaults and existing ranges
       exportForPaste: () => {
         const live = getAll()
 
-        // Header (iterate subsections)
-        const header = {}
-        Object.entries(baseConfig.header).forEach(([subKey, sub]) => {
-          header[subKey] = {
-            section: sub.section,
-            properties: sub.properties.slice(),
-            defaults: buildDefaultsFromLive(sub.properties, live, sub.defaults),
-            ranges: sub.ranges,
-          }
-        })
+        // Generic mapper for header/content groups
+        const mapGroup = (group) => {
+          const out = {}
+          Object.entries(group).forEach(([subKey, sub]) => {
+            out[subKey] = {
+              section: sub.section,
+              properties: sub.properties.slice(),
+              defaults: buildDefaultsFromLive(
+                sub.properties,
+                live,
+                sub.defaults
+              ),
+              ranges: sub.ranges,
+            }
+          })
+          return out
+        }
 
-        // Content (iterate subsections)
-        const content = {}
-        Object.entries(baseConfig.content).forEach(([subKey, sub]) => {
-          content[subKey] = {
-            section: sub.section,
-            properties: sub.properties.slice(),
-            defaults: buildDefaultsFromLive(sub.properties, live, sub.defaults),
-            ranges: sub.ranges,
-          }
-        })
+        const header = mapGroup(baseConfig.header)
+        const content = mapGroup(baseConfig.content)
 
         // Footer (single section)
         const footerBase = baseConfig.footer
