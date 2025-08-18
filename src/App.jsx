@@ -1,49 +1,30 @@
-import { Canvas } from "@react-three/fiber"
-import { Leva, useControls } from "leva"
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 
-import Scene from "./components/Scene"
+// Import page components
+import HomePage from "./pages/HomePage"
+import Work1Detail from "./pages/Work1Detail"
+import Work2Detail from "./pages/Work2Detail"
+import Work3Detail from "./pages/Work3Detail"
+import AboutPage from "./pages/AboutPage"
+import PlaygroundPage from "./pages/PlaygroundPage"
+import ExpertisePage from "./pages/ExpertisePage"
+import ImprintPage from "./pages/ImprintPage"
 
 import "./index.css"
 
-function CanvasWrapper() {
-  const { canvasDpr, canvasAntialias } = useControls(
-    "Canvas and Render Quality",
-    {
-      canvasDpr: {
-        value: [1, 2],
-        options: { "1x": [1, 1], "1-2x": [1, 2], "2x": [2, 2], "1-3x": [1, 3] },
-      },
-      canvasAntialias: { value: true },
-    },
-    {
-      collapsed: true,
-    }
-  )
-
-  return (
-    <Canvas
-      camera={{ position: [0, 0, 2], fov: 75 }}
-      className="w-full h-full"
-      dpr={canvasDpr}
-      gl={{
-        antialias: canvasAntialias,
-        alpha: false,
-        powerPreference: "high-performance",
-        stencil: false,
-        depth: true,
-        logarithmicDepthBuffer: false,
-      }}
-    >
-      <Scene />
-    </Canvas>
-  )
-}
-
 export default function App() {
   return (
-    <div className="w-screen h-screen overflow-hidden">
-      <Leva collapsed oneLineLabels hideTitleBar />
-      <CanvasWrapper />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/work1" element={<Work1Detail />} />
+        <Route path="/work2" element={<Work2Detail />} />
+        <Route path="/work3" element={<Work3Detail />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/playground" element={<PlaygroundPage />} />
+        <Route path="/expertise" element={<ExpertisePage />} />
+        <Route path="/imprint" element={<ImprintPage />} />
+      </Routes>
+    </Router>
   )
 }

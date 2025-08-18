@@ -10,6 +10,7 @@ import Grid from "./Grid"
 import Header from "./Header"
 import { useBreakpoint, useResponsiveValue } from "../hooks/useBreakpoint"
 import { useLevaExtractor } from "../utils/configExtractor"
+import { useNavigation } from "./Navigation"
 
 // Import config system
 import { controlsConfig } from "../config/controlsConfig"
@@ -425,6 +426,7 @@ export default function ScrollContent() {
   const scroll = useScroll()
   const group = useRef()
   const { viewport } = useThree()
+  const navigation = useNavigation()
 
   // 🎯 GENERATE ALL CONTROLS FROM CONFIG (10 lines instead of 800+)
   // Generate controls from config
@@ -1615,6 +1617,7 @@ export default function ScrollContent() {
         border={controls.deskGlobalBorder}
         fontSize={viewport.height * 0.02}
         borderColor={globalBorderColor}
+        onClick={navigation.goToWork1}
       >
         more
       </TextWithBorder>
@@ -1649,6 +1652,7 @@ export default function ScrollContent() {
         border={controls.deskGlobalBorder}
         fontSize={viewport.height * 0.02}
         borderColor={globalBorderColor}
+        onClick={navigation.goToWork2}
       >
         more
       </TextWithBorder>
@@ -1683,6 +1687,7 @@ export default function ScrollContent() {
         border={controls.deskGlobalBorder}
         fontSize={viewport.height * 0.02}
         borderColor={globalBorderColor}
+        onClick={navigation.goToWork3}
       >
         more
       </TextWithBorder>
