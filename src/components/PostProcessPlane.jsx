@@ -2,7 +2,7 @@ import { useRef, useMemo } from "react"
 import { useFrame, useThree } from "@react-three/fiber"
 import { useScroll } from "@react-three/drei"
 import * as THREE from "three"
-import { useControls, Leva } from "leva"
+import { useControls } from "leva"
 
 export default function PostProcessPlane({ texture }) {
   const meshRef = useRef()
@@ -11,7 +11,7 @@ export default function PostProcessPlane({ texture }) {
   const prevScrollRef = useRef(0)
   const distortionTimeRef = useRef(0)
 
-  // Leva controls
+  // Leva controls - direct and simple
   const {
     noiseScale,
     noiseSpeed,
@@ -25,7 +25,7 @@ export default function PostProcessPlane({ texture }) {
     effectDuration,
     fbmOctaves,
   } = useControls(
-    "Canvas and Render Quality",
+    "Noise",
     {
       noiseScale: { value: 1.5, min: 0.5, max: 3.0, step: 0.1 },
       noiseSpeed: { value: 0.2, min: 0.0, max: 1.0, step: 0.01 },
@@ -40,7 +40,7 @@ export default function PostProcessPlane({ texture }) {
       fbmOctaves: { value: 3, min: 1, max: 8, step: 1 },
     },
     {
-      collapsed: true, // Hide Leva panel completely
+      collapsed: true,
     }
   )
 
