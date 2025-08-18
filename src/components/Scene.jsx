@@ -9,7 +9,7 @@ import ScrollContent from "./ScrollContent"
 import PostProcessPlane from "./PostProcessPlane"
 
 // Main scene component
-export default function Scene() {
+export default function Scene({ navigation }) {
   const boxRef = useRef()
   const boxRef2 = useRef()
   const { viewport, size } = useThree()
@@ -82,16 +82,14 @@ export default function Scene() {
 
   return (
     <>
+      {/* Match previous light background color from virtualScene */}
+      <color attach="background" args={["#f2f2f2"]} />
       {/* <Perf position="top-left" /> */}
       <ScrollControls pages={3} damping={0.1}>
-        {createPortal(
-          <>
-            <ScrollContent />
-          </>,
-          virtualScene
-        )}
-
-        <PostProcessPlane texture={fbo.texture} />
+        {/* Render content directly in the main scene to allow pointer events */}
+        <ScrollContent navigation={navigation} />
+        {/* Temporarily disable post-process plane to avoid blocking interactions */}
+        {/* <PostProcessPlane texture={fbo.texture} /> */}
       </ScrollControls>
     </>
   )

@@ -25,6 +25,9 @@ export default function TextWithBorder({
   paddingY = undefined,
   minWidth = 0.0,
   minHeight = 0.0,
+  onClick,
+  onPointerOver,
+  onPointerOut,
 }) {
   const textSize = useRef({ width: 0, height: 0 })
 
@@ -101,8 +104,19 @@ export default function TextWithBorder({
   }, [updateFromSize])
 
   return (
-    <group position={position} scale={scale}>
-      <mesh position={[0, 0, planeZ]}>
+    <group
+      position={position}
+      scale={scale}
+      onClick={onClick}
+      onPointerOver={onPointerOver}
+      onPointerOut={onPointerOut}
+    >
+      <mesh
+        position={[0, 0, planeZ]}
+        onClick={onClick}
+        onPointerOver={onPointerOver}
+        onPointerOut={onPointerOut}
+      >
         <planeGeometry args={[1, 1]} />
         <shaderMaterial
           vertexShader={borderVertex}
@@ -123,6 +137,9 @@ export default function TextWithBorder({
         anchorX={anchorX}
         anchorY={anchorY}
         onSync={onSync}
+        onClick={onClick}
+        onPointerOver={onPointerOver}
+        onPointerOut={onPointerOut}
         glyphGeometryDetail={64}
         renderOrder={1}
         outlineWidth={0}

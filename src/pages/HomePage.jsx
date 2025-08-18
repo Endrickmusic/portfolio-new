@@ -1,9 +1,10 @@
 import { Canvas } from "@react-three/fiber"
 import { Leva, useControls } from "leva"
+import { useNavigate } from "react-router-dom"
 
 import Scene from "../components/Scene"
 
-function CanvasWrapper() {
+function CanvasWrapper({ navigation }) {
   const { canvasDpr, canvasAntialias } = useControls(
     "Canvas and Render Quality",
     {
@@ -32,16 +33,30 @@ function CanvasWrapper() {
         logarithmicDepthBuffer: false,
       }}
     >
-      <Scene />
+      <Scene navigation={navigation} />
     </Canvas>
   )
 }
 
 export default function HomePage() {
+  const navigate = useNavigate()
+
+  // Create navigation handlers outside of Canvas context
+  const navigation = {
+    goToWork1: () => navigate("/work1"),
+    goToWork2: () => navigate("/work2"),
+    goToWork3: () => navigate("/work3"),
+    goToAbout: () => navigate("/about"),
+    goToPlayground: () => navigate("/playground"),
+    goToExpertise: () => navigate("/expertise"),
+    goToImprint: () => navigate("/imprint"),
+    goHome: () => navigate("/"),
+  }
+
   return (
     <div className="w-screen h-screen overflow-hidden">
       <Leva collapsed oneLineLabels hideTitleBar />
-      <CanvasWrapper />
+      <CanvasWrapper navigation={navigation} />
     </div>
   )
 }

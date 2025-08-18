@@ -5,11 +5,13 @@ import { useRef, useState, useEffect, useMemo } from "react"
 import { useControls, folder } from "leva"
 import TextWithBorder from "./TextWithBorder.jsx"
 import { useBreakpoint, useResponsiveValue } from "../hooks/useBreakpoint"
+// Navigation will be passed as prop instead of using hook
 
 export default function Header({
   textStyles,
   globalFontColor,
   globalSvgColor,
+  navigation,
 }) {
   const { viewport } = useThree()
   const columnWidth = viewport.width / 24
@@ -154,6 +156,21 @@ export default function Header({
 
   const labels = ["Work", "Expertise", "About", "Playground"]
 
+  // Navigation handlers for each menu item
+  const navigationHandlers = [
+    () => {}, // Work - no specific page, stays on main portfolio
+    navigation?.goToExpertise || (() => {}),
+    navigation?.goToAbout || (() => {}),
+    navigation?.goToPlayground || (() => {}),
+  ]
+
+  const handlePointerOver = () => {
+    document.body.style.cursor = "pointer"
+  }
+  const handlePointerOut = () => {
+    document.body.style.cursor = "auto"
+  }
+
   // Grid helper function with padding
   const getColumnPosition = (column) => {
     // Account for 0.1 padding on each side
@@ -183,10 +200,13 @@ export default function Header({
   return (
     // Header group
     <group position={[0, viewport.height * headerY, 0]}>
-      {/* Logo */}
+      {/* Logo - clickable to go home */}
       <mesh
         position={[getColumnPosition(logoX), logoY, 0]}
         scale={[0.5, 0.5, 0.5]}
+        onClick={navigation?.goHome || (() => {})}
+        onPointerOver={handlePointerOver}
+        onPointerOut={handlePointerOut}
       >
         <planeGeometry args={[0.66, 0.25]} />
         <shaderMaterial
@@ -222,8 +242,13 @@ export default function Header({
         />
       </mesh>
 
-      {/* Name and Profession */}
-      <group position={[getColumnPosition(nameX), nameY, 0]}>
+      {/* Name and Profession - clickable to go home */}
+      <group
+        position={[getColumnPosition(nameX), nameY, 0]}
+        onClick={navigation?.goHome || (() => {})}
+        onPointerOver={handlePointerOver}
+        onPointerOut={handlePointerOut}
+      >
         <Text
           {...textStyles.logo}
           fontSize={textStyles.logo.fontSize(viewport)}
@@ -267,6 +292,9 @@ export default function Header({
                 borderColor={controls.borderColor}
                 paddingX={controls.paddingX}
                 paddingY={controls.paddingY}
+                onClick={navigationHandlers[i]}
+                onPointerOver={text === "Work" ? undefined : handlePointerOver}
+                onPointerOut={text === "Work" ? undefined : handlePointerOut}
               >
                 {text}
               </TextWithBorder>

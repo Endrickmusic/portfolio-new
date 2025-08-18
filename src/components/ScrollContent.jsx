@@ -10,7 +10,7 @@ import Grid from "./Grid"
 import Header from "./Header"
 import { useBreakpoint, useResponsiveValue } from "../hooks/useBreakpoint"
 import { useLevaExtractor } from "../utils/configExtractor"
-import { useNavigation } from "./Navigation"
+// Navigation will be passed as prop instead of using hook
 
 // Import config system
 import { controlsConfig } from "../config/controlsConfig"
@@ -160,6 +160,7 @@ function PlaygroundSection({
   borderY,
   globalFontColor,
   globalBorderColor,
+  navigation,
 }) {
   const { viewport } = useThree()
 
@@ -224,6 +225,9 @@ function PlaygroundSection({
         border={globalBorder}
         fontSize={viewport.height * 0.02}
         borderColor={globalBorderColor}
+        onClick={navigation?.goToPlayground || (() => {})}
+        onPointerOver={() => (document.body.style.cursor = "pointer")}
+        onPointerOut={() => (document.body.style.cursor = "auto")}
       >
         more
       </TextWithBorder>
@@ -236,6 +240,7 @@ function Footer({
   footerControls,
   globalFontColor,
   globalSvgColor,
+  navigation,
 }) {
   const { viewport } = useThree()
   const maxWidth = Math.min(viewport.width * 0.8, 4)
@@ -276,6 +281,9 @@ function Footer({
           anchorX="center"
           anchorY="middle"
           font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+          onClick={navigation?.goHome || (() => {})}
+          onPointerOver={() => (document.body.style.cursor = "pointer")}
+          onPointerOut={() => (document.body.style.cursor = "auto")}
         >
           Work
         </Text>
@@ -290,6 +298,9 @@ function Footer({
           anchorX="center"
           anchorY="middle"
           font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+          onClick={navigation?.goToExpertise || (() => {})}
+          onPointerOver={() => (document.body.style.cursor = "pointer")}
+          onPointerOut={() => (document.body.style.cursor = "auto")}
         >
           Expertise
         </Text>
@@ -304,6 +315,9 @@ function Footer({
           anchorX="center"
           anchorY="middle"
           font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+          onClick={navigation?.goToAbout || (() => {})}
+          onPointerOver={() => (document.body.style.cursor = "pointer")}
+          onPointerOut={() => (document.body.style.cursor = "auto")}
         >
           About
         </Text>
@@ -318,6 +332,9 @@ function Footer({
           anchorX="center"
           anchorY="middle"
           font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+          onClick={navigation?.goToPlayground || (() => {})}
+          onPointerOver={() => (document.body.style.cursor = "pointer")}
+          onPointerOut={() => (document.body.style.cursor = "auto")}
         >
           Playground
         </Text>
@@ -414,6 +431,9 @@ function Footer({
           anchorX="left"
           anchorY="middle"
           font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+          onClick={navigation?.goToImprint || (() => {})}
+          onPointerOver={() => (document.body.style.cursor = "pointer")}
+          onPointerOut={() => (document.body.style.cursor = "auto")}
         >
           Legal / Imprint
         </Text>
@@ -422,11 +442,10 @@ function Footer({
   )
 }
 
-export default function ScrollContent() {
+export default function ScrollContent({ navigation }) {
   const scroll = useScroll()
   const group = useRef()
   const { viewport } = useThree()
-  const navigation = useNavigation()
 
   // 🎯 GENERATE ALL CONTROLS FROM CONFIG (10 lines instead of 800+)
   // Generate controls from config
@@ -1563,6 +1582,7 @@ export default function ScrollContent() {
         textStyles={textStyles}
         globalFontColor={globalFontColor}
         globalSvgColor={globalSvgColor}
+        navigation={navigation}
       />
 
       {/* C and H SVGs */}
@@ -1617,7 +1637,9 @@ export default function ScrollContent() {
         border={controls.deskGlobalBorder}
         fontSize={viewport.height * 0.02}
         borderColor={globalBorderColor}
-        onClick={navigation.goToWork1}
+        onClick={navigation?.goToWork1 || (() => {})}
+        onPointerOver={() => (document.body.style.cursor = "pointer")}
+        onPointerOut={() => (document.body.style.cursor = "auto")}
       >
         more
       </TextWithBorder>
@@ -1652,7 +1674,9 @@ export default function ScrollContent() {
         border={controls.deskGlobalBorder}
         fontSize={viewport.height * 0.02}
         borderColor={globalBorderColor}
-        onClick={navigation.goToWork2}
+        onClick={navigation?.goToWork2 || (() => {})}
+        onPointerOver={() => (document.body.style.cursor = "pointer")}
+        onPointerOut={() => (document.body.style.cursor = "auto")}
       >
         more
       </TextWithBorder>
@@ -1687,7 +1711,9 @@ export default function ScrollContent() {
         border={controls.deskGlobalBorder}
         fontSize={viewport.height * 0.02}
         borderColor={globalBorderColor}
-        onClick={navigation.goToWork3}
+        onClick={navigation?.goToWork3 || (() => {})}
+        onPointerOver={() => (document.body.style.cursor = "pointer")}
+        onPointerOut={() => (document.body.style.cursor = "auto")}
       >
         more
       </TextWithBorder>
@@ -1719,6 +1745,7 @@ export default function ScrollContent() {
         borderY={playBorderY}
         globalFontColor={globalFontColor}
         globalBorderColor={globalBorderColor}
+        navigation={navigation}
       />
 
       {/* Get in Contact */}
@@ -1734,6 +1761,11 @@ export default function ScrollContent() {
           border={conButtonBorder}
           fontSize={viewport.height * 0.02}
           borderColor={globalBorderColor}
+          onClick={() =>
+            window.open("mailto:christian@hohenbild.com", "_blank")
+          }
+          onPointerOver={() => (document.body.style.cursor = "pointer")}
+          onPointerOut={() => (document.body.style.cursor = "auto")}
         >
           GET IN CONTACT
         </TextWithBorder>
@@ -1828,6 +1860,7 @@ export default function ScrollContent() {
         }}
         globalFontColor={globalFontColor}
         globalSvgColor={globalSvgColor}
+        navigation={navigation}
       />
     </group>
   )
