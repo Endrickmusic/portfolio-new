@@ -42,7 +42,7 @@ function CanvasWrapper() {
 export default function App() {
   return (
     <div className="w-screen h-screen overflow-hidden">
-      <Leva collapsed oneLineLabels />
+      <Leva collapsed oneLineLabels hideTitleBar />
       <CanvasWrapper />
     </div>
   )

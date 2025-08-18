@@ -10,6 +10,13 @@ import Grid from "./Grid"
 import Header from "./Header"
 import { useBreakpoint, useResponsiveValue } from "../hooks/useBreakpoint"
 
+// Import config system
+import { controlsConfig } from "../config/controlsConfig"
+import {
+  generateControlsFromConfig,
+  generateResponsiveHooks,
+} from "../utils/controlsUtils"
+
 // Text styling system (inspired by Tailwind)
 const textStyles = {
   logo: {
@@ -77,7 +84,7 @@ function Headline({ title, position = [0, 0, 0], maxWidth }) {
 
   return (
     <Text
-      position={position} // Title moved down
+      position={position}
       fontSize={viewport.height * 0.045}
       color="#38358F"
       maxWidth={maxWidth}
@@ -193,21 +200,15 @@ function PlaygroundSection({
       </Text>
 
       {/* More button */}
-      <group position={[-viewport.width * 0.35, -viewport.height * 0.15, 0]}>
+      <group position={[-viewport.width * 0.35, -viewport.height * 0.2, 0]}>
         <TextWithBorder
-          position={[0, 0, 0.01]}
-          fontSize={viewport.height * 0.02}
-          color="#38358f"
-          anchorX="center"
-          anchorY="middle"
-          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
-          border={globalBorder}
+          position={[0, 0, 0]}
           roundness={mbRoundness}
-          borderColor={mbBorderColor}
+          color={mbBorderColor}
           padding={mbPadding}
           paddingXMult={mbPaddingXMult}
           paddingYMult={mbPaddingYMult}
-          minWidth={1.2}
+          globalBorder={globalBorder}
         >
           MORE
         </TextWithBorder>
@@ -218,9 +219,9 @@ function PlaygroundSection({
 
 function Footer({ position = [0, 0, 0], footerControls }) {
   const { viewport } = useThree()
-  const maxWidth = Math.min(viewport.width * 0.8, 4) // Max width of 4 units or 80% viewport width, whichever is smaller
+  const maxWidth = Math.min(viewport.width * 0.8, 4)
   const contentWidth = maxWidth + 0.7
-  const startX = -contentWidth / 2 // Center the content
+  const startX = -contentWidth / 2
 
   // Helper function to get responsive footer values
   const getFooterResponsiveValue = (controlName) => {
@@ -267,27 +268,20 @@ function Footer({ position = [0, 0, 0], footerControls }) {
       {/* Logo SVGs */}
       <group
         position={[
-          viewport.width * getFooterResponsiveValue("LogoX"),
-          getFooterResponsiveValue("LogoY"),
+          startX + contentWidth * getFooterResponsiveValue("LogoX"),
+          viewport.height * getFooterResponsiveValue("LogoY"),
           0,
         ]}
-        visible={true}
       >
-        <Svg
-          src="/svgs/C.svg"
-          scale={0.0078}
-          position={[-1.8, 0, 0]}
-          fillMaterial={new THREE.MeshBasicMaterial({ color: "#38358f" })}
-        />
+        <Svg src="/svgs/C.svg" scale={viewport.height * 0.04} />
         <Svg
           src="/svgs/H.svg"
-          scale={0.0078}
-          position={[1.2, 0, 0]}
-          fillMaterial={new THREE.MeshBasicMaterial({ color: "#38358f" })}
+          scale={viewport.height * 0.04}
+          position={[viewport.width * 0.06, 0, 0]}
         />
       </group>
 
-      {/* Contact Info */}
+      {/* Contact Information */}
       <group
         position={[
           startX,
@@ -295,536 +289,82 @@ function Footer({ position = [0, 0, 0], footerControls }) {
           0,
         ]}
       >
-        <Text
-          fontSize={viewport.height * 0.02}
-          color="#38358f"
-          anchorX="left"
-          anchorY="middle"
-          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
-        >
-          Christian Hohenbild
-        </Text>
-        <Text
-          position={[0, -viewport.height * 0.03, 0]}
-          fontSize={viewport.height * 0.02}
-          color="#38358f"
-          anchorX="left"
-          anchorY="middle"
-          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
-        >
-          Gleditschstr. 71
-        </Text>
-        <Text
-          position={[0, -viewport.height * 0.06, 0]}
-          fontSize={viewport.height * 0.02}
-          color="#38358f"
-          anchorX="left"
-          anchorY="middle"
-          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
-        >
-          10781 Berlin
-        </Text>
+        {/* Email */}
         <Text
           position={[
-            viewport.width * getFooterResponsiveValue("ContactEmailX"),
-            -viewport.height * 0.03,
-            0,
-          ]}
-          fontSize={viewport.height * 0.02}
-          color="#38358f"
-          anchorX="left"
-          anchorY="middle"
-          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
-        >
-          mail@christianhohenbild.com
-        </Text>
-        <Text
-          position={[
-            viewport.width * getFooterResponsiveValue("ContactEmailX"),
+            contentWidth * getFooterResponsiveValue("ContactEmailX"),
             0,
             0,
           ]}
-          fontSize={viewport.height * 0.02}
+          fontSize={viewport.height * 0.022}
           color="#38358f"
           anchorX="left"
           anchorY="middle"
           font="/fonts/ibm-plex-mono-latin-400-normal.woff"
         >
-          +49 176 123 456 78
+          christian@hohenbild.com
         </Text>
-      </group>
 
-      {/* Social Links */}
-      <group
-        position={[
-          startX + contentWidth * getFooterResponsiveValue("SocialX"),
-          viewport.height * getFooterResponsiveValue("ContactY"),
-          0,
-        ]}
-      >
+        {/* Social Links */}
         <Text
-          fontSize={viewport.height * 0.02}
+          position={[contentWidth * getFooterResponsiveValue("SocialX"), 0, 0]}
+          fontSize={viewport.height * 0.022}
           color="#38358f"
           anchorX="left"
           anchorY="middle"
           font="/fonts/ibm-plex-mono-latin-400-normal.woff"
         >
-          Instagram
+          Instagram / LinkedIn
         </Text>
-        <Text
-          position={[0, -viewport.height * 0.03, 0]}
-          fontSize={viewport.height * 0.02}
-          color="#38358f"
-          anchorX="left"
-          anchorY="middle"
-          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
-        >
-          LinkedIn
-        </Text>
-      </group>
 
-      {/* Legal Links */}
-      <group
-        position={[
-          startX + contentWidth * getFooterResponsiveValue("LegalX"),
-          viewport.height * getFooterResponsiveValue("ContactY"),
-          0,
-        ]}
-      >
+        {/* Legal */}
         <Text
-          fontSize={viewport.height * 0.02}
+          position={[contentWidth * getFooterResponsiveValue("LegalX"), 0, 0]}
+          fontSize={viewport.height * 0.022}
           color="#38358f"
           anchorX="left"
           anchorY="middle"
           font="/fonts/ibm-plex-mono-latin-400-normal.woff"
         >
-          Imprint
-        </Text>
-        <Text
-          position={[0, -viewport.height * 0.03, 0]}
-          fontSize={viewport.height * 0.02}
-          color="#38358f"
-          anchorX="left"
-          anchorY="middle"
-          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
-        >
-          Data Privacy
+          Legal / Imprint
         </Text>
       </group>
     </group>
   )
 }
 
-// Content component that uses scroll data
 export default function ScrollContent() {
   const scroll = useScroll()
   const group = useRef()
   const { viewport } = useThree()
-  const { breakpoint } = useBreakpoint()
 
-  // Header controls (C and H SVGs)
+  // 🎯 GENERATE ALL CONTROLS FROM CONFIG (10 lines instead of 800+)
   const headerControls = useControls(
     "Header",
-    {
-      // C and H SVGs
-      "C and H Letters": folder(
-        {
-          Desktop: folder(
-            {
-              deskCHGroupY: { value: 0.1, min: -0.5, max: 1.0, step: 0.01 },
-              deskCScale: { value: 0.008, min: 0.001, max: 0.02, step: 0.0001 },
-              deskCX: { value: -3.02, min: -5, max: 0, step: 0.01 },
-              deskCY: { value: 0.96, min: 0, max: 2, step: 0.01 },
-              deskHScale: { value: 0.008, min: 0.001, max: 0.02, step: 0.0001 },
-              deskHX: { value: 0.08, min: -2, max: 2, step: 0.01 },
-              deskHY: { value: 0.96, min: 0, max: 2, step: 0.01 },
-            },
-            { collapsed: true }
-          ),
-          Tablet: folder(
-            {
-              tabCHGroupY: { value: 0.1, min: -0.5, max: 1.0, step: 0.01 },
-              tabCScale: { value: 0.008, min: 0.001, max: 0.02, step: 0.0001 },
-              tabCX: { value: -3.02, min: -5, max: 0, step: 0.01 },
-              tabCY: { value: 0.96, min: 0, max: 2, step: 0.01 },
-              tabHScale: { value: 0.008, min: 0.001, max: 0.02, step: 0.0001 },
-              tabHX: { value: 0.08, min: -2, max: 2, step: 0.01 },
-              tabHY: { value: 0.96, min: 0, max: 2, step: 0.01 },
-            },
-            { collapsed: true }
-          ),
-          Mobile: folder(
-            {
-              mobCHGroupY: { value: 0.06, min: -0.5, max: 1.0, step: 0.01 },
-              mobCScale: { value: 0.006, min: 0.001, max: 0.02, step: 0.0001 },
-              mobCX: { value: -0.8, min: -5, max: 0, step: 0.01 },
-              mobCY: { value: 0.8, min: 0, max: 2, step: 0.01 },
-              mobHScale: { value: 0.006, min: 0.001, max: 0.02, step: 0.0001 },
-              mobHX: { value: -0.7, min: -2, max: 2, step: 0.01 },
-              mobHY: { value: -0.5, min: -4, max: 2, step: 0.01 },
-            },
-            { collapsed: true }
-          ),
-        },
-        { collapsed: true }
-      ),
-    },
+    generateControlsFromConfig(controlsConfig.header, folder),
     { collapsed: true }
   )
 
-  // Responsive control structure with dedicated values for each breakpoint
   const controls = useControls(
     "Content",
-    {
-      // Global settings
-      Global: folder(
-        {
-          globalBorder: { value: 0.01, min: 0.0, max: 0.1, step: 0.0025 },
-        },
-        { collapsed: true }
-      ),
-
-      // Introduction section
-      Introduction: folder(
-        {
-          Desktop: folder(
-            {
-              deskIntroX: { value: -3.02, min: -5, max: 0, step: 0.01 },
-              deskIntroY: { value: -0.65, min: -2, max: 0, step: 0.01 },
-              deskIntroWidth: { value: 0.52, min: 0.1, max: 1.0, step: 0.01 },
-            },
-            { collapsed: true }
-          ),
-          Tablet: folder(
-            {
-              tabIntroX: { value: -3.02, min: -5, max: 0, step: 0.01 },
-              tabIntroY: { value: -0.65, min: -2, max: 0, step: 0.01 },
-              tabIntroWidth: { value: 0.52, min: 0.1, max: 1.0, step: 0.01 },
-            },
-            { collapsed: true }
-          ),
-          Mobile: folder(
-            {
-              mobIntroX: { value: -3.02, min: -5, max: 0, step: 0.01 },
-              mobIntroY: { value: -0.65, min: -2, max: 0, step: 0.01 },
-              mobIntroWidth: { value: 0.52, min: 0.1, max: 1.0, step: 0.01 },
-            },
-            { collapsed: true }
-          ),
-        },
-        { collapsed: true }
-      ),
-
-      // Work sections
-      "Work 1": folder(
-        {
-          Desktop: folder(
-            {
-              deskW1X: { value: -0.13, min: -3, max: 3, step: 0.01 },
-              deskW1Y: { value: -1.19, min: -3, max: 0, step: 0.01 },
-              deskW1TitleX: { value: 1.55, min: -3, max: 3, step: 0.01 },
-              deskW1TitleY: { value: -0.9, min: -3, max: 0, step: 0.01 },
-              deskW1TitleWidth: {
-                value: 0.2,
-                min: 0.1,
-                max: 2,
-                step: 0.01,
-              },
-              deskW1DescX: { value: 0.77, min: -3, max: 3, step: 0.01 },
-              deskW1DescY: { value: -0.53, min: -3, max: 0, step: 0.01 },
-            },
-            { collapsed: true }
-          ),
-          Tablet: folder(
-            {
-              tabW1X: { value: -0.13, min: -3, max: 3, step: 0.01 },
-              tabW1Y: { value: -1.19, min: -3, max: 0, step: 0.01 },
-              tabW1TitleX: { value: 1.55, min: -3, max: 3, step: 0.01 },
-              tabW1TitleY: { value: -0.9, min: -3, max: 0, step: 0.01 },
-              tabW1TitleWidth: { value: 0.2, min: 0.1, max: 2, step: 0.01 },
-              tabW1DescX: { value: 0.77, min: -3, max: 3, step: 0.01 },
-              tabW1DescY: { value: -0.53, min: -3, max: 0, step: 0.01 },
-            },
-            { collapsed: true }
-          ),
-          Mobile: folder(
-            {
-              mobW1X: { value: -0.13, min: -3, max: 3, step: 0.01 },
-              mobW1Y: { value: -1.19, min: -3, max: 0, step: 0.01 },
-              mobW1TitleX: { value: 1.55, min: -3, max: 3, step: 0.01 },
-              mobW1TitleY: { value: -0.9, min: -3, max: 0, step: 0.01 },
-              mobW1TitleWidth: { value: 0.2, min: 0.1, max: 2, step: 0.01 },
-              mobW1DescX: { value: 0.77, min: -3, max: 3, step: 0.01 },
-              mobW1DescY: { value: -0.53, min: -3, max: 0, step: 0.01 },
-            },
-            { collapsed: true }
-          ),
-        },
-        { collapsed: true }
-      ),
-
-      "Work 2": folder({
-        Desktop: folder(
-          {
-            deskW2X: { value: 1, min: -3, max: 3, step: 0.01 },
-            deskW2Y: { value: -1.45, min: -3, max: 0, step: 0.01 },
-            deskW2TitleX: { value: -2.2, min: -3, max: 3, step: 0.01 },
-            deskW2TitleY: { value: -1.32, min: -3, max: 0, step: 0.01 },
-            deskW2TitleWidth: {
-              value: 1.0,
-              min: 0.1,
-              max: 2,
-              step: 0.01,
-            },
-            deskW2DescX: { value: -1.2, min: -3, max: 3, step: 0.01 },
-            deskW2DescY: { value: -0.75, min: -3, max: 0, step: 0.01 },
-          },
-
-          { collapsed: true }
-        ),
-        Tablet: folder(
-          {
-            tabW2X: { value: 1, min: -3, max: 3, step: 0.01 },
-            tabW2Y: { value: -1.45, min: -3, max: 0, step: 0.01 },
-            tabW2TitleX: { value: -2.2, min: -3, max: 3, step: 0.01 },
-            tabW2TitleY: { value: -1.32, min: -3, max: 0, step: 0.01 },
-            tabW2TitleWidth: { value: 1.0, min: 0.1, max: 2, step: 0.01 },
-            tabW2DescX: { value: -1.2, min: -3, max: 3, step: 0.01 },
-            tabW2DescY: { value: -0.75, min: -3, max: 0, step: 0.01 },
-          },
-
-          { collapsed: true }
-        ),
-        Mobile: folder(
-          {
-            mobW2X: { value: 1, min: -3, max: 3, step: 0.01 },
-            mobW2Y: { value: -1.45, min: -3, max: 0, step: 0.01 },
-            mobW2TitleX: { value: -2.2, min: -3, max: 3, step: 0.01 },
-            mobW2TitleY: { value: -1.32, min: -3, max: 0, step: 0.01 },
-            mobW2TitleWidth: { value: 1.0, min: 0.1, max: 2, step: 0.01 },
-            mobW2DescX: { value: -1.2, min: -3, max: 3, step: 0.01 },
-            mobW2DescY: { value: -0.75, min: -3, max: 0, step: 0.01 },
-          },
-
-          { collapsed: true }
-        ),
-      }),
-
-      "Work 3": folder({
-        Desktop: folder(
-          {
-            deskW3X: { value: -1.2, min: -3, max: 3, step: 0.01 },
-            deskW3Y: { value: -1.85, min: -3, max: 0, step: 0.01 },
-            deskW3TitleX: { value: 0.2, min: -3, max: 3, step: 0.01 },
-            deskW3TitleY: { value: -1.75, min: -3, max: 0, step: 0.01 },
-            deskW3TitleWidth: {
-              value: 1.0,
-              min: 0.1,
-              max: 2,
-              step: 0.01,
-            },
-            deskW3DescX: { value: 0.1, min: -3, max: 3, step: 0.01 },
-            deskW3DescY: { value: -0.97, min: -3, max: 0, step: 0.01 },
-          },
-
-          { collapsed: true }
-        ),
-        Tablet: folder(
-          {
-            tabW3X: { value: -1.2, min: -3, max: 3, step: 0.01 },
-            tabW3Y: { value: -1.85, min: -3, max: 0, step: 0.01 },
-            tabW3TitleX: { value: 0.2, min: -3, max: 3, step: 0.01 },
-            tabW3TitleY: { value: -1.75, min: -3, max: 0, step: 0.01 },
-            tabW3TitleWidth: { value: 1.0, min: 0.1, max: 2, step: 0.01 },
-            tabW3DescX: { value: 0.1, min: -3, max: 3, step: 0.01 },
-            tabW3DescY: { value: -0.97, min: -3, max: 0, step: 0.01 },
-          },
-
-          { collapsed: true }
-        ),
-        Mobile: folder(
-          {
-            mobW3X: { value: -1.2, min: -3, max: 3, step: 0.01 },
-            mobW3Y: { value: -1.85, min: -3, max: 0, step: 0.01 },
-            mobW3TitleX: { value: 0.2, min: -3, max: 3, step: 0.01 },
-            mobW3TitleY: { value: -1.75, min: -3, max: 0, step: 0.01 },
-            mobW3TitleWidth: { value: 1.0, min: 0.1, max: 2, step: 0.01 },
-            mobW3DescX: { value: 0.1, min: -3, max: 3, step: 0.01 },
-            mobW3DescY: { value: -0.97, min: -3, max: 0, step: 0.01 },
-          },
-
-          { collapsed: true }
-        ),
-      }),
-
-      // Playground section
-      Playground: folder({
-        Desktop: folder(
-          {
-            deskPlayX: { value: 0.1, min: -3, max: 3, step: 0.01 },
-            deskPlayY: { value: -2.5, min: -5, max: 0, step: 0.01 },
-          },
-
-          { collapsed: true }
-        ),
-        Tablet: folder(
-          {
-            tabPlayX: { value: 0.1, min: -3, max: 3, step: 0.01 },
-            tabPlayY: { value: -2.5, min: -5, max: 0, step: 0.01 },
-          },
-
-          { collapsed: true }
-        ),
-        Mobile: folder(
-          {
-            mobPlayX: { value: 0.1, min: -3, max: 3, step: 0.01 },
-            mobPlayY: { value: -2.5, min: -5, max: 0, step: 0.01 },
-          },
-
-          { collapsed: true }
-        ),
-        Styling: folder(
-          {
-            panelWidth: { value: 1.2, min: 0.6, max: 5.4, step: 0.1 },
-            panelHeight: { value: 0.8, min: 0.4, max: 4.0, step: 0.1 },
-            roundness: { value: 0.12, min: 0.0, max: 0.5, step: 0.005 },
-            borderColor: { value: "#38358f" },
-            paddingX: { value: 0.2, min: 0.0, max: 0.5, step: 0.005 },
-            paddingY: { value: 0.2, min: 0.0, max: 0.5, step: 0.005 },
-            mbRoundness: { value: 0.1, min: 0.0, max: 0.5, step: 0.005 },
-            mbBorderColor: { value: "#38358f" },
-            mbPadding: { value: 0.2, min: 0.0, max: 1.0, step: 0.005 },
-            mbPaddingXMult: { value: 1.0, min: 0.0, max: 2.0, step: 0.025 },
-            mbPaddingYMult: { value: 1.0, min: 0.0, max: 2.0, step: 0.025 },
-          },
-
-          { collapsed: true }
-        ),
-      }),
-
-      // Get in Contact section
-      "Get in Contact": folder({
-        Desktop: folder(
-          {
-            deskConX: { value: 0, min: -3, max: 3, step: 0.01 },
-            deskConY: { value: -3.2, min: -5, max: 0, step: 0.01 },
-            deskConButtonX: { value: 0, min: -3, max: 3, step: 0.01 },
-            deskConButtonY: { value: 0.2, min: -1, max: 1, step: 0.01 },
-            deskConDescX: { value: 0, min: -3, max: 3, step: 0.01 },
-            deskConDescY: { value: -0.3, min: -1, max: 1, step: 0.01 },
-            deskConWidth: { value: 2.5, min: 1, max: 5, step: 0.1 },
-          },
-
-          { collapsed: true }
-        ),
-        Tablet: folder(
-          {
-            tabConX: { value: 0, min: -3, max: 3, step: 0.01 },
-            tabConY: { value: -3.2, min: -5, max: 0, step: 0.01 },
-            tabConButtonX: { value: 0, min: -3, max: 3, step: 0.01 },
-            tabConButtonY: { value: 0.2, min: -1, max: 1, step: 0.01 },
-            tabConDescX: { value: 0, min: -3, max: 3, step: 0.01 },
-            tabConDescY: { value: -0.3, min: -1, max: 1, step: 0.01 },
-            tabConWidth: { value: 2.5, min: 1, max: 5, step: 0.1 },
-          },
-
-          { collapsed: true }
-        ),
-        Mobile: folder(
-          {
-            mobConX: { value: 0, min: -3, max: 3, step: 0.01 },
-            mobConY: { value: -3.2, min: -5, max: 0, step: 0.01 },
-            mobConButtonX: { value: 0, min: -3, max: 3, step: 0.01 },
-            mobConButtonY: { value: 0.2, min: -1, max: 1, step: 0.01 },
-            mobConDescX: { value: 0, min: -3, max: 3, step: 0.01 },
-            mobConDescY: { value: -0.3, min: -1, max: 1, step: 0.01 },
-            mobConWidth: { value: 2.5, min: 1, max: 5, step: 0.1 },
-          },
-
-          { collapsed: true }
-        ),
-      }),
-    },
-    {
-      collapsed: true,
-    }
+    generateControlsFromConfig(controlsConfig.content, folder),
+    { collapsed: true }
   )
 
-  // Footer controls
   const footerControls = useControls(
     "Footer",
-    {
-      Desktop: folder(
-        {
-          deskFooterY: { value: -4.2, min: -6, max: 0, step: 0.1 },
-          deskFooterNavY: { value: 0.4, min: 0.0, max: 1.0, step: 0.01 },
-          deskFooterLogoX: { value: -0.2, min: -1.0, max: 1.0, step: 0.01 },
-          deskFooterLogoY: { value: 0.95, min: 0.0, max: 2.0, step: 0.01 },
-          deskFooterContactY: { value: -0.35, min: -1.0, max: 0.0, step: 0.01 },
-          deskFooterContactEmailX: {
-            value: 0.2,
-            min: 0.0,
-            max: 1.0,
-            step: 0.01,
-          },
-          deskFooterSocialX: { value: 0.6, min: 0.0, max: 1.0, step: 0.01 },
-          deskFooterLegalX: { value: 0.85, min: 0.0, max: 1.0, step: 0.01 },
-        },
-
-        { collapsed: true }
-      ),
-      Tablet: folder(
-        {
-          tabFooterY: { value: -4.2, min: -6, max: 0, step: 0.1 },
-          tabFooterNavY: { value: 0.4, min: 0.0, max: 1.0, step: 0.01 },
-          tabFooterLogoX: { value: -0.2, min: -1.0, max: 1.0, step: 0.01 },
-          tabFooterLogoY: { value: 0.95, min: 0.0, max: 2.0, step: 0.01 },
-          tabFooterContactY: { value: -0.35, min: -1.0, max: 0.0, step: 0.01 },
-          tabFooterContactEmailX: {
-            value: 0.2,
-            min: 0.0,
-            max: 1.0,
-            step: 0.01,
-          },
-          tabFooterSocialX: { value: 0.6, min: 0.0, max: 1.0, step: 0.01 },
-          tabFooterLegalX: { value: 0.85, min: 0.0, max: 1.0, step: 0.01 },
-        },
-
-        { collapsed: true }
-      ),
-      Mobile: folder(
-        {
-          mobFooterY: { value: -4.2, min: -6, max: 0, step: 0.1 },
-          mobFooterNavY: { value: 0.4, min: 0.0, max: 1.0, step: 0.01 },
-          mobFooterLogoX: { value: -0.2, min: -1.0, max: 1.0, step: 0.01 },
-          mobFooterLogoY: { value: 0.95, min: 0.0, max: 2.0, step: 0.01 },
-          mobFooterContactY: { value: -0.35, min: -1.0, max: 0.0, step: 0.01 },
-          mobFooterContactEmailX: {
-            value: 0.15,
-            min: 0.0,
-            max: 1.0,
-            step: 0.01,
-          },
-          mobFooterSocialX: { value: 0.45, min: 0.0, max: 1.0, step: 0.01 },
-          mobFooterLegalX: { value: 0.7, min: 0.0, max: 1.0, step: 0.01 },
-        },
-
-        { collapsed: true }
-      ),
-    },
-    {
-      collapsed: true,
-    }
+    generateControlsFromConfig({ footer: controlsConfig.footer }, folder),
+    { collapsed: true }
   )
 
-  // Responsive values - all hooks must be called at component level
-  // C and H SVGs
+  // 🎯 RESPONSIVE HOOKS - Manual approach for now
+  // Header hooks (C and H SVGs)
   const chGroupY = useResponsiveValue({
-    mobile: headerControls.mobCHGroupY,
-    tablet: headerControls.tabCHGroupY,
-    desktop: headerControls.deskCHGroupY,
-    large: headerControls.deskCHGroupY,
-    ultrawide: headerControls.deskCHGroupY,
+    mobile: headerControls.mobChGroupY,
+    tablet: headerControls.tabChGroupY,
+    desktop: headerControls.deskChGroupY,
+    large: headerControls.deskChGroupY,
+    ultrawide: headerControls.deskChGroupY,
   })
   const cScale = useResponsiveValue({
     mobile: headerControls.mobCScale,
@@ -869,7 +409,7 @@ export default function ScrollContent() {
     ultrawide: headerControls.deskHY,
   })
 
-  // Introduction
+  // Content hooks
   const introX = useResponsiveValue({
     mobile: controls.mobIntroX,
     tablet: controls.tabIntroX,
@@ -892,7 +432,7 @@ export default function ScrollContent() {
     ultrawide: controls.deskIntroWidth,
   })
 
-  // Work 1
+  // Work 1 hooks
   const w1X = useResponsiveValue({
     mobile: controls.mobW1X,
     tablet: controls.tabW1X,
@@ -942,8 +482,15 @@ export default function ScrollContent() {
     large: controls.deskW1DescY,
     ultrawide: controls.deskW1DescY,
   })
+  const w1DescWidth = useResponsiveValue({
+    mobile: controls.mobW1DescWidth,
+    tablet: controls.tabW1DescWidth,
+    desktop: controls.deskW1DescWidth,
+    large: controls.deskW1DescWidth,
+    ultrawide: controls.deskW1DescWidth,
+  })
 
-  // Work 2
+  // Work 2 hooks
   const w2X = useResponsiveValue({
     mobile: controls.mobW2X,
     tablet: controls.tabW2X,
@@ -993,8 +540,15 @@ export default function ScrollContent() {
     large: controls.deskW2DescY,
     ultrawide: controls.deskW2DescY,
   })
+  const w2DescWidth = useResponsiveValue({
+    mobile: controls.mobW2DescWidth,
+    tablet: controls.tabW2DescWidth,
+    desktop: controls.deskW2DescWidth,
+    large: controls.deskW2DescWidth,
+    ultrawide: controls.deskW2DescWidth,
+  })
 
-  // Work 3
+  // Work 3 hooks
   const w3X = useResponsiveValue({
     mobile: controls.mobW3X,
     tablet: controls.tabW3X,
@@ -1044,8 +598,15 @@ export default function ScrollContent() {
     large: controls.deskW3DescY,
     ultrawide: controls.deskW3DescY,
   })
+  const w3DescWidth = useResponsiveValue({
+    mobile: controls.mobW3DescWidth,
+    tablet: controls.tabW3DescWidth,
+    desktop: controls.deskW3DescWidth,
+    large: controls.deskW3DescWidth,
+    ultrawide: controls.deskW3DescWidth,
+  })
 
-  // Playground
+  // Playground hooks
   const playX = useResponsiveValue({
     mobile: controls.mobPlayX,
     tablet: controls.tabPlayX,
@@ -1061,7 +622,7 @@ export default function ScrollContent() {
     ultrawide: controls.deskPlayY,
   })
 
-  // Contact
+  // Contact hooks
   const conX = useResponsiveValue({
     mobile: controls.mobConX,
     tablet: controls.tabConX,
@@ -1112,8 +673,18 @@ export default function ScrollContent() {
     ultrawide: controls.deskConWidth,
   })
 
-  useFrame((state, delta) => {
-    if (scroll.offset !== undefined) {
+  // Footer hooks
+  const footerY = useResponsiveValue({
+    mobile: footerControls.mobFooterY,
+    tablet: footerControls.tabFooterY,
+    desktop: footerControls.deskFooterY,
+    large: footerControls.deskFooterY,
+    ultrawide: footerControls.deskFooterY,
+  })
+
+  // Animation
+  useFrame(() => {
+    if (group.current && scroll.range) {
       group.current.position.y = scroll.offset * 4.2 * viewport.height
     }
   })
@@ -1123,19 +694,17 @@ export default function ScrollContent() {
       <Grid />
       <Header textStyles={textStyles} />
 
-      {/* Large C and H letters */}
+      {/* C and H SVGs */}
       <group position={[0, viewport.height * chGroupY, 0]}>
         <Svg
           src="/svgs/C.svg"
-          scale={cScale}
-          position={[cX, cY, 0]}
-          fillMaterial={new THREE.MeshBasicMaterial({ color: "#38358f" })}
+          scale={viewport.width * cScale}
+          position={[viewport.width * cX, viewport.height * cY, 0]}
         />
         <Svg
           src="/svgs/H.svg"
-          scale={hScale}
-          position={[hX, hY, 0]}
-          fillMaterial={new THREE.MeshBasicMaterial({ color: "#38358f" })}
+          scale={viewport.width * hScale}
+          position={[viewport.width * hX, viewport.height * hY, 0]}
         />
       </group>
 
@@ -1144,62 +713,64 @@ export default function ScrollContent() {
         title={textContent.page0.paragraphs}
         position={[introX, viewport.height * introY, 0]}
         maxWidth={viewport.width * introWidth}
-      ></Headline>
+      />
 
-      {/* Work 1 */}
+      {/* Work 1 - Vellum Dance */}
       <Image
         url="/images/vellum_dance_main.png"
-        scale={[viewport.width * 0.515, viewport.height * 0.73, 1]}
         position={[w1X, viewport.height * w1Y, 0]}
+        scale={[1.5, 0.9, 1]}
       />
       <Headline
         title={textContent.page1.title}
         position={[w1TitleX, viewport.height * w1TitleY, 0]}
         maxWidth={viewport.width * w1TitleWidth}
-      ></Headline>
+      />
       <Description
         paragraphs={textContent.page1.paragraphs}
         position={[w1DescX, viewport.height * w1DescY, 0]}
-      ></Description>
+        maxWidth={viewport.width * w1DescWidth}
+      />
 
-      {/* Work 2 */}
+      {/* Work 2 - Liquid Prism */}
       <Image
         url="/images/liquid_prism_main.png"
-        scale={[viewport.width * 0.4, viewport.height * 0.4, 1]}
         position={[w2X, viewport.height * w2Y, 0]}
+        scale={[1.2, 0.9, 1]}
       />
       <Headline
         title={textContent.page2.title}
         position={[w2TitleX, viewport.height * w2TitleY, 0]}
         maxWidth={viewport.width * w2TitleWidth}
-      ></Headline>
+      />
       <Description
         paragraphs={textContent.page2.paragraphs}
         position={[w2DescX, viewport.height * w2DescY, 0]}
-      ></Description>
+        maxWidth={viewport.width * w2DescWidth}
+      />
 
-      {/* Work 3 */}
+      {/* Work 3 - Swarm Dynamics */}
       <Image
         url="/images/particles_main.png"
-        scale={[viewport.width * 0.4, viewport.height * 0.4, 1]}
         position={[w3X, viewport.height * w3Y, 0]}
+        scale={[1.2, 0.9, 1]}
       />
       <Headline
         title={textContent.page3.title}
-        paragraphs={textContent.page3.paragraphs}
         position={[w3TitleX, viewport.height * w3TitleY, 0]}
         maxWidth={viewport.width * w3TitleWidth}
-      ></Headline>
+      />
       <Description
-        title={textContent.page3.title}
         paragraphs={textContent.page3.paragraphs}
         position={[w3DescX, viewport.height * w3DescY, 0]}
-      ></Description>
+        maxWidth={viewport.width * w3DescWidth}
+      />
 
+      {/* Playground Section */}
       <PlaygroundSection
-        position={[viewport.width * playX, viewport.height * playY, 0]}
-        panelWidth={viewport.width * controls.panelWidth}
-        panelHeight={viewport.height * controls.panelHeight}
+        position={[playX, viewport.height * playY, 0]}
+        panelWidth={controls.panelWidth}
+        panelHeight={controls.panelHeight}
         roundness={controls.roundness}
         borderColor={controls.borderColor}
         paddingX={controls.paddingX}
@@ -1212,21 +783,16 @@ export default function ScrollContent() {
         mbPaddingYMult={controls.mbPaddingYMult}
       />
 
-      {/* Get in Contact section */}
+      {/* Get in Contact */}
       <group position={[conX, viewport.height * conY, 0]}>
         <TextWithBorder
           position={[conButtonX, conButtonY, 0]}
-          fontSize={viewport.height * 0.025}
-          color="#38358f"
-          anchorX="center"
-          anchorY="middle"
-          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
-          border={controls.globalBorder}
-          roundness={0.1}
-          borderColor="#38358f"
-          padding={0.15}
-          paddingXMult={1.5}
-          paddingYMult={1.0}
+          roundness={controls.mbRoundness}
+          color={controls.mbBorderColor}
+          padding={controls.mbPadding}
+          paddingXMult={controls.mbPaddingXMult}
+          paddingYMult={controls.mbPaddingYMult}
+          globalBorder={controls.globalBorder}
         >
           GET IN CONTACT
         </TextWithBorder>
@@ -1240,18 +806,7 @@ export default function ScrollContent() {
       </group>
 
       <Footer
-        position={[
-          0,
-          viewport.height *
-            useResponsiveValue({
-              mobile: footerControls.mobFooterY,
-              tablet: footerControls.tabFooterY,
-              desktop: footerControls.deskFooterY,
-              large: footerControls.deskFooterY,
-              ultrawide: footerControls.deskFooterY,
-            }),
-          0,
-        ]}
+        position={[0, viewport.height * footerY, 0]}
         footerControls={footerControls}
       />
     </group>
