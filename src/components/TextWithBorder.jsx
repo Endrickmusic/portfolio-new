@@ -14,6 +14,7 @@ export default function TextWithBorder({
   border = 0.01,
   roundness = 0.1,
   position = [0, 0, 0],
+  scale = 1.0,
   planeZ = 0.0,
   textZ = 0.01,
   anchorX = "center",
@@ -100,7 +101,7 @@ export default function TextWithBorder({
   }, [updateFromSize])
 
   return (
-    <group position={position}>
+    <group position={position} scale={scale}>
       <mesh position={[0, 0, planeZ]}>
         <planeGeometry args={[1, 1]} />
         <shaderMaterial

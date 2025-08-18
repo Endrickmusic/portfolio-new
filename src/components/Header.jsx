@@ -6,7 +6,11 @@ import { useControls, folder } from "leva"
 import TextWithBorder from "./TextWithBorder.jsx"
 import { useBreakpoint, useResponsiveValue } from "../hooks/useBreakpoint"
 
-export default function Header({ textStyles }) {
+export default function Header({
+  textStyles,
+  globalFontColor,
+  globalSvgColor,
+}) {
   const { viewport } = useThree()
   const columnWidth = viewport.width / 24
   const { breakpoint } = useBreakpoint()
@@ -192,7 +196,7 @@ export default function Header({ textStyles }) {
           depthWrite={false}
           uniforms={{
             uSDF: { value: sdfTexture },
-            uColor: { value: new THREE.Color("#38358f") },
+            uColor: { value: new THREE.Color(globalSvgColor || "#38358f") },
             uThickness: { value: controls.thickness },
           }}
           vertexShader={`
@@ -225,7 +229,7 @@ export default function Header({ textStyles }) {
           fontSize={textStyles.logo.fontSize(viewport)}
           anchorX="left"
           anchorY="middle"
-          color="#38358f"
+          color={globalFontColor || "#38358f"}
           glyphGeometryDetail={128}
           renderOrder={1}
         >
@@ -237,7 +241,7 @@ export default function Header({ textStyles }) {
           position={[0, -viewport.height * 0.025, 0]}
           anchorX="left"
           anchorY="middle"
-          color="#38358f"
+          color={globalFontColor || "#38358f"}
           glyphGeometryDetail={256}
           renderOrder={1}
         >
@@ -257,7 +261,7 @@ export default function Header({ textStyles }) {
                 fontSize={fontSize}
                 anchorX="center"
                 anchorY="middle"
-                color="#38358f"
+                color={globalFontColor || "#38358f"}
                 border={controls.globalBorder * 0.01}
                 roundness={controls.radius}
                 borderColor={controls.borderColor}

@@ -222,6 +222,7 @@ function PlaygroundSection({
         paddingYMult={1.0}
         border={globalBorder}
         fontSize={viewport.height * 0.02}
+        borderColor={globalBorderColor}
       >
         more
       </TextWithBorder>
@@ -908,6 +909,41 @@ export default function ScrollContent() {
     large: controls.deskConButtonY,
     ultrawide: controls.deskConButtonY,
   })
+  const conButtonScale = useResponsiveValue({
+    mobile: controls.mobConButtonScale,
+    tablet: controls.tabConButtonScale,
+    desktop: controls.deskConButtonScale,
+    large: controls.deskConButtonScale,
+    ultrawide: controls.deskConButtonScale,
+  })
+  const conButtonPaddingX = useResponsiveValue({
+    mobile: controls.mobConButtonPaddingX,
+    tablet: controls.tabConButtonPaddingX,
+    desktop: controls.deskConButtonPaddingX,
+    large: controls.deskConButtonPaddingX,
+    ultrawide: controls.deskConButtonPaddingX,
+  })
+  const conButtonPaddingY = useResponsiveValue({
+    mobile: controls.mobConButtonPaddingY,
+    tablet: controls.tabConButtonPaddingY,
+    desktop: controls.deskConButtonPaddingY,
+    large: controls.deskConButtonPaddingY,
+    ultrawide: controls.deskConButtonPaddingY,
+  })
+  const conButtonRoundness = useResponsiveValue({
+    mobile: controls.mobConButtonRoundness,
+    tablet: controls.tabConButtonRoundness,
+    desktop: controls.deskConButtonRoundness,
+    large: controls.deskConButtonRoundness,
+    ultrawide: controls.deskConButtonRoundness,
+  })
+  const conButtonBorder = useResponsiveValue({
+    mobile: controls.mobConButtonBorder,
+    tablet: controls.tabConButtonBorder,
+    desktop: controls.deskConButtonBorder,
+    large: controls.deskConButtonBorder,
+    ultrawide: controls.deskConButtonBorder,
+  })
   const conDescX = useResponsiveValue({
     mobile: controls.mobConDescX,
     tablet: controls.tabConDescX,
@@ -1398,6 +1434,21 @@ export default function ScrollContent() {
     deskConButtonY: controls.deskConButtonY,
     tabConButtonY: controls.tabConButtonY,
     mobConButtonY: controls.mobConButtonY,
+    deskConButtonScale: controls.deskConButtonScale,
+    tabConButtonScale: controls.tabConButtonScale,
+    mobConButtonScale: controls.mobConButtonScale,
+    deskConButtonPaddingX: controls.deskConButtonPaddingX,
+    tabConButtonPaddingX: controls.tabConButtonPaddingX,
+    mobConButtonPaddingX: controls.mobConButtonPaddingX,
+    deskConButtonPaddingY: controls.deskConButtonPaddingY,
+    tabConButtonPaddingY: controls.tabConButtonPaddingY,
+    mobConButtonPaddingY: controls.mobConButtonPaddingY,
+    deskConButtonRoundness: controls.deskConButtonRoundness,
+    tabConButtonRoundness: controls.tabConButtonRoundness,
+    mobConButtonRoundness: controls.mobConButtonRoundness,
+    deskConButtonBorder: controls.deskConButtonBorder,
+    tabConButtonBorder: controls.tabConButtonBorder,
+    mobConButtonBorder: controls.mobConButtonBorder,
     deskConDescX: controls.deskConDescX,
     tabConDescX: controls.tabConDescX,
     mobConDescX: controls.mobConDescX,
@@ -1506,7 +1557,11 @@ export default function ScrollContent() {
   return (
     <group ref={group}>
       {gridVisible && <Grid />}
-      <Header textStyles={textStyles} />
+      <Header
+        textStyles={textStyles}
+        globalFontColor={globalFontColor}
+        globalSvgColor={globalSvgColor}
+      />
 
       {/* C and H SVGs */}
       <group position={[0, viewport.height * chGroupY, 0]}>
@@ -1559,6 +1614,7 @@ export default function ScrollContent() {
         paddingYMult={1.0}
         border={controls.deskGlobalBorder}
         fontSize={viewport.height * 0.02}
+        borderColor={globalBorderColor}
       >
         more
       </TextWithBorder>
@@ -1592,6 +1648,7 @@ export default function ScrollContent() {
         paddingYMult={1.0}
         border={controls.deskGlobalBorder}
         fontSize={viewport.height * 0.02}
+        borderColor={globalBorderColor}
       >
         more
       </TextWithBorder>
@@ -1625,6 +1682,7 @@ export default function ScrollContent() {
         paddingYMult={1.0}
         border={controls.deskGlobalBorder}
         fontSize={viewport.height * 0.02}
+        borderColor={globalBorderColor}
       >
         more
       </TextWithBorder>
@@ -1662,13 +1720,15 @@ export default function ScrollContent() {
       <group position={[conX, viewport.height * conY, 0]}>
         <TextWithBorder
           position={[conButtonX, conButtonY, 0]}
-          roundness={0.1}
+          scale={conButtonScale}
+          roundness={conButtonRoundness}
           color={globalFontColor}
-          padding={moreButtonPaddingY}
-          paddingXMult={moreButtonPaddingX / moreButtonPaddingY}
+          padding={conButtonPaddingY}
+          paddingXMult={conButtonPaddingX / conButtonPaddingY}
           paddingYMult={1.0}
-          border={controls.deskGlobalBorder}
+          border={conButtonBorder}
           fontSize={viewport.height * 0.02}
+          borderColor={globalBorderColor}
         >
           GET IN CONTACT
         </TextWithBorder>

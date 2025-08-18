@@ -35,7 +35,7 @@ export default function BorderBox({
   }, [width, height])
 
   useEffect(() => {
-    uniforms.current.uBorder.value = border
+    uniforms.current.uBorder.value = border * 1.5
   }, [border])
 
   useEffect(() => {
