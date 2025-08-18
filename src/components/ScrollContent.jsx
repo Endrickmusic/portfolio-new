@@ -80,13 +80,18 @@ const textContent = {
 }
 
 // Page component for reusability
-function Headline({ title, position = [0, 0, 0], maxWidth }) {
+function Headline({
+  title,
+  position = [0, 0, 0],
+  maxWidth,
+  fontMultiplier = 0.045,
+}) {
   const { viewport } = useThree()
 
   return (
     <Text
       position={position}
-      fontSize={viewport.height * 0.045}
+      fontSize={viewport.height * fontMultiplier}
       color="#38358F"
       maxWidth={maxWidth}
       anchorX="left"
@@ -103,7 +108,13 @@ function Headline({ title, position = [0, 0, 0], maxWidth }) {
 }
 
 // Description component for reusability
-function Description({ paragraphs, position = [0, 0, 0], maxWidth, children }) {
+function Description({
+  paragraphs,
+  position = [0, 0, 0],
+  maxWidth,
+  children,
+  fontMultiplier = 0.023,
+}) {
   const { viewport } = useThree()
   const paragraphSpacing = viewport.height * 0.12
 
@@ -113,7 +124,7 @@ function Description({ paragraphs, position = [0, 0, 0], maxWidth, children }) {
         <Text
           key={index}
           position={position}
-          fontSize={viewport.height * 0.023}
+          fontSize={viewport.height * fontMultiplier}
           color="#38358f"
           maxWidth={maxWidth || viewport.width * 0.25}
           textAlign="left"
@@ -141,12 +152,14 @@ function PlaygroundSection({
   borderColor,
   paddingX,
   paddingY,
-  globalBorder,
+  buttonBorder,
   mbRoundness,
   mbBorderColor,
   mbPadding,
   mbPaddingXMult,
   mbPaddingYMult,
+  playHeaderFont,
+  descFont,
 }) {
   const { viewport } = useThree()
 
@@ -161,7 +174,7 @@ function PlaygroundSection({
       <BorderBox
         width={panelWidth}
         height={panelHeight}
-        border={globalBorder}
+        border={buttonBorder}
         roundness={roundness}
         color={borderColorVec}
         paddingX={paddingX}
@@ -173,7 +186,7 @@ function PlaygroundSection({
       {/* Title */}
       <Text
         position={[-viewport.width * 0.35, viewport.height * 0.2, 0]}
-        fontSize={viewport.height * 0.08}
+        fontSize={viewport.height * playHeaderFont}
         color="#38358f"
         anchorX="left"
         anchorY="middle"
@@ -186,7 +199,7 @@ function PlaygroundSection({
       {/* Description */}
       <Text
         position={[-viewport.width * 0.35, 0, 0]}
-        fontSize={viewport.height * 0.025}
+        fontSize={viewport.height * descFont}
         color="#38358f"
         maxWidth={viewport.width * 0.6}
         anchorX="left"
@@ -209,7 +222,7 @@ function PlaygroundSection({
           padding={mbPadding}
           paddingXMult={mbPaddingXMult}
           paddingYMult={mbPaddingYMult}
-          globalBorder={globalBorder}
+          globalBorder={buttonBorder}
         >
           MORE
         </TextWithBorder>
@@ -269,15 +282,18 @@ function Footer({ position = [0, 0, 0], footerControls }) {
       {/* Logo SVGs */}
       <group
         position={[
-          startX + contentWidth * getFooterResponsiveValue("LogoX"),
-          viewport.height * getFooterResponsiveValue("LogoY"),
+          startX + contentWidth * getFooterResponsiveValue("CHX"),
+          viewport.height * getFooterResponsiveValue("CHY"),
           0,
         ]}
       >
-        <Svg src="/svgs/C.svg" scale={viewport.height * 0.04} />
+        <Svg
+          src="/svgs/C.svg"
+          scale={viewport.height * getFooterResponsiveValue("CHScale")}
+        />
         <Svg
           src="/svgs/H.svg"
-          scale={viewport.height * 0.04}
+          scale={viewport.height * getFooterResponsiveValue("CHScale")}
           position={[viewport.width * 0.06, 0, 0]}
         />
       </group>
@@ -294,10 +310,10 @@ function Footer({ position = [0, 0, 0], footerControls }) {
         <Text
           position={[
             contentWidth * getFooterResponsiveValue("ContactEmailX"),
-            0,
+            viewport.height * getFooterResponsiveValue("TextY"),
             0,
           ]}
-          fontSize={viewport.height * 0.022}
+          fontSize={viewport.height * getFooterResponsiveValue("TextFont")}
           color="#38358f"
           anchorX="left"
           anchorY="middle"
@@ -308,8 +324,12 @@ function Footer({ position = [0, 0, 0], footerControls }) {
 
         {/* Social Links */}
         <Text
-          position={[contentWidth * getFooterResponsiveValue("SocialX"), 0, 0]}
-          fontSize={viewport.height * 0.022}
+          position={[
+            contentWidth * getFooterResponsiveValue("SocialX"),
+            viewport.height * getFooterResponsiveValue("TextY"),
+            0,
+          ]}
+          fontSize={viewport.height * getFooterResponsiveValue("TextFont")}
           color="#38358f"
           anchorX="left"
           anchorY="middle"
@@ -320,8 +340,12 @@ function Footer({ position = [0, 0, 0], footerControls }) {
 
         {/* Legal */}
         <Text
-          position={[contentWidth * getFooterResponsiveValue("LegalX"), 0, 0]}
-          fontSize={viewport.height * 0.022}
+          position={[
+            contentWidth * getFooterResponsiveValue("LegalX"),
+            viewport.height * getFooterResponsiveValue("TextY"),
+            0,
+          ]}
+          fontSize={viewport.height * getFooterResponsiveValue("TextFont")}
           color="#38358f"
           anchorX="left"
           anchorY="middle"
@@ -713,6 +737,15 @@ export default function ScrollContent() {
     deskGlobalBorder: controls.deskGlobalBorder,
     tabGlobalBorder: controls.tabGlobalBorder,
     mobGlobalBorder: controls.mobGlobalBorder,
+    deskGlobalButtonBorder: controls.deskGlobalButtonBorder,
+    tabGlobalButtonBorder: controls.tabGlobalButtonBorder,
+    mobGlobalButtonBorder: controls.mobGlobalButtonBorder,
+    deskHeadlineFont: controls.deskHeadlineFont,
+    tabHeadlineFont: controls.tabHeadlineFont,
+    mobHeadlineFont: controls.mobHeadlineFont,
+    deskDescFont: controls.deskDescFont,
+    tabDescFont: controls.tabDescFont,
+    mobDescFont: controls.mobDescFont,
     deskIntroX: controls.deskIntroX,
     tabIntroX: controls.tabIntroX,
     mobIntroX: controls.mobIntroX,
@@ -722,6 +755,11 @@ export default function ScrollContent() {
     deskIntroWidth: controls.deskIntroWidth,
     tabIntroWidth: controls.tabIntroWidth,
     mobIntroWidth: controls.mobIntroWidth,
+
+    // Playground fonts
+    deskPlayHeaderFont: controls.deskPlayHeaderFont,
+    tabPlayHeaderFont: controls.tabPlayHeaderFont,
+    mobPlayHeaderFont: controls.mobPlayHeaderFont,
 
     // Work 1
     deskW1X: controls.deskW1X,
@@ -748,6 +786,12 @@ export default function ScrollContent() {
     deskW1DescWidth: controls.deskW1DescWidth,
     tabW1DescWidth: controls.tabW1DescWidth,
     mobW1DescWidth: controls.mobW1DescWidth,
+    deskW1ImgScaleX: controls.deskW1ImgScaleX,
+    tabW1ImgScaleX: controls.tabW1ImgScaleX,
+    mobW1ImgScaleX: controls.mobW1ImgScaleX,
+    deskW1ImgScaleY: controls.deskW1ImgScaleY,
+    tabW1ImgScaleY: controls.tabW1ImgScaleY,
+    mobW1ImgScaleY: controls.mobW1ImgScaleY,
 
     // Work 2
     deskW2X: controls.deskW2X,
@@ -774,6 +818,12 @@ export default function ScrollContent() {
     deskW2DescWidth: controls.deskW2DescWidth,
     tabW2DescWidth: controls.tabW2DescWidth,
     mobW2DescWidth: controls.mobW2DescWidth,
+    deskW2ImgScaleX: controls.deskW2ImgScaleX,
+    tabW2ImgScaleX: controls.tabW2ImgScaleX,
+    mobW2ImgScaleX: controls.mobW2ImgScaleX,
+    deskW2ImgScaleY: controls.deskW2ImgScaleY,
+    tabW2ImgScaleY: controls.tabW2ImgScaleY,
+    mobW2ImgScaleY: controls.mobW2ImgScaleY,
 
     // Work 3
     deskW3X: controls.deskW3X,
@@ -800,6 +850,12 @@ export default function ScrollContent() {
     deskW3DescWidth: controls.deskW3DescWidth,
     tabW3DescWidth: controls.tabW3DescWidth,
     mobW3DescWidth: controls.mobW3DescWidth,
+    deskW3ImgScaleX: controls.deskW3ImgScaleX,
+    tabW3ImgScaleX: controls.tabW3ImgScaleX,
+    mobW3ImgScaleX: controls.mobW3ImgScaleX,
+    deskW3ImgScaleY: controls.deskW3ImgScaleY,
+    tabW3ImgScaleY: controls.tabW3ImgScaleY,
+    mobW3ImgScaleY: controls.mobW3ImgScaleY,
 
     // Playground
     deskPlayX: controls.deskPlayX,
@@ -845,6 +901,16 @@ export default function ScrollContent() {
     deskFooterLogoY: footerControls.deskFooterLogoY,
     tabFooterLogoY: footerControls.tabFooterLogoY,
     mobFooterLogoY: footerControls.mobFooterLogoY,
+    // Footer CH controls
+    deskFooterCHX: footerControls.deskFooterCHX,
+    tabFooterCHX: footerControls.tabFooterCHX,
+    mobFooterCHX: footerControls.mobFooterCHX,
+    deskFooterCHY: footerControls.deskFooterCHY,
+    tabFooterCHY: footerControls.tabFooterCHY,
+    mobFooterCHY: footerControls.mobFooterCHY,
+    deskFooterCHScale: footerControls.deskFooterCHScale,
+    tabFooterCHScale: footerControls.tabFooterCHScale,
+    mobFooterCHScale: footerControls.mobFooterCHScale,
     deskFooterContactY: footerControls.deskFooterContactY,
     tabFooterContactY: footerControls.tabFooterContactY,
     mobFooterContactY: footerControls.mobFooterContactY,
@@ -857,6 +923,12 @@ export default function ScrollContent() {
     deskFooterLegalX: footerControls.deskFooterLegalX,
     tabFooterLegalX: footerControls.tabFooterLegalX,
     mobFooterLegalX: footerControls.mobFooterLegalX,
+    deskFooterTextFont: footerControls.deskFooterTextFont,
+    tabFooterTextFont: footerControls.tabFooterTextFont,
+    mobFooterTextFont: footerControls.mobFooterTextFont,
+    deskFooterTextY: footerControls.deskFooterTextY,
+    tabFooterTextY: footerControls.tabFooterTextY,
+    mobFooterTextY: footerControls.mobFooterTextY,
   })
 
   // Animation
@@ -896,51 +968,57 @@ export default function ScrollContent() {
       <Image
         url="/images/vellum_dance_main.png"
         position={[w1X, viewport.height * w1Y, 0]}
-        scale={[1.5, 0.9, 1]}
+        scale={[controls.deskW1ImgScaleX, controls.deskW1ImgScaleY, 1]}
       />
       <Headline
         title={textContent.page1.title}
         position={[w1TitleX, viewport.height * w1TitleY, 0]}
         maxWidth={viewport.width * w1TitleWidth}
+        fontMultiplier={controls.deskHeadlineFont}
       />
       <Description
         paragraphs={textContent.page1.paragraphs}
         position={[w1DescX, viewport.height * w1DescY, 0]}
         maxWidth={viewport.width * w1DescWidth}
+        fontMultiplier={controls.deskDescFont}
       />
 
       {/* Work 2 - Liquid Prism */}
       <Image
         url="/images/liquid_prism_main.png"
         position={[w2X, viewport.height * w2Y, 0]}
-        scale={[1.2, 0.9, 1]}
+        scale={[controls.deskW2ImgScaleX, controls.deskW2ImgScaleY, 1]}
       />
       <Headline
         title={textContent.page2.title}
         position={[w2TitleX, viewport.height * w2TitleY, 0]}
         maxWidth={viewport.width * w2TitleWidth}
+        fontMultiplier={controls.deskHeadlineFont}
       />
       <Description
         paragraphs={textContent.page2.paragraphs}
         position={[w2DescX, viewport.height * w2DescY, 0]}
         maxWidth={viewport.width * w2DescWidth}
+        fontMultiplier={controls.deskDescFont}
       />
 
       {/* Work 3 - Swarm Dynamics */}
       <Image
         url="/images/particles_main.png"
         position={[w3X, viewport.height * w3Y, 0]}
-        scale={[1.2, 0.9, 1]}
+        scale={[controls.deskW3ImgScaleX, controls.deskW3ImgScaleY, 1]}
       />
       <Headline
         title={textContent.page3.title}
         position={[w3TitleX, viewport.height * w3TitleY, 0]}
         maxWidth={viewport.width * w3TitleWidth}
+        fontMultiplier={controls.deskHeadlineFont}
       />
       <Description
         paragraphs={textContent.page3.paragraphs}
         position={[w3DescX, viewport.height * w3DescY, 0]}
         maxWidth={viewport.width * w3DescWidth}
+        fontMultiplier={controls.deskDescFont}
       />
 
       {/* Playground Section */}
@@ -952,12 +1030,14 @@ export default function ScrollContent() {
         borderColor={controls.borderColor}
         paddingX={controls.paddingX}
         paddingY={controls.paddingY}
-        globalBorder={controls.globalBorder}
+        buttonBorder={controls.deskGlobalButtonBorder}
         mbRoundness={controls.mbRoundness}
         mbBorderColor={controls.mbBorderColor}
         mbPadding={controls.mbPadding}
         mbPaddingXMult={controls.mbPaddingXMult}
         mbPaddingYMult={controls.mbPaddingYMult}
+        playHeaderFont={controls.deskPlayHeaderFont}
+        descFont={controls.deskDescFont}
       />
 
       {/* Get in Contact */}
@@ -969,7 +1049,7 @@ export default function ScrollContent() {
           padding={controls.mbPadding}
           paddingXMult={controls.mbPaddingXMult}
           paddingYMult={controls.mbPaddingYMult}
-          globalBorder={controls.globalBorder}
+          globalBorder={controls.deskGlobalButtonBorder}
         >
           GET IN CONTACT
         </TextWithBorder>

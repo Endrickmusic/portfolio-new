@@ -77,22 +77,51 @@ export const controlsConfig = {
   content: {
     global: {
       section: "Global",
-      properties: ["globalBorder"],
+      properties: [
+        "globalBorder",
+        "globalButtonBorder",
+        "headlineFont",
+        "descFont",
+      ],
       defaults: {
         desktop: {
           globalBorder: 0.01,
+          globalButtonBorder: 0.01,
+          headlineFont: 0.045,
+          descFont: 0.023,
         },
         tablet: {
           globalBorder: 0.01,
+          globalButtonBorder: 0.01,
+          headlineFont: 0.045,
+          descFont: 0.023,
         },
         mobile: {
           globalBorder: 0.01,
+          globalButtonBorder: 0.01,
+          headlineFont: 0.045,
+          descFont: 0.023,
         },
       },
       ranges: {
         globalBorder: {
           min: 0,
           max: 0.1,
+          step: 0.001,
+        },
+        globalButtonBorder: {
+          min: 0,
+          max: 0.1,
+          step: 0.001,
+        },
+        headlineFont: {
+          min: 0,
+          max: 0.2,
+          step: 0.001,
+        },
+        descFont: {
+          min: 0,
+          max: 0.2,
           step: 0.001,
         },
       },
@@ -146,6 +175,8 @@ export const controlsConfig = {
         "w1DescX",
         "w1DescY",
         "w1DescWidth",
+        "w1ImgScaleX",
+        "w1ImgScaleY",
       ],
       defaults: {
         desktop: {
@@ -157,6 +188,8 @@ export const controlsConfig = {
           w1DescX: 0.49,
           w1DescY: -0.53,
           w1DescWidth: 0.28,
+          w1ImgScaleX: 1.5,
+          w1ImgScaleY: 0.9,
         },
         tablet: {
           w1X: -0.13,
@@ -167,6 +200,8 @@ export const controlsConfig = {
           w1DescX: 0.77,
           w1DescY: -0.53,
           w1DescWidth: 1.3,
+          w1ImgScaleX: 1.5,
+          w1ImgScaleY: 0.9,
         },
         mobile: {
           w1X: -0.13,
@@ -177,6 +212,8 @@ export const controlsConfig = {
           w1DescX: 1,
           w1DescY: -0.81,
           w1DescWidth: 1,
+          w1ImgScaleX: 1.5,
+          w1ImgScaleY: 0.9,
         },
       },
       ranges: {
@@ -220,6 +257,16 @@ export const controlsConfig = {
           max: 3,
           step: 0.01,
         },
+        w1ImgScaleX: {
+          min: 0,
+          max: 3,
+          step: 0.01,
+        },
+        w1ImgScaleY: {
+          min: 0,
+          max: 3,
+          step: 0.01,
+        },
       },
     },
     work2: {
@@ -233,6 +280,8 @@ export const controlsConfig = {
         "w2DescX",
         "w2DescY",
         "w2DescWidth",
+        "w2ImgScaleX",
+        "w2ImgScaleY",
       ],
       defaults: {
         desktop: {
@@ -244,6 +293,8 @@ export const controlsConfig = {
           w2DescX: -1.14,
           w2DescY: -0.75,
           w2DescWidth: 0.3,
+          w2ImgScaleX: 1.2,
+          w2ImgScaleY: 0.9,
         },
         tablet: {
           w2X: 1,
@@ -254,6 +305,8 @@ export const controlsConfig = {
           w2DescX: -1.2,
           w2DescY: -0.75,
           w2DescWidth: 1.3,
+          w2ImgScaleX: 1.2,
+          w2ImgScaleY: 0.9,
         },
         mobile: {
           w2X: -0.08,
@@ -264,6 +317,8 @@ export const controlsConfig = {
           w2DescX: -0.4,
           w2DescY: -1.1,
           w2DescWidth: 0.8,
+          w2ImgScaleX: 1.2,
+          w2ImgScaleY: 0.9,
         },
       },
       ranges: {
@@ -307,6 +362,16 @@ export const controlsConfig = {
           max: 3,
           step: 0.01,
         },
+        w2ImgScaleX: {
+          min: 0,
+          max: 3,
+          step: 0.01,
+        },
+        w2ImgScaleY: {
+          min: 0,
+          max: 3,
+          step: 0.01,
+        },
       },
     },
     work3: {
@@ -320,6 +385,8 @@ export const controlsConfig = {
         "w3DescX",
         "w3DescY",
         "w3DescWidth",
+        "w3ImgScaleX",
+        "w3ImgScaleY",
       ],
       defaults: {
         desktop: {
@@ -331,6 +398,8 @@ export const controlsConfig = {
           w3DescX: 0.1,
           w3DescY: -0.97,
           w3DescWidth: 0.21,
+          w3ImgScaleX: 1.2,
+          w3ImgScaleY: 0.9,
         },
         tablet: {
           w3X: -1.2,
@@ -341,6 +410,8 @@ export const controlsConfig = {
           w3DescX: 0.1,
           w3DescY: -0.97,
           w3DescWidth: 1.3,
+          w3ImgScaleX: 1.2,
+          w3ImgScaleY: 0.9,
         },
         mobile: {
           w3X: -0.18,
@@ -351,6 +422,8 @@ export const controlsConfig = {
           w3DescX: -0.44,
           w3DescY: -1.56,
           w3DescWidth: 1,
+          w3ImgScaleX: 1.2,
+          w3ImgScaleY: 0.9,
         },
       },
       ranges: {
@@ -394,23 +467,36 @@ export const controlsConfig = {
           max: 3,
           step: 0.01,
         },
+        w3ImgScaleX: {
+          min: 0,
+          max: 3,
+          step: 0.01,
+        },
+        w3ImgScaleY: {
+          min: 0,
+          max: 3,
+          step: 0.01,
+        },
       },
     },
     playground: {
       section: "Playground",
-      properties: ["playX", "playY"],
+      properties: ["playX", "playY", "playHeaderFont"],
       defaults: {
         desktop: {
           playX: 0.1,
           playY: -2.43,
+          playHeaderFont: 0.08,
         },
         tablet: {
           playX: 0.1,
           playY: -2.5,
+          playHeaderFont: 0.08,
         },
         mobile: {
           playX: 0.1,
           playY: -2.5,
+          playHeaderFont: 0.08,
         },
       },
       ranges: {
@@ -423,6 +509,11 @@ export const controlsConfig = {
           min: -5,
           max: 5,
           step: 0.01,
+        },
+        playHeaderFont: {
+          min: 0,
+          max: 0.2,
+          step: 0.001,
         },
       },
     },
@@ -512,41 +603,65 @@ export const controlsConfig = {
       "footerNavY",
       "footerLogoX",
       "footerLogoY",
+      "footerCHX",
+      "footerCHY",
+      "footerCHScale",
       "footerContactY",
       "footerContactEmailX",
       "footerSocialX",
       "footerLegalX",
+      "footerTextX",
+      "footerTextY",
+      "footerTextFont",
     ],
     defaults: {
       desktop: {
         footerY: -4.2,
         footerNavY: 0.4,
-        footerLogoX: -0.2,
-        footerLogoY: 0.95,
+        footerLogoX: 3.92,
+        footerLogoY: -0.69,
+        footerCHX: 0.06,
+        footerCHY: 0.33,
+        footerCHScale: 0.003,
         footerContactY: -0.35,
-        footerContactEmailX: 0.2,
+        footerContactEmailX: 0.32,
         footerSocialX: 0.6,
         footerLegalX: 0.85,
+        footerTextX: 0,
+        footerTextY: 0,
+        footerTextFont: 0.022,
       },
       tablet: {
         footerY: -4.2,
         footerNavY: 0.4,
         footerLogoX: -0.2,
         footerLogoY: 0.95,
+        footerCHX: 0,
+        footerCHY: 0.95,
+        footerCHScale: 0.04,
         footerContactY: -0.35,
         footerContactEmailX: 0.2,
         footerSocialX: 0.6,
         footerLegalX: 0.85,
+        footerTextX: 0,
+        footerTextY: 0,
+        footerTextFont: 0.022,
       },
       mobile: {
         footerY: -4.2,
         footerNavY: 0.4,
         footerLogoX: -0.2,
         footerLogoY: 0.95,
+        footerCHX: 0,
+        footerCHY: 0.95,
+        footerCHScale: 0.04,
         footerContactY: -0.35,
         footerContactEmailX: 0.15,
         footerSocialX: 0.45,
         footerLegalX: 0.7,
+        footerTextX: 0,
+        footerTextY: 0,
+        footerTextFont: 0.022,
       },
     },
     ranges: {
@@ -570,6 +685,21 @@ export const controlsConfig = {
         max: 5,
         step: 0.01,
       },
+      footerCHX: {
+        min: -5,
+        max: 5,
+        step: 0.01,
+      },
+      footerCHY: {
+        min: -5,
+        max: 5,
+        step: 0.01,
+      },
+      footerCHScale: {
+        min: 0,
+        max: 0.2,
+        step: 0.001,
+      },
       footerContactY: {
         min: -5,
         max: 5,
@@ -589,6 +719,21 @@ export const controlsConfig = {
         min: -5,
         max: 5,
         step: 0.01,
+      },
+      footerTextX: {
+        min: -5,
+        max: 5,
+        step: 0.01,
+      },
+      footerTextY: {
+        min: -5,
+        max: 5,
+        step: 0.01,
+      },
+      footerTextFont: {
+        min: 0,
+        max: 0.2,
+        step: 0.001,
       },
     },
   },
