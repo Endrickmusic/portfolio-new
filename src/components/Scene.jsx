@@ -1,98 +1,64 @@
-import { ScrollControls, useFBO } from "@react-three/drei"
-import { createPortal, useFrame, useThree } from "@react-three/fiber"
-import * as THREE from "three"
-import { useMemo, useEffect, useRef } from "react"
-import { Perf } from "r3f-perf"
-import { useControls } from "leva"
-
+import { Canvas } from "@react-three/fiber"
+import { ScrollControls } from "@react-three/drei"
+import { Leva, useControls } from "leva"
 import ScrollContent from "./ScrollContent"
+import Grid from "./Grid"
 import PostProcessPlane from "./PostProcessPlane"
 
-// Main scene component
-export default function Scene() {
-  const boxRef = useRef()
-  const boxRef2 = useRef()
-  const { viewport, size } = useThree()
-
-  // FBO resolution control
+function CanvasWrapper({ onWork1More, onWork2More, onWork3More }) {
   const { fboScale, adaptiveRes, dprMax, fboSamples } = useControls(
     "Canvas and Render Quality",
     {
-      fboScale: { value: 3, min: 1, max: 8, step: 1 },
+      fboScale: { value: 1.0, min: 0.5, max: 2.0, step: 0.1 },
       adaptiveRes: { value: true },
-      dprMax: { value: 2, min: 1, max: 3, step: 0.5 },
-      fboSamples: { value: 2, min: 0, max: 8, step: 1 },
+      dprMax: { value: 2.0, min: 1.0, max: 4.0, step: 0.5 },
+      fboSamples: { value: 4, min: 0, max: 16, step: 1 },
     },
     {
       collapsed: true,
     }
   )
 
-  const fbo = useFBO(
-    adaptiveRes
-      ? Math.min(
-          size.width *
-            Math.min(Math.min(window.devicePixelRatio, dprMax) * fboScale, 8),
-          8192
-        )
-      : size.width * fboScale,
-    adaptiveRes
-      ? Math.min(
-          size.height *
-            Math.min(Math.min(window.devicePixelRatio, dprMax) * fboScale, 8),
-          8192
-        )
-      : size.height * fboScale,
-    {
-      samples: fboSamples, // Controllable MSAA
-      type: THREE.HalfFloatType,
-      format: THREE.RGBAFormat,
-      generateMipmaps: false,
-      minFilter: THREE.LinearFilter,
-      magFilter: THREE.LinearFilter,
-    }
-  )
-  const virtualScene = useMemo(() => {
-    const scene = new THREE.Scene()
-    scene.background = new THREE.Color("#f2f2f2")
-    return scene
-  }, [])
-  const virtualCamera = useMemo(() => {
-    return new THREE.OrthographicCamera(
-      -viewport.width / 2,
-      viewport.width / 2,
-      viewport.height / 2,
-      -viewport.height / 2,
-      0.1,
-      1000
-    )
-  }, [viewport])
-
-  useEffect(() => {
-    virtualCamera.position.z = 5
-  }, [virtualCamera])
-
-  useFrame((state) => {
-    // Render the children to our FBO
-
-    state.gl.setRenderTarget(fbo)
-    state.gl.render(virtualScene, virtualCamera)
-    state.gl.setRenderTarget(null)
-  })
-
   return (
-    <>
-      {/* <Perf position="top-left" /> */}
-      <ScrollControls pages={3} damping={0.1}>
-        {createPortal(
-          <>
-            <ScrollContent />
-          </>,
-          virtualScene
-        )}
-
-        <PostProcessPlane texture={fbo.texture} />
+    <Canvas
+      camera={{ position: [0, 0, 2], fov: 75 }}
+      className="w-full h-full"
+      dpr={[1, dprMax]}
+      gl={{
+        antialias: true,
+        alpha: false,
+        powerPreference: "high-performance",
+        stencil: false,
+        depth: true,
+        logarithmicDepthBuffer: false,
+      }}
+    >
+      <ScrollControls pages={4} damping={0.1}>
+        <ScrollContent
+          onWork1More={onWork1More}
+          onWork2More={onWork2More}
+          onWork3More={onWork3More}
+        />
+        <Grid />
+        <PostProcessPlane
+          fboScale={fboScale}
+          adaptiveRes={adaptiveRes}
+          fboSamples={fboSamples}
+        />
       </ScrollControls>
-    </>
+    </Canvas>
+  )
+}
+
+export default function Scene({ onWork1More, onWork2More, onWork3More }) {
+  return (
+    <div className="w-screen h-screen overflow-hidden">
+      <Leva collapsed oneLineLabels hideTitleBar />
+      <CanvasWrapper
+        onWork1More={onWork1More}
+        onWork2More={onWork2More}
+        onWork3More={onWork3More}
+      />
+    </div>
   )
 }

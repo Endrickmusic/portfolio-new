@@ -252,7 +252,7 @@ export default function PostProcessPlane({ texture }) {
       material.uniforms.uAberrationSlide.value = aberrationSlide
       material.uniforms.uFbmOctaves.value = fbmOctaves
 
-      if (scroll.offset !== undefined) {
+      if (scroll && scroll.offset !== undefined) {
         material.uniforms.uScroll.value = scroll.offset
 
         // Calculate scroll velocity

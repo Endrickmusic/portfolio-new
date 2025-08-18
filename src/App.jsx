@@ -1,49 +1,33 @@
-import { Canvas } from "@react-three/fiber"
-import { Leva, useControls } from "leva"
-
+import { Routes, Route, useNavigate } from "react-router-dom"
 import Scene from "./components/Scene"
+import Work1Detail from "./components/Work1Detail"
+import Work2Detail from "./components/Work2Detail"
+import Work3Detail from "./components/Work3Detail"
 
-import "./index.css"
+function App() {
+  const navigate = useNavigate()
 
-function CanvasWrapper() {
-  const { canvasDpr, canvasAntialias } = useControls(
-    "Canvas and Render Quality",
-    {
-      canvasDpr: {
-        value: [1, 2],
-        options: { "1x": [1, 1], "1-2x": [1, 2], "2x": [2, 2], "1-3x": [1, 3] },
-      },
-      canvasAntialias: { value: true },
-    },
-    {
-      collapsed: true,
-    }
-  )
+  const handleWork1More = () => navigate("/work1")
+  const handleWork2More = () => navigate("/work2")
+  const handleWork3More = () => navigate("/work3")
 
   return (
-    <Canvas
-      camera={{ position: [0, 0, 2], fov: 75 }}
-      className="w-full h-full"
-      dpr={canvasDpr}
-      gl={{
-        antialias: canvasAntialias,
-        alpha: false,
-        powerPreference: "high-performance",
-        stencil: false,
-        depth: true,
-        logarithmicDepthBuffer: false,
-      }}
-    >
-      <Scene />
-    </Canvas>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <Scene
+            onWork1More={handleWork1More}
+            onWork2More={handleWork2More}
+            onWork3More={handleWork3More}
+          />
+        }
+      />
+      <Route path="/work1" element={<Work1Detail />} />
+      <Route path="/work2" element={<Work2Detail />} />
+      <Route path="/work3" element={<Work3Detail />} />
+    </Routes>
   )
 }
 
-export default function App() {
-  return (
-    <div className="w-screen h-screen overflow-hidden">
-      <Leva collapsed oneLineLabels hideTitleBar />
-      <CanvasWrapper />
-    </div>
-  )
-}
+export default App

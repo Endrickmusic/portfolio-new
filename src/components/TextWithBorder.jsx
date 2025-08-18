@@ -1,134 +1,82 @@
 // TextWithBorder.jsx
 import { Text } from "@react-three/drei"
-import { useCallback, useRef, useEffect } from "react"
+import { useThree } from "@react-three/fiber"
+import { useRef, useEffect } from "react"
 import * as THREE from "three"
 import { borderVertex, borderFragment } from "../shaders/border.jsx"
 
 export default function TextWithBorder({
   children,
-  font,
-  fontSize = 0.25,
-  color = "black",
-  borderColor = [0, 0, 0],
-  padding = 0.2,
-  border = 0.01,
-  roundness = 0.1,
   position = [0, 0, 0],
-  scale = 1.0,
-  planeZ = 0.0,
-  textZ = 0.01,
+  fontSize = 0.1,
+  color = "#000000",
+  maxWidth = 1.0,
   anchorX = "center",
   anchorY = "middle",
+  font = "/fonts/ibm-plex-mono-latin-400-normal.woff",
+  letterSpacing = 0.02,
+  lineHeight = 1.2,
+  roundness = 0.1,
+  padding = 0.1,
   paddingXMult = 1.0,
   paddingYMult = 1.0,
-  paddingX = undefined,
-  paddingY = undefined,
-  minWidth = 0.0,
-  minHeight = 0.0,
+  border = 0.01,
+  borderColor = "#000000",
+  scale = 1.0,
+  onClick,
 }) {
-  const textSize = useRef({ width: 0, height: 0 })
-
-  // Stable uniforms object; update .value fields instead of replacing the object
-  const uniforms = useRef({
-    width: { value: 0.5 },
-    height: { value: 0.7 },
-    border: { value: border },
-    roundness: { value: roundness },
-    borderColor: {
-      value: Array.isArray(borderColor)
-        ? borderColor
-        : new THREE.Color(borderColor).toArray(),
-    },
-  }).current
-
-  // Update uniforms when controls change
-  useEffect(() => {
-    uniforms.border.value = border
-  }, [border, uniforms])
+  const { viewport } = useThree()
+  const textRef = useRef()
+  const borderRef = useRef()
 
   useEffect(() => {
-    uniforms.roundness.value = roundness
-  }, [roundness, uniforms])
+    if (textRef.current && borderRef.current) {
+      const textBounds = new THREE.Box3().setFromObject(textRef.current)
+      const textSize = new THREE.Vector3()
+      textBounds.getSize(textSize)
 
-  useEffect(() => {
-    uniforms.borderColor.value = Array.isArray(borderColor)
-      ? borderColor
-      : new THREE.Color(borderColor).toArray()
-  }, [borderColor, uniforms])
+      const borderWidth = textSize.x * paddingXMult + padding * 2
+      const borderHeight = textSize.y * paddingYMult + padding * 2
 
-  const updateFromSize = useCallback(() => {
-    // Prefer explicit paddingX/paddingY if provided; otherwise fall back to legacy padding * multipliers
-    const horizPadding =
-      paddingX !== undefined
-        ? Math.max(0, paddingX)
-        : padding * Math.max(0, paddingXMult)
-    const vertPadding =
-      paddingY !== undefined
-        ? Math.max(0, paddingY)
-        : padding * Math.max(0, paddingYMult)
+      // Update border geometry
+      borderRef.current.geometry.dispose()
+      borderRef.current.geometry = new THREE.PlaneGeometry(
+        borderWidth,
+        borderHeight
+      )
 
-    // const computedW = textSize.current.width + horizPadding * 2
-    const computedW = textSize.current.width * 2 + horizPadding
-    const computedH = textSize.current.height + vertPadding * 2
-    const w = Math.max(minWidth, computedW)
-    const h = Math.max(minHeight, computedH)
-    uniforms.width.value = Math.max(0.0001, w)
-    uniforms.height.value = Math.max(0.0001, h)
-  }, [
-    padding,
-    paddingXMult,
-    paddingYMult,
-    paddingX,
-    paddingY,
-    minWidth,
-    minHeight,
-    uniforms,
-  ])
+      // Position border behind text
+      borderRef.current.position.z = -0.001
+    }
+  }, [children, padding, paddingXMult, paddingYMult])
 
-  const onSync = useCallback(
-    (mesh) => {
-      if (!mesh?.geometry) return
-      mesh.geometry.computeBoundingBox()
-      const b = mesh.geometry.boundingBox
-      textSize.current = { width: b.max.x - b.min.x, height: b.max.y - b.min.y }
-      updateFromSize()
-    },
-    [updateFromSize]
-  )
-
-  useEffect(() => {
-    updateFromSize()
-  }, [updateFromSize])
+  const handleClick = (event) => {
+    if (onClick) {
+      event.stopPropagation()
+      onClick()
+    }
+  }
 
   return (
-    <group position={position} scale={scale}>
-      <mesh position={[0, 0, planeZ]}>
+    <group scale={scale} onClick={handleClick}>
+      {/* Border */}
+      <mesh ref={borderRef} position={position}>
         <planeGeometry args={[1, 1]} />
-        <shaderMaterial
-          vertexShader={borderVertex}
-          fragmentShader={borderFragment}
-          transparent
-          depthWrite={false}
-          toneMapped={false}
-          uniforms={uniforms}
-          alphaTest={0.001}
-        />
+        <meshBasicMaterial color={borderColor} />
       </mesh>
 
+      {/* Text */}
       <Text
-        position={[0, 0, textZ]}
-        color={color}
-        font={font}
+        ref={textRef}
+        position={position}
         fontSize={fontSize}
+        color={color}
+        maxWidth={maxWidth}
         anchorX={anchorX}
         anchorY={anchorY}
-        onSync={onSync}
-        glyphGeometryDetail={64}
-        renderOrder={1}
-        outlineWidth={0}
-        outlineColor="transparent"
-        strokeWidth={0}
-        strokeColor="transparent"
+        font={font}
+        letterSpacing={letterSpacing}
+        lineHeight={lineHeight}
       >
         {children}
       </Text>

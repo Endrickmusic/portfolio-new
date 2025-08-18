@@ -109,12 +109,24 @@ function Headline({
 // Description component for reusability
 function Description({
   paragraphs,
+  children,
   position = [0, 0, 0],
   maxWidth,
   fontMultiplier = 0.023,
   fontColor,
 }) {
   const { viewport } = useThree()
+
+  // Handle both paragraphs array and children string
+  let content = ""
+  if (paragraphs && Array.isArray(paragraphs)) {
+    content = paragraphs.join("\n\n")
+  } else if (children) {
+    content = children
+  } else {
+    console.warn("Description component: no paragraphs or children provided")
+    return null
+  }
 
   return (
     <Text
@@ -128,7 +140,7 @@ function Description({
       letterSpacing={0.02}
       lineHeight={1.5}
     >
-      {paragraphs.join("\n\n")}
+      {content}
     </Text>
   )
 }
@@ -421,7 +433,11 @@ function Footer({
   )
 }
 
-export default function ScrollContent() {
+export default function ScrollContent({
+  onWork1More,
+  onWork2More,
+  onWork3More,
+}) {
   const scroll = useScroll()
   const group = useRef()
   const { viewport } = useThree()
@@ -1549,10 +1565,15 @@ export default function ScrollContent() {
 
   // Animation
   useFrame(() => {
-    if (group.current && scroll.range) {
+    if (group.current && scroll && scroll.range) {
       group.current.position.y = scroll.offset * 4.2 * viewport.height
     }
   })
+
+  // Add click handlers for MORE buttons
+  const handleWork1More = () => onWork1More()
+  const handleWork2More = () => onWork2More()
+  const handleWork3More = () => onWork3More()
 
   return (
     <group ref={group}>
@@ -1586,106 +1607,124 @@ export default function ScrollContent() {
       />
 
       {/* Work 1 - Vellum Dance */}
-      <Image
-        url="/images/vellum_dance_main.png"
-        position={[w1ImgX, viewport.height * w1Y, 0]}
-        scale={[controls.deskW1ImgScaleX, controls.deskW1ImgScaleY, 1]}
-      />
-      <Headline
-        title={textContent.page1.title}
-        position={[w1TitleX, viewport.height * w1TitleY, 0]}
-        maxWidth={viewport.width * w1TitleWidth}
-        fontMultiplier={controls.deskHeadlineFont}
-        fontColor={globalFontColor}
-      />
-      <Description
-        paragraphs={textContent.page1.paragraphs}
-        position={[w1DescX, viewport.height * w1DescY, 0]}
-        maxWidth={viewport.width * w1DescWidth}
-        fontMultiplier={controls.deskDescFont}
-        fontColor={globalFontColor}
-      />
-      <TextWithBorder
-        position={[w1MoreX, viewport.height * w1MoreY, 0]}
-        roundness={0.1}
-        color={globalFontColor}
-        padding={moreButtonPaddingY}
-        paddingXMult={moreButtonPaddingX / moreButtonPaddingY}
-        paddingYMult={1.0}
-        border={controls.deskGlobalBorder}
-        fontSize={viewport.height * 0.02}
-        borderColor={globalBorderColor}
-      >
-        more
-      </TextWithBorder>
+      <group position={[w1ImgX, w1Y, 0]}>
+        <Image
+          url="/images/vellum_dance_main.png"
+          scale={[controls.deskW1ImgScaleX, controls.deskW1ImgScaleY, 1]}
+        />
+        <Headline
+          position={[0, viewport.height * 0.15, 0.01]}
+          fontMultiplier={controls.deskHeadlineFont}
+          color={globalFontColor}
+        >
+          Vellum Dance
+        </Headline>
+        <Description
+          position={[0, viewport.height * 0.05, 0.01]}
+          maxWidth={controls.deskW1DescWidth}
+          fontMultiplier={controls.deskDescFont}
+          color={globalFontColor}
+        >
+          Movement woven into matter. Composing a fabric simulation in
+          real-time, capturing the ephemeral tension between body, force, and
+          material.
+        </Description>
+        <TextWithBorder
+          position={[w1MoreX, w1MoreY, 0.01]}
+          scale={w1MoreScale}
+          roundness={0.1}
+          color={globalFontColor}
+          padding={moreButtonPaddingY}
+          paddingXMult={moreButtonPaddingX / moreButtonPaddingY}
+          paddingYMult={1.0}
+          border={controls.deskGlobalButtonBorder}
+          fontSize={viewport.height * 0.02}
+          borderColor={globalBorderColor}
+          onClick={handleWork1More}
+        >
+          MORE
+        </TextWithBorder>
+      </group>
 
       {/* Work 2 - Liquid Prism */}
-      <Image
-        url="/images/liquid_prism_main.png"
-        position={[w2ImgX, viewport.height * w2Y, 0]}
-        scale={[controls.deskW2ImgScaleX, controls.deskW2ImgScaleY, 1]}
-      />
-      <Headline
-        title={textContent.page2.title}
-        position={[w2TitleX, viewport.height * w2TitleY, 0]}
-        maxWidth={viewport.width * w2TitleWidth}
-        fontMultiplier={controls.deskHeadlineFont}
-        fontColor={globalFontColor}
-      />
-      <Description
-        paragraphs={textContent.page2.paragraphs}
-        position={[w2DescX, viewport.height * w2DescY, 0]}
-        maxWidth={viewport.width * w2DescWidth}
-        fontMultiplier={controls.deskDescFont}
-        fontColor={globalFontColor}
-      />
-      <TextWithBorder
-        position={[w2MoreX, viewport.height * w2MoreY, 0]}
-        roundness={0.1}
-        color={globalFontColor}
-        padding={moreButtonPaddingY}
-        paddingXMult={moreButtonPaddingX / moreButtonPaddingY}
-        paddingYMult={1.0}
-        border={controls.deskGlobalBorder}
-        fontSize={viewport.height * 0.02}
-        borderColor={globalBorderColor}
-      >
-        more
-      </TextWithBorder>
+      <group position={[w2ImgX, w2Y, 0]}>
+        <Image
+          url="/images/liquid_prism_main.png"
+          scale={[controls.deskW2ImgScaleX, controls.deskW2ImgScaleY, 1]}
+        />
+        <Headline
+          position={[0, viewport.height * 0.15, 0.01]}
+          fontMultiplier={controls.deskHeadlineFont}
+          color={globalFontColor}
+        >
+          Liquid Prism
+        </Headline>
+        <Description
+          position={[0, viewport.height * 0.05, 0.01]}
+          maxWidth={controls.deskW2DescWidth}
+          fontMultiplier={controls.deskDescFont}
+          color={globalFontColor}
+        >
+          A fluid dynamics simulation that explores the intersection of light,
+          liquid, and computational art. Real-time rendering of complex fluid
+          behaviors with photorealistic optical effects.
+        </Description>
+        <TextWithBorder
+          position={[w2MoreX, w2MoreY, 0.01]}
+          scale={w2MoreScale}
+          roundness={0.1}
+          color={globalFontColor}
+          padding={moreButtonPaddingY}
+          paddingXMult={moreButtonPaddingX / moreButtonPaddingY}
+          paddingYMult={1.0}
+          border={controls.deskGlobalButtonBorder}
+          fontSize={viewport.height * 0.02}
+          borderColor={globalBorderColor}
+          onClick={handleWork2More}
+        >
+          MORE
+        </TextWithBorder>
+      </group>
 
       {/* Work 3 - Swarm Dynamics */}
-      <Image
-        url="/images/particles_main.png"
-        position={[w3ImgX, viewport.height * w3Y, 0]}
-        scale={[controls.deskW3ImgScaleX, controls.deskW3ImgScaleY, 1]}
-      />
-      <Headline
-        title={textContent.page3.title}
-        position={[w3TitleX, viewport.height * w3TitleY, 0]}
-        maxWidth={viewport.width * w3TitleWidth}
-        fontMultiplier={controls.deskHeadlineFont}
-        fontColor={globalFontColor}
-      />
-      <Description
-        paragraphs={textContent.page3.paragraphs}
-        position={[w3DescX, viewport.height * w3DescY, 0]}
-        maxWidth={viewport.width * w3DescWidth}
-        fontMultiplier={controls.deskDescFont}
-        fontColor={globalFontColor}
-      />
-      <TextWithBorder
-        position={[w3MoreX, viewport.height * w3MoreY, 0]}
-        roundness={0.1}
-        color={globalFontColor}
-        padding={moreButtonPaddingY}
-        paddingXMult={moreButtonPaddingX / moreButtonPaddingY}
-        paddingYMult={1.0}
-        border={controls.deskGlobalBorder}
-        fontSize={viewport.height * 0.02}
-        borderColor={globalBorderColor}
-      >
-        more
-      </TextWithBorder>
+      <group position={[w3ImgX, w3Y, 0]}>
+        <Image
+          url="/images/particles_main.png"
+          scale={[controls.deskW3ImgScaleX, controls.deskW3ImgScaleY, 1]}
+        />
+        <Headline
+          position={[0, viewport.height * 0.15, 0.01]}
+          fontMultiplier={controls.deskHeadlineFont}
+          color={globalFontColor}
+        >
+          Swarm Dynamics
+        </Headline>
+        <Description
+          position={[0, viewport.height * 0.05, 0.01]}
+          maxWidth={controls.deskW3DescWidth}
+          fontMultiplier={controls.deskDescFont}
+          color={globalFontColor}
+        >
+          An exploration of emergent behavior through particle systems and swarm
+          intelligence. Real-time simulation of complex collective behaviors
+          with interactive user control and dynamic visualization.
+        </Description>
+        <TextWithBorder
+          position={[w3MoreX, w3MoreY, 0.01]}
+          scale={w3MoreScale}
+          roundness={0.1}
+          color={globalFontColor}
+          padding={moreButtonPaddingY}
+          paddingXMult={moreButtonPaddingX / moreButtonPaddingY}
+          paddingYMult={1.0}
+          border={controls.deskGlobalButtonBorder}
+          fontSize={viewport.height * 0.02}
+          borderColor={globalBorderColor}
+          onClick={handleWork3More}
+        >
+          MORE
+        </TextWithBorder>
+      </group>
 
       {/* Playground Section */}
       <PlaygroundSection
