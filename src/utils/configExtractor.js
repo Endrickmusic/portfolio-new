@@ -1,302 +1,208 @@
-/**
- * Utility to extract current Leva control values and generate updated configuration
- * This helps migrate from manual controls to config-driven controls
- */
+import { useEffect, useRef } from "react"
+import { controlsConfig as baseConfig } from "../config/controlsConfig"
 
 /**
- * Extracts current control values and generates updated config
- * @param {Object} controls - Current Leva controls object
- * @param {Object} baseConfig - Base configuration to update
- * @returns {Object} Updated configuration with current values
+ * Simple hook to log current Leva values to console
+ * @param {Object} liveValues - Object containing current live values from Leva
  */
-export const extractValuesToConfig = (controls, baseConfig) => {
-  const updatedConfig = JSON.parse(JSON.stringify(baseConfig)) // Deep clone
+export const useLevaExtractor = (liveValues) => {
+  const hasRun = useRef(false)
+  const valuesRef = useRef(liveValues)
 
-  Object.entries(baseConfig).forEach(([sectionKey, sectionConfig]) => {
-    if (sectionConfig.properties) {
-      sectionConfig.properties.forEach((prop) => {
-        const capitalizedProp = prop.charAt(0).toUpperCase() + prop.slice(1)
+  // Keep a fresh snapshot of values in a ref (updated every render/change)
+  useEffect(() => {
+    valuesRef.current = liveValues
+  }, [liveValues])
 
-        // Extract values for each range
-        const ranges = ["desktop", "tablet", "mobile"]
-        ranges.forEach((range) => {
-          const controlName = `${range.slice(0, 3)}${capitalizedProp}`
-          const currentValue = controls[controlName]
+  // Install console helpers once; they read from valuesRef so they are always fresh
+  useEffect(() => {
+    if (hasRun.current) return
 
-          if (currentValue !== undefined) {
-            updatedConfig[sectionKey].defaults[range][prop] = currentValue
+    const getAll = () => valuesRef.current || {}
+    const round = (v) => (typeof v === "number" ? parseFloat(v.toFixed(4)) : v)
+    const formatAll = (obj) => {
+      const out = {}
+      Object.keys(obj).forEach((k) => {
+        out[k] = round(obj[k])
+      })
+      return out
+    }
+
+    const rangePrefixFor = (range) =>
+      ({ desktop: "desk", tablet: "tab", mobile: "mob" }[range] ||
+      range.slice(0, 3))
+
+    const buildDefaultsFromLive = (properties, live, baseDefaults) => {
+      const defaults = { desktop: {}, tablet: {}, mobile: {} }
+      ;["desktop", "tablet", "mobile"].forEach((range) => {
+        const prefix = rangePrefixFor(range)
+        properties.forEach((prop) => {
+          const key = `${prefix}${prop.charAt(0).toUpperCase()}${prop.slice(1)}`
+          const liveVal = live[key]
+          const baseVal = baseDefaults?.[range]?.[prop]
+          const finalVal =
+            liveVal === undefined ? round(baseVal) : round(liveVal)
+          // Only set when defined; avoid undefined in output
+          if (finalVal !== undefined) {
+            defaults[range][prop] = finalVal
           }
         })
       })
+      return defaults
     }
-  })
 
-  return updatedConfig
-}
-
-/**
- * Logs current control values in a format that can be copied to config
- * @param {Object} controls - Current Leva controls object
- * @param {string} sectionName - Name of the section (e.g., 'work1', 'work2')
- * @param {Array} properties - Array of property names
- */
-export const logCurrentValues = (controls, sectionName, properties) => {
-  const ranges = ["desktop", "tablet", "mobile"]
-
-  console.group(`🎛️ Current values for ${sectionName}:`)
-
-  ranges.forEach((range) => {
-    const values = {}
-    properties.forEach((prop) => {
-      const capitalizedProp = prop.charAt(0).toUpperCase() + prop.slice(1)
-      const controlName = `${range.slice(0, 3)}${capitalizedProp}`
-      values[prop] = controls[controlName]
-    })
-
-    console.log(`${range}:`, values)
-  })
-
-  console.groupEnd()
-}
-
-/**
- * Generates a complete config section from current control values
- * @param {Object} controls - Current Leva controls object
- * @param {string} sectionName - Name of the section
- * @param {string} displayName - Display name for the section
- * @param {Array} properties - Array of property names
- * @param {Object} ranges - Range definitions for each property
- * @returns {Object} Complete config section
- */
-export const generateConfigSection = (
-  controls,
-  sectionName,
-  displayName,
-  properties,
-  ranges
-) => {
-  const section = {
-    section: displayName,
-    properties: properties,
-    defaults: {
-      desktop: {},
-      tablet: {},
-      mobile: {},
-    },
-    ranges: ranges,
-  }
-
-  const rangeNames = ["desktop", "tablet", "mobile"]
-
-  rangeNames.forEach((range) => {
-    properties.forEach((prop) => {
-      const capitalizedProp = prop.charAt(0).toUpperCase() + prop.slice(1)
-      const controlName = `${range.slice(0, 3)}${capitalizedProp}`
-      const currentValue = controls[controlName]
-
-      if (currentValue !== undefined) {
-        section.defaults[range][prop] = currentValue
+    const formatJSObject = (obj, indent = 0) => {
+      const spaces = "  ".repeat(indent)
+      const next = "  ".repeat(indent + 1)
+      if (obj === null || typeof obj !== "object") return JSON.stringify(obj)
+      if (Array.isArray(obj)) {
+        if (!obj.length) return "[]"
+        return (
+          "[\n" +
+          obj.map((it) => next + formatJSObject(it, indent + 1)).join(",\n") +
+          "\n" +
+          spaces +
+          "]"
+        )
       }
-    })
-  })
-
-  return section
-}
-
-/**
- * Creates a browser console helper function to extract values
- * Call this in your component to get access to extraction functions
- * @param {Object} controls - Current controls object
- * @returns {Object} Helper functions attached to window
- */
-export const createConsoleExtractor = (controls) => {
-  // Attach helper functions to window for easy console access
-  window.levaExtractor = {
-    logCurrentValues: (sectionName, properties) =>
-      logCurrentValues(controls, sectionName, properties),
-
-    logAllWork: () => {
-      logCurrentValues(controls, "work1", [
-        "w1X",
-        "w1Y",
-        "w1TitleX",
-        "w1TitleY",
-        "w1TitleWidth",
-        "w1DescX",
-        "w1DescY",
-        "w1DescWidth",
-      ])
-      logCurrentValues(controls, "work2", [
-        "w2X",
-        "w2Y",
-        "w2TitleX",
-        "w2TitleY",
-        "w2TitleWidth",
-        "w2DescX",
-        "w2DescY",
-        "w2DescWidth",
-      ])
-      logCurrentValues(controls, "work3", [
-        "w3X",
-        "w3Y",
-        "w3TitleX",
-        "w3TitleY",
-        "w3TitleWidth",
-        "w3DescX",
-        "w3DescY",
-        "w3DescWidth",
-      ])
-    },
-
-    generateConfigJS: (sectionName, properties, ranges) => {
-      const config = generateConfigSection(
-        controls,
-        sectionName,
-        sectionName,
-        properties,
-        ranges
+      const entries = Object.entries(obj)
+      if (!entries.length) return "{}"
+      return (
+        "{\n" +
+        entries
+          .map(([k, v]) => `${next}${k}: ${formatJSObject(v, indent + 1)}`)
+          .join(",\n") +
+        "\n" +
+        spaces +
+        "}"
       )
-      console.log(`📋 Copy this to your controlsConfig.js:`)
-      console.log(JSON.stringify(config, null, 2))
-      return config
-    },
+    }
 
-    exportCurrentConfig: () => {
-      const config = {
-        work1: generateConfigSection(
-          controls,
-          "work1",
-          "Work 1",
-          [
-            "w1X",
-            "w1Y",
-            "w1TitleX",
-            "w1TitleY",
-            "w1TitleWidth",
-            "w1DescX",
-            "w1DescY",
-            "w1DescWidth",
-          ],
-          {
-            w1X: { min: -3, max: 3, step: 0.01 },
-            w1Y: { min: -3, max: 0, step: 0.01 },
-            w1TitleX: { min: -3, max: 3, step: 0.01 },
-            w1TitleY: { min: -4, max: -1, step: 0.01 },
-            w1TitleWidth: { min: 0.1, max: 2, step: 0.01 },
-            w1DescX: { min: -3, max: 3, step: 0.01 },
-            w1DescY: { min: -3, max: 0, step: 0.01 },
-            w1DescWidth: { min: 0.5, max: 3.0, step: 0.1 },
-          }
-        ),
-        work2: generateConfigSection(
-          controls,
-          "work2",
-          "Work 2",
-          [
-            "w2X",
-            "w2Y",
-            "w2TitleX",
-            "w2TitleY",
-            "w2TitleWidth",
-            "w2DescX",
-            "w2DescY",
-            "w2DescWidth",
-          ],
-          {
-            w2X: { min: -3, max: 3, step: 0.01 },
-            w2Y: { min: -3, max: 0, step: 0.01 },
-            w2TitleX: { min: -3, max: 3, step: 0.01 },
-            w2TitleY: { min: -3, max: 0, step: 0.01 },
-            w2TitleWidth: { min: 0.1, max: 2, step: 0.01 },
-            w2DescX: { min: -3, max: 3, step: 0.01 },
-            w2DescY: { min: -3, max: 0, step: 0.01 },
-            w2DescWidth: { min: 0.5, max: 3.0, step: 0.1 },
-          }
-        ),
-        work3: generateConfigSection(
-          controls,
-          "work3",
-          "Work 3",
-          [
-            "w3X",
-            "w3Y",
-            "w3TitleX",
-            "w3TitleY",
-            "w3TitleWidth",
-            "w3DescX",
-            "w3DescY",
-            "w3DescWidth",
-          ],
-          {
-            w3X: { min: -3, max: 3, step: 0.01 },
-            w3Y: { min: -3, max: 0, step: 0.01 },
-            w3TitleX: { min: -3, max: 3, step: 0.01 },
-            w3TitleY: { min: -3, max: 0, step: 0.01 },
-            w3TitleWidth: { min: 0.1, max: 2, step: 0.01 },
-            w3DescX: { min: -3, max: 3, step: 0.01 },
-            w3DescY: { min: -3, max: 0, step: 0.01 },
-            w3DescWidth: { min: 0.5, max: 3.0, step: 0.1 },
-          }
-        ),
-      }
+    window.levaExtractor = {
+      logValues: () => {
+        const current = formatAll(getAll())
+        console.log("🎛️ Current Leva Values:")
+        console.log(current)
+      },
 
-      console.log("📋 Complete config object:")
-      console.log(JSON.stringify(config, null, 2))
-      return config
-    },
-  }
+      logDesktopValues: () => {
+        const current = getAll()
+        console.log("🖥️ Desktop Values:")
+        const desktopValues = {}
+        Object.keys(current).forEach((key) => {
+          if (key.startsWith("desk")) {
+            const cleanKey = key.replace("desk", "").toLowerCase()
+            desktopValues[cleanKey] = round(current[key])
+          }
+        })
+        console.log(desktopValues)
+      },
 
-  console.log(`
-🎛️ Leva Value Extractor loaded!
+      logTabletValues: () => {
+        const current = getAll()
+        console.log("📱 Tablet Values:")
+        const tabletValues = {}
+        Object.keys(current).forEach((key) => {
+          if (key.startsWith("tab")) {
+            const cleanKey = key.replace("tab", "").toLowerCase()
+            tabletValues[cleanKey] = round(current[key])
+          }
+        })
+        console.log(tabletValues)
+      },
+
+      logMobileValues: () => {
+        const current = getAll()
+        console.log("📱 Mobile Values:")
+        const mobileValues = {}
+        Object.keys(current).forEach((key) => {
+          if (key.startsWith("mob")) {
+            const cleanKey = key.replace("mob", "").toLowerCase()
+            mobileValues[cleanKey] = round(current[key])
+          }
+        })
+        console.log(mobileValues)
+      },
+
+      // Build a full controlsConfig with current values as defaults and existing ranges
+      exportForPaste: () => {
+        const live = getAll()
+
+        // Header (iterate subsections)
+        const header = {}
+        Object.entries(baseConfig.header).forEach(([subKey, sub]) => {
+          header[subKey] = {
+            section: sub.section,
+            properties: sub.properties.slice(),
+            defaults: buildDefaultsFromLive(sub.properties, live, sub.defaults),
+            ranges: sub.ranges,
+          }
+        })
+
+        // Content (iterate subsections)
+        const content = {}
+        Object.entries(baseConfig.content).forEach(([subKey, sub]) => {
+          content[subKey] = {
+            section: sub.section,
+            properties: sub.properties.slice(),
+            defaults: buildDefaultsFromLive(sub.properties, live, sub.defaults),
+            ranges: sub.ranges,
+          }
+        })
+
+        // Footer (single section)
+        const footerBase = baseConfig.footer
+        const footer = {
+          section: footerBase.section,
+          properties: footerBase.properties.slice(),
+          defaults: buildDefaultsFromLive(
+            footerBase.properties,
+            live,
+            footerBase.defaults
+          ),
+          ranges: footerBase.ranges,
+        }
+
+        const full = { header, content, footer }
+        const code = "export const controlsConfig = " + formatJSObject(full)
+
+        // Try to copy to clipboard for clean pasting (no console escaping)
+        try {
+          // DevTools helper available in most browsers
+          if (typeof copy === "function") {
+            copy(code)
+            console.log(
+              "✅ Config copied to clipboard. Paste into src/config/controlsConfig.js"
+            )
+          } else if (navigator?.clipboard?.writeText) {
+            navigator.clipboard.writeText(code)
+            console.log(
+              "✅ Config copied to clipboard. Paste into src/config/controlsConfig.js"
+            )
+          }
+        } catch (e) {
+          console.warn("Clipboard copy failed, showing code below.")
+        }
+
+        // Also print a clean preview
+        console.log("\n// Copy-paste into src/config/controlsConfig.js\n")
+        console.log(code)
+        return full
+      },
+    }
+
+    console.log(`
+🎛️ Simple Leva Extractor loaded!
 
 Available commands:
-• levaExtractor.logAllWork() - Log all work section values
-• levaExtractor.logCurrentValues('work1', ['w1X', 'w1Y', ...]) - Log specific section
-• levaExtractor.generateConfigJS('work1', ['w1X', ...], {...ranges}) - Generate config
-• levaExtractor.exportCurrentConfig() - Export complete config
+• levaExtractor.logValues() - Log all current values
+• levaExtractor.logDesktopValues() - Log desktop values only
+• levaExtractor.logTabletValues() - Log tablet values only  
+• levaExtractor.logMobileValues() - Log mobile values only
 
-Example:
-levaExtractor.logAllWork()
-  `)
+Try: levaExtractor.logValues()
+    `)
 
-  return window.levaExtractor
-}
-
-/**
- * React hook to easily extract values in development
- * @param {Object} controls - Leva controls object
- * @param {boolean} enabled - Whether to enable the extractor (default: development mode)
- */
-export const useLevaExtractor = (
-  controls,
-  enabled = process.env.NODE_ENV === "development"
-) => {
-  if (enabled && typeof window !== "undefined") {
-    createConsoleExtractor(controls)
-  }
-}
-
-/**
- * Utility to format extracted values as JavaScript code
- * @param {Object} values - Extracted values object
- * @param {string} sectionName - Name of the section
- * @returns {string} Formatted JavaScript code
- */
-export const formatAsJavaScript = (values, sectionName) => {
-  return `
-${sectionName}: {
-  section: "${sectionName.charAt(0).toUpperCase() + sectionName.slice(1)}",
-  properties: [${Object.keys(values.desktop || {})
-    .map((k) => `"${k}"`)
-    .join(", ")}],
-  defaults: {
-    desktop: ${JSON.stringify(values.desktop, null, 6)},
-    tablet: ${JSON.stringify(values.tablet, null, 6)},
-    mobile: ${JSON.stringify(values.mobile, null, 6)}
-  },
-  ranges: {
-    // Add your ranges here
-  }
-}
-  `.trim()
+    hasRun.current = true
+  }, [])
 }
