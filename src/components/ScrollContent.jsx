@@ -228,6 +228,7 @@ function PlaygroundSection({
         onClick={navigation?.goToPlayground || (() => {})}
         onPointerOver={() => (document.body.style.cursor = "pointer")}
         onPointerOut={() => (document.body.style.cursor = "auto")}
+        textZ={0}
       >
         more
       </TextWithBorder>
@@ -1640,6 +1641,7 @@ export default function ScrollContent({ navigation }) {
         onClick={navigation?.goToWork1 || (() => {})}
         onPointerOver={() => (document.body.style.cursor = "pointer")}
         onPointerOut={() => (document.body.style.cursor = "auto")}
+        textZ={0}
       >
         more
       </TextWithBorder>
@@ -1677,6 +1679,7 @@ export default function ScrollContent({ navigation }) {
         onClick={navigation?.goToWork2 || (() => {})}
         onPointerOver={() => (document.body.style.cursor = "pointer")}
         onPointerOut={() => (document.body.style.cursor = "auto")}
+        textZ={0}
       >
         more
       </TextWithBorder>
@@ -1714,6 +1717,7 @@ export default function ScrollContent({ navigation }) {
         onClick={navigation?.goToWork3 || (() => {})}
         onPointerOver={() => (document.body.style.cursor = "pointer")}
         onPointerOut={() => (document.body.style.cursor = "auto")}
+        textZ={0}
       >
         more
       </TextWithBorder>
@@ -1766,6 +1770,7 @@ export default function ScrollContent({ navigation }) {
           }
           onPointerOver={() => (document.body.style.cursor = "pointer")}
           onPointerOut={() => (document.body.style.cursor = "auto")}
+          textZ={0}
         >
           GET IN CONTACT
         </TextWithBorder>

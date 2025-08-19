@@ -281,7 +281,7 @@ function PostProcessPlaneImpl({ texture }, ref) {
   return (
     <mesh
       scale={[viewport.width, viewport.height, 1]}
-      position={[0, 0, 0]}
+      position={[0, 0, 0.01]}
       ref={meshRef}
       material={material}
       // Ignore all pointer events so it never intercepts clicks
