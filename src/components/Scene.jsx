@@ -18,10 +18,10 @@ export default function Scene({ navigation }) {
   const { fboScale, adaptiveRes, dprMax, fboSamples } = useControls(
     "Canvas and Render Quality",
     {
-      fboScale: { value: 3, min: 1, max: 8, step: 1 },
+      fboScale: { value: 1, min: 1, max: 4, step: 0.5 },
       adaptiveRes: { value: true },
-      dprMax: { value: 2, min: 1, max: 3, step: 0.5 },
-      fboSamples: { value: 2, min: 0, max: 8, step: 1 },
+      dprMax: { value: 1, min: 1, max: 2, step: 0.5 },
+      fboSamples: { value: 1, min: 0, max: 4, step: 1 },
     },
     {
       collapsed: true,
@@ -84,7 +84,7 @@ export default function Scene({ navigation }) {
     <>
       {/* Match previous light background color from virtualScene */}
       <color attach="background" args={["#f2f2f2"]} />
-      {/* <Perf position="top-left" /> */}
+      <Perf position="top-left" />
       <ScrollControls pages={3} damping={0.1}>
         {/* 1) Interactive content in main scene */}
         <ScrollContent navigation={navigation} />

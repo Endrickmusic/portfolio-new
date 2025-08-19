@@ -1613,6 +1613,11 @@ export default function ScrollContent({ navigation }) {
         url="/images/vellum_dance_main.png"
         position={[w1ImgX, viewport.height * w1Y, 0]}
         scale={[controls.deskW1ImgScaleX, controls.deskW1ImgScaleY, 1]}
+        renderOrder={0}
+        depthTest={false}
+        depthWrite={false}
+        toneMapped={false}
+        colorSpace="srgb"
       />
       <Headline
         title={textContent.page1.title}
@@ -1651,6 +1656,11 @@ export default function ScrollContent({ navigation }) {
         url="/images/liquid_prism_main.png"
         position={[w2ImgX, viewport.height * w2Y, 0]}
         scale={[controls.deskW2ImgScaleX, controls.deskW2ImgScaleY, 1]}
+        renderOrder={0}
+        depthTest={false}
+        depthWrite={false}
+        toneMapped={false}
+        colorSpace="srgb"
       />
       <Headline
         title={textContent.page2.title}
@@ -1689,6 +1699,11 @@ export default function ScrollContent({ navigation }) {
         url="/images/particles_main.png"
         position={[w3ImgX, viewport.height * w3Y, 0]}
         scale={[controls.deskW3ImgScaleX, controls.deskW3ImgScaleY, 1]}
+        renderOrder={0}
+        depthTest={false}
+        depthWrite={false}
+        toneMapped={false}
+        colorSpace="srgb"
       />
       <Headline
         title={textContent.page3.title}

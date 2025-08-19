@@ -151,6 +151,8 @@ export default function Header({
     texture.magFilter = THREE.LinearFilter
     texture.wrapS = THREE.ClampToEdgeWrapping
     texture.wrapT = THREE.ClampToEdgeWrapping
+    texture.flipY = false
+    texture.premultiplyAlpha = false
     return texture
   }, [])
 
@@ -204,6 +206,7 @@ export default function Header({
       <mesh
         position={[getColumnPosition(logoX), logoY, 0]}
         scale={[0.5, 0.5, 0.5]}
+        renderOrder={0}
         onClick={navigation?.goHome || (() => {})}
         onPointerOver={handlePointerOver}
         onPointerOut={handlePointerOut}
@@ -245,6 +248,7 @@ export default function Header({
       {/* Name and Profession - clickable to go home */}
       <group
         position={[getColumnPosition(nameX), nameY, 0]}
+        renderOrder={0}
         onClick={navigation?.goHome || (() => {})}
         onPointerOver={handlePointerOver}
         onPointerOut={handlePointerOut}
@@ -275,7 +279,7 @@ export default function Header({
       </group>
 
       {/* Navigation Links */}
-      <group position={[0, navY, 0]}>
+      <group position={[0, navY, 0]} renderOrder={0}>
         {labels.map((text, i) => {
           const fontSize = textStyles.nav.fontSize(viewport) * 0.7
 
@@ -292,6 +296,7 @@ export default function Header({
                 borderColor={controls.borderColor}
                 paddingX={controls.paddingX}
                 paddingY={controls.paddingY}
+                textZ={0}
                 onClick={navigationHandlers[i]}
                 onPointerOver={text === "Work" ? undefined : handlePointerOver}
                 onPointerOut={text === "Work" ? undefined : handlePointerOut}
