@@ -5,6 +5,7 @@ import { useRef, useState, useEffect, useMemo } from "react"
 import { useControls, folder } from "leva"
 import TextWithBorder from "./TextWithBorder.jsx"
 import { useBreakpoint, useResponsiveValue } from "../hooks/useBreakpoint"
+import { getImagePath } from "../utils/assetPath"
 // Navigation will be passed as prop instead of using hook
 
 export default function Header({
@@ -145,7 +146,7 @@ export default function Header({
 
   // SDF texture with high-quality filtering
   const sdfTexture = useMemo(() => {
-    const texture = new THREE.TextureLoader().load("/images/sdf_logo.png")
+    const texture = new THREE.TextureLoader().load(getImagePath("sdf_logo.png"))
     texture.generateMipmaps = false
     texture.minFilter = THREE.LinearFilter
     texture.magFilter = THREE.LinearFilter

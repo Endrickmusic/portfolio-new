@@ -5,6 +5,7 @@ import { Text, Svg, Image, useScroll } from "@react-three/drei"
 import TextWithBorder from "./TextWithBorder"
 import { useControls, folder } from "leva"
 import BorderBox from "./BorderBox.jsx"
+import { getImagePath, getFontPath, getSvgPath } from "../utils/assetPath"
 
 import Grid from "./Grid"
 import Header from "./Header"
@@ -24,28 +25,28 @@ const textStyles = {
   logo: {
     fontSize: (viewport) => viewport.height * 0.017,
     color: "#38354f",
-    font: "/fonts/ibm-plex-mono-latin-400-normal.woff",
+    font: getFontPath("/fonts/ibm-plex-mono-latin-400-normal.woff"),
     letterSpacing: 0.005,
     lineHeight: 1.2,
   },
   nav: {
     fontSize: (viewport) => viewport.height * 0.025,
     color: "#38354F",
-    font: "/fonts/ibm-plex-mono-latin-400-normal.woff",
+    font: getFontPath("/fonts/ibm-plex-mono-latin-400-normal.woff"),
     letterSpacing: 0.02,
     lineHeight: 1.2,
   },
   heading: {
     fontSize: (viewport) => viewport.height * 0.25,
     color: "#38358F",
-    font: "/fonts/SeasonSerifTRIAL-Light.woff",
+    font: getFontPath("/fonts/SeasonSerifTRIAL-Light.woff"),
     letterSpacing: 0.02,
     lineHeight: 1.2,
   },
   body: {
     fontSize: (viewport) => viewport.height * 0.03,
     color: "#38358F",
-    font: "/fonts/ibm-plex-mono-latin-400-normal.woff",
+    font: getFontPath("/fonts/ibm-plex-mono-latin-400-normal.woff"),
     letterSpacing: 0.02,
     lineHeight: 1.5,
     maxWidth: 2.2,
@@ -98,7 +99,7 @@ function Headline({
       maxWidth={maxWidth}
       anchorX="left"
       anchorY="middle"
-      font="/fonts/SeasonSerifTRIAL-Light.woff"
+      font={getFontPath("/fonts/SeasonSerifTRIAL-Light.woff")}
       letterSpacing={0.015}
       lineHeight={1.2}
     >
@@ -125,7 +126,7 @@ function Description({
       maxWidth={maxWidth}
       anchorX="left"
       anchorY="middle"
-      font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+      font={getFontPath("/fonts/ibm-plex-mono-latin-400-normal.woff")}
       letterSpacing={0.02}
       lineHeight={1.5}
     >
@@ -191,7 +192,7 @@ function PlaygroundSection({
         color={globalFontColor}
         anchorX="left"
         anchorY="middle"
-        font="/fonts/SeasonSerifTRIAL-Light.woff"
+        font={getFontPath("/fonts/SeasonSerifTRIAL-Light.woff")}
         letterSpacing={0.02}
       >
         PLAYGROUND
@@ -205,7 +206,7 @@ function PlaygroundSection({
         maxWidth={viewport.width * 0.6}
         anchorX="left"
         anchorY="middle"
-        font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+        font={getFontPath("/fonts/ibm-plex-mono-latin-400-normal.woff")}
         letterSpacing={0.02}
         lineHeight={1.5}
       >
@@ -281,7 +282,7 @@ function Footer({
           color={globalFontColor}
           anchorX="center"
           anchorY="middle"
-          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+          font={getFontPath("/fonts/ibm-plex-mono-latin-400-normal.woff")}
           onClick={navigation?.goHome || (() => {})}
           onPointerOver={() => (document.body.style.cursor = "pointer")}
           onPointerOut={() => (document.body.style.cursor = "auto")}
@@ -298,7 +299,7 @@ function Footer({
           color={globalFontColor}
           anchorX="center"
           anchorY="middle"
-          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+          font={getFontPath("/fonts/ibm-plex-mono-latin-400-normal.woff")}
           onClick={navigation?.goToExpertise || (() => {})}
           onPointerOver={() => (document.body.style.cursor = "pointer")}
           onPointerOut={() => (document.body.style.cursor = "auto")}
@@ -315,7 +316,7 @@ function Footer({
           color={globalFontColor}
           anchorX="center"
           anchorY="middle"
-          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+          font={getFontPath("/fonts/ibm-plex-mono-latin-400-normal.woff")}
           onClick={navigation?.goToAbout || (() => {})}
           onPointerOver={() => (document.body.style.cursor = "pointer")}
           onPointerOut={() => (document.body.style.cursor = "auto")}
@@ -332,7 +333,7 @@ function Footer({
           color={globalFontColor}
           anchorX="center"
           anchorY="middle"
-          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+          font={getFontPath("/fonts/ibm-plex-mono-latin-400-normal.woff")}
           onClick={navigation?.goToPlayground || (() => {})}
           onPointerOver={() => (document.body.style.cursor = "pointer")}
           onPointerOut={() => (document.body.style.cursor = "auto")}
@@ -350,12 +351,12 @@ function Footer({
         ]}
       >
         <Svg
-          src="/svgs/C.svg"
+          src={getSvgPath("/svgs/C.svg")}
           scale={viewport.height * getFooterResponsiveValue("CHScale")}
           position={[contentWidth * getFooterResponsiveValue("CX"), 0, 0]}
         />
         <Svg
-          src="/svgs/H.svg"
+          src={getSvgPath("/svgs/H.svg")}
           scale={viewport.height * getFooterResponsiveValue("CHScale")}
           position={[contentWidth * getFooterResponsiveValue("HX"), 0, 0]}
         />
@@ -380,7 +381,7 @@ function Footer({
           color={globalFontColor}
           anchorX="left"
           anchorY="middle"
-          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+          font={getFontPath("/fonts/ibm-plex-mono-latin-400-normal.woff")}
           lineHeight={1.3}
           textAlign="left"
         >
@@ -397,7 +398,7 @@ function Footer({
           color={globalFontColor}
           anchorX="left"
           anchorY="middle"
-          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+          font={getFontPath("/fonts/ibm-plex-mono-latin-400-normal.woff")}
           lineHeight={1.3}
           textAlign="left"
         >
@@ -415,7 +416,7 @@ function Footer({
           color={globalFontColor}
           anchorX="left"
           anchorY="middle"
-          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+          font={getFontPath("/fonts/ibm-plex-mono-latin-400-normal.woff")}
         >
           Instagram / LinkedIn
         </Text>
@@ -431,7 +432,7 @@ function Footer({
           color={globalFontColor}
           anchorX="left"
           anchorY="middle"
-          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+          font={getFontPath("/fonts/ibm-plex-mono-latin-400-normal.woff")}
           onClick={navigation?.goToImprint || (() => {})}
           onPointerOver={() => (document.body.style.cursor = "pointer")}
           onPointerOut={() => (document.body.style.cursor = "auto")}
@@ -1589,12 +1590,12 @@ export default function ScrollContent({ navigation }) {
       {/* C and H SVGs */}
       <group position={[0, viewport.height * chGroupY, 0]}>
         <Svg
-          src="/svgs/C.svg"
+          src={getSvgPath("/svgs/C.svg")}
           scale={viewport.width * cScale}
           position={[viewport.width * cX, viewport.height * cY, 0]}
         />
         <Svg
-          src="/svgs/H.svg"
+          src={getSvgPath("/svgs/H.svg")}
           scale={viewport.width * hScale}
           position={[viewport.width * hX, viewport.height * hY, 0]}
         />
@@ -1610,7 +1611,7 @@ export default function ScrollContent({ navigation }) {
 
       {/* Work 1 - Vellum Dance */}
       <Image
-        url="/images/vellum_dance_main.png"
+        url={getImagePath("/images/vellum_dance_main.png")}
         position={[w1ImgX, viewport.height * w1Y, 0]}
         scale={[controls.deskW1ImgScaleX, controls.deskW1ImgScaleY, 1]}
         renderOrder={0}
@@ -1653,7 +1654,7 @@ export default function ScrollContent({ navigation }) {
 
       {/* Work 2 - Liquid Prism */}
       <Image
-        url="/images/liquid_prism_main.png"
+        url={getImagePath("/images/liquid_prism_main.png")}
         position={[w2ImgX, viewport.height * w2Y, 0]}
         scale={[controls.deskW2ImgScaleX, controls.deskW2ImgScaleY, 1]}
         renderOrder={0}
@@ -1696,7 +1697,7 @@ export default function ScrollContent({ navigation }) {
 
       {/* Work 3 - Swarm Dynamics */}
       <Image
-        url="/images/particles_main.png"
+        url={getImagePath("/images/particles_main.png")}
         position={[w3ImgX, viewport.height * w3Y, 0]}
         scale={[controls.deskW3ImgScaleX, controls.deskW3ImgScaleY, 1]}
         renderOrder={0}
