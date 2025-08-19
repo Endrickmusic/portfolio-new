@@ -10,8 +10,6 @@ import PostProcessPlane from "./PostProcessPlane"
 
 // Main scene component
 export default function Scene({ navigation }) {
-  const boxRef = useRef()
-  const boxRef2 = useRef()
   const { viewport, size } = useThree()
 
   // FBO resolution control
@@ -84,7 +82,7 @@ export default function Scene({ navigation }) {
     <>
       {/* Match previous light background color from virtualScene */}
       <color attach="background" args={["#f2f2f2"]} />
-      <Perf position="top-left" />
+      {/* <Perf position="top-left" /> */}
       <ScrollControls pages={3} damping={0.1}>
         {/* 1) Interactive content in main scene */}
         <ScrollContent navigation={navigation} />

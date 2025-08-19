@@ -55,7 +55,7 @@ export default function HomePage() {
 
   return (
     <div className="w-screen h-screen overflow-hidden">
-      <Leva collapsed oneLineLabels hideTitleBar />
+      <Leva collapsed oneLineLabels hideTitleBar hidden />
       <CanvasWrapper navigation={navigation} />
     </div>
   )
