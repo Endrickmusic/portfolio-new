@@ -1,11 +1,12 @@
-import { useRef, useMemo } from "react"
+import { useRef, useMemo, forwardRef, useImperativeHandle } from "react"
 import { useFrame, useThree } from "@react-three/fiber"
 import { useScroll } from "@react-three/drei"
 import * as THREE from "three"
 import { useControls } from "leva"
 
-export default function PostProcessPlane({ texture }) {
+function PostProcessPlaneImpl({ texture }, ref) {
   const meshRef = useRef()
+  useImperativeHandle(ref, () => meshRef.current)
   const { viewport } = useThree()
   const scroll = useScroll()
   const prevScrollRef = useRef(0)
@@ -283,8 +284,12 @@ export default function PostProcessPlane({ texture }) {
       position={[0, 0, 0]}
       ref={meshRef}
       material={material}
+      // Ignore all pointer events so it never intercepts clicks
+      raycast={null}
     >
       <planeGeometry args={[1, 1]} />
     </mesh>
   )
 }
+
+export default forwardRef(PostProcessPlaneImpl)

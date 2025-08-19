@@ -86,10 +86,14 @@ export default function Scene({ navigation }) {
       <color attach="background" args={["#f2f2f2"]} />
       {/* <Perf position="top-left" /> */}
       <ScrollControls pages={3} damping={0.1}>
-        {/* Render content directly in the main scene to allow pointer events */}
+        {/* 1) Interactive content in main scene */}
         <ScrollContent navigation={navigation} />
-        {/* Temporarily disable post-process plane to avoid blocking interactions */}
-        {/* <PostProcessPlane texture={fbo.texture} /> */}
+
+        {/* 2) Non-interactive copy rendered into virtual scene → FBO */}
+        {createPortal(<ScrollContent navigation={null} />, virtualScene)}
+
+        {/* 3) Post process plane renders FBO texture as background */}
+        <PostProcessPlane texture={fbo.texture} />
       </ScrollControls>
     </>
   )
