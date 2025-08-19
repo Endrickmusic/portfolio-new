@@ -295,6 +295,7 @@ export default function Header({
                 onClick={navigationHandlers[i]}
                 onPointerOver={text === "Work" ? undefined : handlePointerOver}
                 onPointerOut={text === "Work" ? undefined : handlePointerOut}
+                textZ={0}
               >
                 {text}
               </TextWithBorder>
