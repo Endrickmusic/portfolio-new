@@ -5,6 +5,7 @@ import { useRef, useState, useEffect, useMemo } from "react"
 import { useControls, folder } from "leva"
 import TextWithBorder from "./TextWithBorder.jsx"
 import { useBreakpoint, useResponsiveValue } from "../hooks/useBreakpoint"
+import { useLevaExtractor } from "../utils/configExtractor"
 // Navigation will be passed as prop instead of using hook
 
 export default function Header({
@@ -27,12 +28,12 @@ export default function Header({
           // Global styling (non-responsive)
           Styling: folder(
             {
-              globalBorder: { value: 0.2, min: 0.0, max: 1.0, step: 0.01 },
+              globalBorder: { value: 0.26, min: 0.0, max: 1.0, step: 0.01 },
               thickness: { value: 0.05, min: 0.0, max: 0.5, step: 0.005 },
               radius: { value: 0.04, min: 0.0, max: 0.5, step: 0.005 },
-              paddingX: { value: 0.07, min: 0.0, max: 2.0, step: 0.01 },
-              paddingY: { value: 0.06, min: 0.0, max: 1.0, step: 0.01 },
-              borderColor: { value: "#38358f" },
+              paddingX: { value: 0.39, min: 0.0, max: 2.0, step: 0.01 },
+              paddingY: { value: 0.18, min: 0.0, max: 1.0, step: 0.01 },
+              borderColor: { value: "#403454" },
               spacing: { value: 0.28, min: 0.25, max: 1.0, step: 0.01 },
             },
             { collapsed: true }
@@ -85,6 +86,42 @@ export default function Header({
       collapsed: true,
     }
   )
+
+  // Capture header border styling controls for config export
+  useLevaExtractor({
+    headerGlobalBorder: controls.globalBorder,
+    headerThickness: controls.thickness,
+    headerRadius: controls.radius,
+    headerPaddingX: controls.paddingX,
+    headerPaddingY: controls.paddingY,
+    headerBorderColor: controls.borderColor,
+    headerSpacing: controls.spacing,
+
+    // Responsive positioning capture
+    deskHeaderY: controls.deskHeaderY,
+    deskLogoX: controls.deskLogoX,
+    deskLogoY: controls.deskLogoY,
+    deskNameX: controls.deskNameX,
+    deskNameY: controls.deskNameY,
+    deskNavStartCol: controls.deskNavStartCol,
+    deskNavY: controls.deskNavY,
+
+    tabHeaderY: controls.tabHeaderY,
+    tabLogoX: controls.tabLogoX,
+    tabLogoY: controls.tabLogoY,
+    tabNameX: controls.tabNameX,
+    tabNameY: controls.tabNameY,
+    tabNavStartCol: controls.tabNavStartCol,
+    tabNavY: controls.tabNavY,
+
+    mobHeaderY: controls.mobHeaderY,
+    mobLogoX: controls.mobLogoX,
+    mobLogoY: controls.mobLogoY,
+    mobNameX: controls.mobNameX,
+    mobNameY: controls.mobNameY,
+    mobNavStartCol: controls.mobNavStartCol,
+    mobNavY: controls.mobNavY,
+  })
 
   // Responsive values - all hooks must be called at component level
   const headerY = useResponsiveValue({
@@ -216,7 +253,7 @@ export default function Header({
           depthWrite={false}
           uniforms={{
             uSDF: { value: sdfTexture },
-            uColor: { value: new THREE.Color(globalSvgColor || "#38358f") },
+            uColor: { value: new THREE.Color(globalSvgColor || "#403454") },
             uThickness: { value: controls.thickness },
           }}
           vertexShader={`
@@ -254,7 +291,7 @@ export default function Header({
           fontSize={textStyles.logo.fontSize(viewport)}
           anchorX="left"
           anchorY="middle"
-          color={globalFontColor || "#38358f"}
+          color={globalFontColor || "#403454"}
           glyphGeometryDetail={128}
           renderOrder={1}
         >
@@ -266,7 +303,7 @@ export default function Header({
           position={[0, -viewport.height * 0.025, 0]}
           anchorX="left"
           anchorY="middle"
-          color={globalFontColor || "#38358f"}
+          color={globalFontColor || "#403454"}
           glyphGeometryDetail={256}
           renderOrder={1}
         >
@@ -286,7 +323,7 @@ export default function Header({
                 fontSize={fontSize}
                 anchorX="center"
                 anchorY="middle"
-                color={globalFontColor || "#38358f"}
+                color={globalFontColor || "#403454"}
                 border={controls.globalBorder * 0.01}
                 roundness={controls.radius}
                 borderColor={controls.borderColor}

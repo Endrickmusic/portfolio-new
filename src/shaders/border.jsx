@@ -13,6 +13,8 @@ uniform float height;   // world height of the plane
 uniform float border;   // border thickness in world units
 uniform float roundness;// corner radius in world units
 uniform vec3 borderColor;
+uniform vec3 fillColor;
+uniform float fillOpacity;
 varying vec2 vUv;
 
 float sdRoundedBox(vec2 p, vec2 b, float r) {
@@ -27,11 +29,19 @@ void main() {
 
   float d = sdRoundedBox(uv, vec2(width * 0.5, height * 0.5), r);
 
-  // Anti-aliased border ring
+  // Anti-aliased border ring and filled background
+  float aa = 0.005;
   float edge = abs(d);
-  float alpha = 1.0 - smoothstep(border, border + 0.005, edge);
+  float ringMask = 1.0 - smoothstep(border, border + aa, edge);
+  float fillMask = 1.0 - smoothstep(0.0, aa, d);
 
-  gl_FragColor = vec4(borderColor, alpha);
+  // Compose fill first, then overlay border ring
+  vec4 outColor = vec4(0.0);
+  outColor = mix(outColor, vec4(fillColor, fillOpacity), fillMask);
+  outColor = mix(outColor, vec4(borderColor, 1.0), ringMask);
+  outColor.a = max(outColor.a, ringMask);
+
+  gl_FragColor = outColor;
 }
 `
 

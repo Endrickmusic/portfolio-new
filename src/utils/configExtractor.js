@@ -8,17 +8,45 @@ import { controlsConfig as baseConfig } from "../config/controlsConfig"
 export const useLevaExtractor = (liveValues) => {
   const hasRun = useRef(false)
   const valuesRef = useRef(liveValues)
+  const sourceIdRef = useRef(null)
 
   // Keep a fresh snapshot of values in a ref (updated every render/change)
   useEffect(() => {
     valuesRef.current = liveValues
   }, [liveValues])
 
+  // Register this hook instance as a live source so multiple components can contribute
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    if (!window.__levaSources) window.__levaSources = new Map()
+    if (!sourceIdRef.current) sourceIdRef.current = Symbol("levaSource")
+    // Register with an object that always reads latest valuesRef
+    const entry = {
+      get current() {
+        return valuesRef.current
+      },
+    }
+    window.__levaSources.set(sourceIdRef.current, entry)
+    return () => {
+      window.__levaSources.delete(sourceIdRef.current)
+    }
+  }, [])
+
   // Install console helpers once; they read from valuesRef so they are always fresh
   useEffect(() => {
     if (hasRun.current) return
 
-    const getAll = () => valuesRef.current || {}
+    const getAll = () => {
+      if (typeof window === "undefined") return valuesRef.current || {}
+      const sources = window.__levaSources
+      if (!sources || sources.size === 0) return valuesRef.current || {}
+      const merged = {}
+      for (const entry of sources.values()) {
+        const obj = entry.current || {}
+        Object.assign(merged, obj)
+      }
+      return merged
+    }
     const round = (v) => (typeof v === "number" ? parseFloat(v.toFixed(4)) : v)
     const formatAll = (obj) => {
       const out = {}

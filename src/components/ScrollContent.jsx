@@ -23,28 +23,28 @@ import {
 const textStyles = {
   logo: {
     fontSize: (viewport) => viewport.height * 0.017,
-    color: "#38354f",
+    color: "#403454",
     font: "/fonts/ibm-plex-mono-latin-400-normal.woff",
     letterSpacing: 0.005,
     lineHeight: 1.2,
   },
   nav: {
     fontSize: (viewport) => viewport.height * 0.025,
-    color: "#38354F",
+    color: "#403454",
     font: "/fonts/ibm-plex-mono-latin-400-normal.woff",
     letterSpacing: 0.02,
     lineHeight: 1.2,
   },
   heading: {
     fontSize: (viewport) => viewport.height * 0.25,
-    color: "#38358F",
+    color: "#403454",
     font: "/fonts/SeasonSerifTRIAL-Light.woff",
     letterSpacing: 0.02,
     lineHeight: 1.2,
   },
   body: {
     fontSize: (viewport) => viewport.height * 0.03,
-    color: "#38358F",
+    color: "#403454",
     font: "/fonts/ibm-plex-mono-latin-400-normal.woff",
     letterSpacing: 0.02,
     lineHeight: 1.5,
@@ -1239,9 +1239,9 @@ export default function ScrollContent({ navigation }) {
     deskRoundness: 0.1,
     tabRoundness: 0.1,
     mobRoundness: 0.1,
-    deskBorderColor: "#38358f",
-    tabBorderColor: "#38358f",
-    mobBorderColor: "#38358f",
+    deskBorderColor: "#403454",
+    tabBorderColor: "#403454",
+    mobBorderColor: "#403454",
     deskPaddingX: 0.1,
     tabPaddingX: 0.1,
     mobPaddingX: 0.1,
@@ -1251,9 +1251,9 @@ export default function ScrollContent({ navigation }) {
     deskMbRoundness: 0.1,
     tabMbRoundness: 0.1,
     mobMbRoundness: 0.1,
-    deskMbBorderColor: "#38358f",
-    tabMbBorderColor: "#38358f",
-    mobMbBorderColor: "#38358f",
+    deskMbBorderColor: "#403454",
+    tabMbBorderColor: "#403454",
+    mobMbBorderColor: "#403454",
     deskMbPadding: 0.2,
     tabMbPadding: 0.2,
     mobMbPadding: 0.2,
@@ -1728,12 +1728,12 @@ export default function ScrollContent({ navigation }) {
         panelWidth={playBorderWidth}
         panelHeight={playBorderHeight}
         roundness={0}
-        borderColor="#38358f"
+        borderColor="#403454"
         paddingX={0.1}
         paddingY={0.1}
         buttonBorder={controls.deskGlobalButtonBorder}
         mbRoundness={0.1}
-        mbBorderColor="#38358f"
+        mbBorderColor="#403454"
         mbPadding={0.2}
         mbPaddingXMult={1.0}
         mbPaddingYMult={1.0}

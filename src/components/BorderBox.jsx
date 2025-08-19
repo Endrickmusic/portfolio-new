@@ -11,7 +11,7 @@ export default function BorderBox({
   height,
   border = 0.1,
   roundness = 0.1,
-  color = "black",
+  color = "#403454",
   paddingX = 0.0,
   paddingY = 0.0,
   position = [0, 0, 0],

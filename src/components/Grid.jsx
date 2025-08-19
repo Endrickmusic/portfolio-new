@@ -72,7 +72,7 @@ export default function Grid() {
         [x, viewport.height / 2, 0],
         [x, -viewport.height * 5, 0],
       ]}
-      color="#38354F"
+      color="#403454"
       opacity={0.1}
       transparent
       lineWidth={10.0}
@@ -89,7 +89,7 @@ export default function Grid() {
           [x, viewport.height / 2, 0],
           [x, -viewport.height * 5, 0],
         ]}
-        color="#38354F"
+        color="#403454"
         opacity={0.1}
         transparent
         lineWidth={columnGap}

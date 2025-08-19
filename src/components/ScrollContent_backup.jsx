@@ -15,21 +15,21 @@ import { useLevaExtractor } from "../utils/configExtractor"
 const textStyles = {
   logo: {
     fontSize: (viewport) => viewport.height * 0.017,
-    color: "#38354f",
+    color: "#403454",
     font: "/fonts/ibm-plex-mono-latin-400-normal.woff",
     letterSpacing: 0.005,
     lineHeight: 1.2,
   },
   nav: {
     fontSize: (viewport) => viewport.height * 0.025,
-    color: "#38354F",
+    color: "#403454",
     font: "/fonts/ibm-plex-mono-latin-400-normal.woff",
     letterSpacing: 0.02,
     lineHeight: 1.2,
   },
   heading: {
     fontSize: (viewport) => viewport.height * 0.25,
-    color: "#38358F",
+    color: "#403454",
     font: "/fonts/SeasonSerifTRIAL-Light.woff",
     letterSpacing: 0.02,
     lineHeight: 1.2,
