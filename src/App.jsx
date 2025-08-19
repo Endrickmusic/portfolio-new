@@ -10,21 +10,26 @@ import PlaygroundPage from "./pages/PlaygroundPage"
 import ExpertisePage from "./pages/ExpertisePage"
 import ImprintPage from "./pages/ImprintPage"
 
+// Import transition context
+import { TransitionProvider } from "./contexts/TransitionContext"
+
 import "./index.css"
 
 export default function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/work1" element={<Work1Detail />} />
-        <Route path="/work2" element={<Work2Detail />} />
-        <Route path="/work3" element={<Work3Detail />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/playground" element={<PlaygroundPage />} />
-        <Route path="/expertise" element={<ExpertisePage />} />
-        <Route path="/imprint" element={<ImprintPage />} />
-      </Routes>
-    </Router>
+    <TransitionProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/work1" element={<Work1Detail />} />
+          <Route path="/work2" element={<Work2Detail />} />
+          <Route path="/work3" element={<Work3Detail />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/playground" element={<PlaygroundPage />} />
+          <Route path="/expertise" element={<ExpertisePage />} />
+          <Route path="/imprint" element={<ImprintPage />} />
+        </Routes>
+      </Router>
+    </TransitionProvider>
   )
 }

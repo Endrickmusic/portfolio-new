@@ -1,12 +1,14 @@
 import { useNavigate } from "react-router-dom"
+import { useTransitionContext } from "../contexts/TransitionContext"
 
 // Back button component
 function BackButton() {
   const navigate = useNavigate()
+  const { navigateWithTransition } = useTransitionContext()
 
   return (
     <button
-      onClick={() => navigate("/")}
+      onClick={() => navigateWithTransition(navigate, "/")}
       className="fixed top-6 left-6 z-10 px-4 py-2 bg-black/10 backdrop-blur-sm text-black border border-black/20 rounded hover:bg-black/20 transition-colors"
     >
       ← Back to Portfolio

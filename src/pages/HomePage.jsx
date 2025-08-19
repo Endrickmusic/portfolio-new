@@ -1,6 +1,7 @@
 import { Canvas } from "@react-three/fiber"
 import { Leva, useControls } from "leva"
 import { useNavigate } from "react-router-dom"
+import { useTransitionContext } from "../contexts/TransitionContext"
 
 import Scene from "../components/Scene"
 
@@ -40,17 +41,18 @@ function CanvasWrapper({ navigation }) {
 
 export default function HomePage() {
   const navigate = useNavigate()
+  const { navigateWithTransition } = useTransitionContext()
 
   // Create navigation handlers outside of Canvas context
   const navigation = {
-    goToWork1: () => navigate("/work1"),
-    goToWork2: () => navigate("/work2"),
-    goToWork3: () => navigate("/work3"),
-    goToAbout: () => navigate("/about"),
-    goToPlayground: () => navigate("/playground"),
-    goToExpertise: () => navigate("/expertise"),
-    goToImprint: () => navigate("/imprint"),
-    goHome: () => navigate("/"),
+    goToWork1: () => navigateWithTransition(navigate, "/work1"),
+    goToWork2: () => navigateWithTransition(navigate, "/work2"),
+    goToWork3: () => navigateWithTransition(navigate, "/work3"),
+    goToAbout: () => navigateWithTransition(navigate, "/about"),
+    goToPlayground: () => navigateWithTransition(navigate, "/playground"),
+    goToExpertise: () => navigateWithTransition(navigate, "/expertise"),
+    goToImprint: () => navigateWithTransition(navigate, "/imprint"),
+    goHome: () => navigateWithTransition(navigate, "/"),
   }
 
   return (

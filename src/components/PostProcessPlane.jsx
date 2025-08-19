@@ -3,6 +3,7 @@ import { useFrame, useThree } from "@react-three/fiber"
 import { useScroll } from "@react-three/drei"
 import * as THREE from "three"
 import { useControls } from "leva"
+import { useTransitionContext } from "../contexts/TransitionContext"
 
 function PostProcessPlaneImpl({ texture }, ref) {
   const meshRef = useRef()
@@ -11,6 +12,10 @@ function PostProcessPlaneImpl({ texture }, ref) {
   const scroll = useScroll()
   const prevScrollRef = useRef(0)
   const distortionTimeRef = useRef(0)
+
+  // Get transition context
+  const { isTransitioning, transitionProgress, transitionDirection } =
+    useTransitionContext()
 
   // Leva controls - direct and simple
   const {
@@ -25,6 +30,10 @@ function PostProcessPlaneImpl({ texture }, ref) {
     aberrationSlide,
     effectDuration,
     fbmOctaves,
+    // Transition controls
+    transitionDistortion,
+    transitionAberration,
+    transitionDuration,
   } = useControls(
     "Noise",
     {
@@ -39,6 +48,10 @@ function PostProcessPlaneImpl({ texture }, ref) {
       aberrationSlide: { value: 0.12, min: 0.01, max: 2.0, step: 0.01 },
       effectDuration: { value: 2.0, min: 0.2, max: 2.0, step: 0.1 },
       fbmOctaves: { value: 3, min: 1, max: 8, step: 1 },
+      // Transition controls
+      transitionDistortion: { value: 0.8, min: 0.1, max: 2.0, step: 0.1 },
+      transitionAberration: { value: 0.05, min: 0.001, max: 0.1, step: 0.001 },
+      transitionDuration: { value: 1.0, min: 0.2, max: 3.0, step: 0.1 },
     },
     {
       collapsed: true,
@@ -64,6 +77,11 @@ function PostProcessPlaneImpl({ texture }, ref) {
         uAberrationSlide: { value: aberrationSlide },
         uFbmOctaves: { value: fbmOctaves },
         uScrollVelocity: { value: 0 },
+        // Transition uniforms
+        uTransitionProgress: { value: 0 },
+        uTransitionDirection: { value: 0 }, // 0 = out, 1 = in
+        uTransitionDistortion: { value: transitionDistortion },
+        uTransitionAberration: { value: transitionAberration },
       },
       vertexShader: `
           varying vec2 vUv;
@@ -89,6 +107,11 @@ function PostProcessPlaneImpl({ texture }, ref) {
           uniform float uAberrationSlide;
           uniform float uFbmOctaves;
           uniform float uScrollVelocity;
+          // Transition uniforms
+          uniform float uTransitionProgress;
+          uniform float uTransitionDirection;
+          uniform float uTransitionDistortion;
+          uniform float uTransitionAberration;
 
           varying vec2 vUv;
 
@@ -193,6 +216,11 @@ function PostProcessPlaneImpl({ texture }, ref) {
             float baseDistortion = uDistortionTime > 0.0 ? uBaseDistortion * smoothstep(0.0, 1.0, uDistortionTime) : 0.0;
             float strongDistortionAmount = uDistortionTime > 0.0 ? uStrongDistortion * smoothstep(0.0, 1.0, uDistortionTime) : 0.0;
             float distortionAmount = mix(baseDistortion, strongDistortionAmount, strongDistortion);
+            
+            // Add transition distortion
+            float transitionDistortionAmount = uTransitionProgress * uTransitionDistortion;
+            distortionAmount += transitionDistortionAmount;
+            
             // Compose 2D distortion vector
             vec2 distortionVec = vec2(noiseX, noiseY) * distortionAmount;
             vec2 distortedUv = vUv + distortionVec;
@@ -200,6 +228,9 @@ function PostProcessPlaneImpl({ texture }, ref) {
             // Chromatic aberration with slide effect
             float aberrationStrength = uDistortionTime > 0.0 ? uAberrationStrength * smoothstep(0.0, 1.0, uDistortionTime) : 0.0;
             aberrationStrength *= (1.0 + strongDistortion * 2.0);
+            
+            // Add transition aberration
+            aberrationStrength += uTransitionProgress * uTransitionAberration;
             
             vec3 color = vec3(0.0);
             
@@ -238,6 +269,8 @@ function PostProcessPlaneImpl({ texture }, ref) {
     aberrationLayers,
     aberrationSlide,
     fbmOctaves,
+    transitionDistortion,
+    transitionAberration,
   ])
 
   useFrame((state, delta) => {
@@ -254,6 +287,13 @@ function PostProcessPlaneImpl({ texture }, ref) {
       material.uniforms.uAberrationLayers.value = aberrationLayers
       material.uniforms.uAberrationSlide.value = aberrationSlide
       material.uniforms.uFbmOctaves.value = fbmOctaves
+
+      // Update transition uniforms
+      material.uniforms.uTransitionProgress.value = transitionProgress
+      material.uniforms.uTransitionDirection.value =
+        transitionDirection === "in" ? 1.0 : 0.0
+      material.uniforms.uTransitionDistortion.value = transitionDistortion
+      material.uniforms.uTransitionAberration.value = transitionAberration
 
       if (scroll.offset !== undefined) {
         material.uniforms.uScroll.value = scroll.offset

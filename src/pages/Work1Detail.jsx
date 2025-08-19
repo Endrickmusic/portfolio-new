@@ -1,7 +1,12 @@
 import { Canvas } from "@react-three/fiber"
-import { ScrollControls, Text, Image } from "@react-three/drei"
+import { ScrollControls, Text, Image, Svg } from "@react-three/drei"
 import { useNavigate } from "react-router-dom"
 import { useThree } from "@react-three/fiber"
+import { useTransitionContext } from "../contexts/TransitionContext"
+import Header from "../components/Header"
+import { useControls, folder } from "leva"
+import { useBreakpoint, useResponsiveValue } from "../hooks/useBreakpoint"
+import { useState } from "react"
 
 // Header component for work detail pages
 function WorkHeader({ title, subtitle }) {
@@ -42,10 +47,11 @@ function WorkHeader({ title, subtitle }) {
 // Back button component
 function BackButton() {
   const navigate = useNavigate()
+  const { navigateWithTransition } = useTransitionContext()
 
   return (
     <button
-      onClick={() => navigate("/")}
+      onClick={() => navigateWithTransition(navigate, "/")}
       className="fixed top-6 left-6 z-10 px-4 py-2 bg-white/10 backdrop-blur-sm text-white border border-white/20 rounded hover:bg-white/20 transition-colors"
     >
       ← Back to Portfolio
@@ -53,13 +59,383 @@ function BackButton() {
   )
 }
 
+// Footer component for work detail pages
+function Footer({
+  position = [0, 0, 0],
+  footerControls,
+  globalFontColor,
+  globalSvgColor,
+  navigation,
+}) {
+  const { viewport } = useThree()
+  const maxWidth = Math.min(viewport.width * 0.8, 4)
+  const contentWidth = maxWidth + 0.7
+  const startX = -contentWidth / 2
+
+  const [hovered, setHovered] = useState(null)
+  const hoverColor = "#f2f2f2"
+
+  // Helper function to get responsive footer values
+  const getFooterResponsiveValue = (controlName) => {
+    return useResponsiveValue({
+      mobile: footerControls[`mobFooter${controlName}`],
+      tablet: footerControls[`tabFooter${controlName}`],
+      desktop: footerControls[`deskFooter${controlName}`],
+      large: footerControls[`deskFooter${controlName}`],
+      ultrawide: footerControls[`deskFooter${controlName}`],
+    })
+  }
+
+  return (
+    <group position={position}>
+      {/* Background */}
+      <mesh position={[0, 0, -0.1]}>
+        <planeGeometry args={[viewport.width * 2, viewport.height * 1.2]} />
+        <meshBasicMaterial color="#ffffff" />
+      </mesh>
+
+      {/* Navigation Links */}
+      <group
+        position={[
+          startX + contentWidth * getFooterResponsiveValue("NavX"),
+          viewport.height * getFooterResponsiveValue("NavY"),
+          0,
+        ]}
+      >
+        <Text
+          position={[contentWidth * getFooterResponsiveValue("NavWorkX"), 0, 0]}
+          fontSize={viewport.height * 0.03}
+          color={hovered === "work" ? hoverColor : globalFontColor}
+          outlineColor="#403454"
+          outlineWidth={hovered === "work" ? 0.003 : 0}
+          anchorX="center"
+          anchorY="middle"
+          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+          onClick={navigation?.goHome || (() => {})}
+          onPointerOver={() => {
+            document.body.style.cursor = "pointer"
+            setHovered("work")
+          }}
+          onPointerOut={() => {
+            document.body.style.cursor = "auto"
+            setHovered(null)
+          }}
+        >
+          Work
+        </Text>
+        <Text
+          position={[
+            contentWidth * getFooterResponsiveValue("NavExpertiseX"),
+            0,
+            0,
+          ]}
+          fontSize={viewport.height * 0.03}
+          color={hovered === "expertise" ? hoverColor : globalFontColor}
+          outlineColor="#403454"
+          outlineWidth={hovered === "work" ? 0.003 : 0}
+          anchorX="center"
+          anchorY="middle"
+          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+          onClick={navigation?.goToExpertise || (() => {})}
+          onPointerOver={() => {
+            document.body.style.cursor = "pointer"
+            setHovered("expertise")
+          }}
+          onPointerOut={() => {
+            document.body.style.cursor = "auto"
+            setHovered(null)
+          }}
+        >
+          Expertise
+        </Text>
+        <Text
+          position={[
+            contentWidth * getFooterResponsiveValue("NavAboutX"),
+            0,
+            0,
+          ]}
+          fontSize={viewport.height * 0.03}
+          color={hovered === "about" ? hoverColor : globalFontColor}
+          outlineColor="#403454"
+          outlineWidth={hovered === "about" ? 0.003 : 0}
+          anchorX="center"
+          anchorY="middle"
+          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+          onClick={navigation?.goToAbout || (() => {})}
+          onPointerOver={() => {
+            document.body.style.cursor = "pointer"
+            setHovered("about")
+          }}
+          onPointerOut={() => {
+            document.body.style.cursor = "auto"
+            setHovered(null)
+          }}
+        >
+          About
+        </Text>
+        <Text
+          position={[
+            contentWidth * getFooterResponsiveValue("NavPlaygroundX"),
+            0,
+            0,
+          ]}
+          fontSize={viewport.height * 0.03}
+          color={hovered === "playground" ? hoverColor : globalFontColor}
+          outlineColor="#403454"
+          outlineWidth={hovered === "playground" ? 0.003 : 0}
+          anchorX="center"
+          anchorY="middle"
+          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+          onClick={navigation?.goToPlayground || (() => {})}
+          onPointerOver={() => {
+            document.body.style.cursor = "pointer"
+            setHovered("playground")
+          }}
+          onPointerOut={() => {
+            document.body.style.cursor = "auto"
+            setHovered(null)
+          }}
+        >
+          Playground
+        </Text>
+      </group>
+
+      {/* Logo SVGs */}
+      <group
+        position={[
+          startX + contentWidth * getFooterResponsiveValue("CHX"),
+          viewport.height * getFooterResponsiveValue("CHY"),
+          0,
+        ]}
+      >
+        <Svg
+          src="/svgs/C.svg"
+          scale={viewport.height * getFooterResponsiveValue("CHScale")}
+          position={[contentWidth * getFooterResponsiveValue("CX"), 0, 0]}
+        />
+        <Svg
+          src="/svgs/H.svg"
+          scale={viewport.height * getFooterResponsiveValue("CHScale")}
+          position={[contentWidth * getFooterResponsiveValue("HX"), 0, 0]}
+        />
+      </group>
+
+      {/* Contact Information */}
+      <group
+        position={[
+          startX,
+          viewport.height * getFooterResponsiveValue("ContactY"),
+          0,
+        ]}
+      >
+        {/* Address (3 lines) */}
+        <Text
+          position={[
+            contentWidth * getFooterResponsiveValue("AddressX"),
+            viewport.height * getFooterResponsiveValue("AddressY"),
+            0,
+          ]}
+          fontSize={viewport.height * getFooterResponsiveValue("TextFont")}
+          color={globalFontColor}
+          anchorX="left"
+          anchorY="middle"
+          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+          lineHeight={1.3}
+          textAlign="left"
+        >
+          {"Christian Hohenbild\nGleditschstr. 71\n10781 Berlin"}
+        </Text>
+        {/* Email + Phone (2 lines) */}
+        <Text
+          position={[
+            contentWidth * getFooterResponsiveValue("ContactEmailX"),
+            viewport.height * getFooterResponsiveValue("EmailY"),
+            0,
+          ]}
+          fontSize={viewport.height * getFooterResponsiveValue("TextFont")}
+          color={globalFontColor}
+          anchorX="left"
+          anchorY="middle"
+          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+          lineHeight={1.3}
+          textAlign="left"
+        >
+          {"christian@hohenbild.com\n+49 170 751 85 25"}
+        </Text>
+
+        {/* Social Links */}
+        <Text
+          position={[
+            contentWidth * getFooterResponsiveValue("SocialX"),
+            viewport.height * getFooterResponsiveValue("SocialY"),
+            0,
+          ]}
+          fontSize={viewport.height * getFooterResponsiveValue("TextFont")}
+          color={globalFontColor}
+          anchorX="left"
+          anchorY="middle"
+          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+        >
+          Instagram / LinkedIn
+        </Text>
+
+        {/* Legal */}
+        <Text
+          position={[
+            contentWidth * getFooterResponsiveValue("LegalX"),
+            viewport.height * getFooterResponsiveValue("LegalY"),
+            0,
+          ]}
+          fontSize={viewport.height * getFooterResponsiveValue("TextFont")}
+          color={hovered === "legal" ? hoverColor : globalFontColor}
+          outlineColor="#403454"
+          outlineWidth={hovered === "legal" ? 0.003 : 0}
+          anchorX="left"
+          anchorY="middle"
+          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+          onClick={navigation?.goToImprint || (() => {})}
+          onPointerOver={() => {
+            document.body.style.cursor = "pointer"
+            setHovered("legal")
+          }}
+          onPointerOut={() => {
+            document.body.style.cursor = "auto"
+            setHovered(null)
+          }}
+        >
+          Legal / Imprint
+        </Text>
+      </group>
+    </group>
+  )
+}
+
 // 3D Scene content for Work 1
 function Work1Scene() {
   const { viewport } = useThree()
 
+  // Navigation handlers
+  const navigation = {
+    goToWork1: () => {},
+    goToWork2: () => {},
+    goToWork3: () => {},
+    goToAbout: () => {},
+    goToPlayground: () => {},
+    goToExpertise: () => {},
+    goToImprint: () => {},
+    goHome: () => {},
+  }
+
+  // Footer controls (simplified for now)
+  const footerControls = {
+    mobFooterNavX: 0.5,
+    tabFooterNavX: 0.5,
+    deskFooterNavX: 0.5,
+    mobFooterNavY: -0.4,
+    tabFooterNavY: -0.4,
+    deskFooterNavY: -0.4,
+    mobFooterNavWorkX: 0.1,
+    tabFooterNavWorkX: 0.1,
+    deskFooterNavWorkX: 0.1,
+    mobFooterNavExpertiseX: 0.3,
+    tabFooterNavExpertiseX: 0.3,
+    deskFooterNavExpertiseX: 0.3,
+    mobFooterNavAboutX: 0.5,
+    tabFooterNavAboutX: 0.5,
+    deskFooterNavAboutX: 0.5,
+    mobFooterNavPlaygroundX: 0.7,
+    tabFooterNavPlaygroundX: 0.7,
+    deskFooterNavPlaygroundX: 0.7,
+    mobFooterCHX: 0.8,
+    tabFooterCHX: 0.8,
+    deskFooterCHX: 0.8,
+    mobFooterCHY: -0.4,
+    tabFooterCHY: -0.4,
+    deskFooterCHY: -0.4,
+    mobFooterCHScale: 0.03,
+    tabFooterCHScale: 0.03,
+    deskFooterCHScale: 0.03,
+    mobFooterCX: 0.1,
+    tabFooterCX: 0.1,
+    deskFooterCX: 0.1,
+    mobFooterHX: 0.2,
+    tabFooterHX: 0.2,
+    deskFooterHX: 0.2,
+    mobFooterContactY: -0.4,
+    tabFooterContactY: -0.4,
+    deskFooterContactY: -0.4,
+    mobFooterContactEmailX: 0.1,
+    tabFooterContactEmailX: 0.1,
+    deskFooterContactEmailX: 0.1,
+    mobFooterAddressX: 0.1,
+    tabFooterAddressX: 0.1,
+    deskFooterAddressX: 0.1,
+    mobFooterAddressY: 0.1,
+    tabFooterAddressY: 0.1,
+    deskFooterAddressY: 0.1,
+    mobFooterEmailY: 0.05,
+    tabFooterEmailY: 0.05,
+    deskFooterEmailY: 0.05,
+    mobFooterSocialX: 0.1,
+    tabFooterSocialX: 0.1,
+    deskFooterSocialX: 0.1,
+    mobFooterSocialY: -0.05,
+    tabFooterSocialY: -0.05,
+    deskFooterSocialY: -0.05,
+    mobFooterLegalX: 0.1,
+    tabFooterLegalX: 0.1,
+    deskFooterLegalX: 0.1,
+    mobFooterLegalY: -0.15,
+    tabFooterLegalY: -0.15,
+    deskFooterLegalY: -0.15,
+    mobFooterTextY: 0.03,
+    tabFooterTextY: 0.03,
+    deskFooterTextY: 0.03,
+    mobFooterTextFont: 0.02,
+    tabFooterTextFont: 0.02,
+    deskFooterTextFont: 0.02,
+  }
+
   return (
     <ScrollControls pages={4} damping={0.1}>
       <group>
+        {/* Header */}
+        <Header
+          textStyles={{
+            logo: {
+              fontSize: (viewport) => viewport.height * 0.017,
+              color: "#ffffff",
+              font: "/fonts/ibm-plex-mono-latin-400-normal.woff",
+              letterSpacing: 0.005,
+              lineHeight: 1.2,
+            },
+            nav: {
+              fontSize: (viewport) => viewport.height * 0.025,
+              color: "#ffffff",
+              font: "/fonts/ibm-plex-mono-latin-400-normal.woff",
+              letterSpacing: 0.02,
+              lineHeight: 1.2,
+            },
+            heading: {
+              fontSize: (viewport) => viewport.height * 0.25,
+              color: "#ffffff",
+              font: "/fonts/SeasonSerifTRIAL-Light.woff",
+              letterSpacing: 0.02,
+              lineHeight: 1.2,
+            },
+            body: {
+              fontSize: (viewport) => viewport.height * 0.03,
+              color: "#ffffff",
+              font: "/fonts/ibm-plex-mono-latin-400-normal.woff",
+              letterSpacing: 0.02,
+              lineHeight: 1.5,
+              maxWidth: 2.2,
+            },
+          }}
+          globalFontColor="#ffffff"
+          globalSvgColor="#ffffff"
+          navigation={navigation}
+        />
         {/* Hero Image */}
         <Image
           url="/images/vellum_dance_main.png"
@@ -156,6 +532,15 @@ function Work1Scene() {
             experiences.
           </Text>
         </group>
+
+        {/* Footer */}
+        <Footer
+          position={[0, viewport.height * -4.2, 0]}
+          footerControls={footerControls}
+          globalFontColor="#ffffff"
+          globalSvgColor="#ffffff"
+          navigation={navigation}
+        />
       </group>
     </ScrollControls>
   )

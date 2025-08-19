@@ -2,6 +2,7 @@ import { Canvas } from "@react-three/fiber"
 import { ScrollControls, Text, Image } from "@react-three/drei"
 import { useNavigate } from "react-router-dom"
 import { useThree } from "@react-three/fiber"
+import { useTransitionContext } from "../contexts/TransitionContext"
 
 // Header component for work detail pages
 function WorkHeader({ title, subtitle }) {
@@ -42,11 +43,12 @@ function WorkHeader({ title, subtitle }) {
 // Back button component
 function BackButton() {
   const navigate = useNavigate()
+  const { navigateWithTransition } = useTransitionContext()
 
   return (
     <button
-      onClick={() => navigate("/")}
-      className="fixed top-6 left-6 z-10 px-4 py-2 bg-white/10 backdrop-blur-sm text-white border border-white/20 rounded hover:bg-white/20 transition-colors"
+      onClick={() => navigateWithTransition(navigate, "/")}
+      className="fixed top-6 left-10 px-4 py-2 bg-white/10 backdrop-blur-sm text-white border border-white/20 rounded hover:bg-white/20 transition-colors"
     >
       ← Back to Portfolio
     </button>
