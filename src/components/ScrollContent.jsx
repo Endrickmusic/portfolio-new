@@ -1,4 +1,4 @@
-import { useRef, useMemo } from "react"
+import { useRef, useMemo, useState } from "react"
 import * as THREE from "three"
 import { useFrame, useThree } from "@react-three/fiber"
 import { Text, Svg, Image, useScroll } from "@react-three/drei"
@@ -248,6 +248,9 @@ function Footer({
   const contentWidth = maxWidth + 0.7
   const startX = -contentWidth / 2
 
+  const [hovered, setHovered] = useState(null)
+  const hoverColor = "#f2f2f2"
+
   // Helper function to get responsive footer values
   const getFooterResponsiveValue = (controlName) => {
     return useResponsiveValue({
@@ -278,13 +281,21 @@ function Footer({
         <Text
           position={[contentWidth * getFooterResponsiveValue("NavWorkX"), 0, 0]}
           fontSize={viewport.height * 0.03}
-          color={globalFontColor}
+          color={hovered === "work" ? hoverColor : globalFontColor}
+          outlineColor="#403454"
+          outlineWidth={hovered === "work" ? 0.003 : 0}
           anchorX="center"
           anchorY="middle"
           font="/fonts/ibm-plex-mono-latin-400-normal.woff"
           onClick={navigation?.goHome || (() => {})}
-          onPointerOver={() => (document.body.style.cursor = "pointer")}
-          onPointerOut={() => (document.body.style.cursor = "auto")}
+          onPointerOver={() => {
+            document.body.style.cursor = "pointer"
+            setHovered("work")
+          }}
+          onPointerOut={() => {
+            document.body.style.cursor = "auto"
+            setHovered(null)
+          }}
         >
           Work
         </Text>
@@ -295,13 +306,21 @@ function Footer({
             0,
           ]}
           fontSize={viewport.height * 0.03}
-          color={globalFontColor}
+          color={hovered === "expertise" ? hoverColor : globalFontColor}
+          outlineColor="#403454"
+          outlineWidth={hovered === "expertise" ? 0.003 : 0}
           anchorX="center"
           anchorY="middle"
           font="/fonts/ibm-plex-mono-latin-400-normal.woff"
           onClick={navigation?.goToExpertise || (() => {})}
-          onPointerOver={() => (document.body.style.cursor = "pointer")}
-          onPointerOut={() => (document.body.style.cursor = "auto")}
+          onPointerOver={() => {
+            document.body.style.cursor = "pointer"
+            setHovered("expertise")
+          }}
+          onPointerOut={() => {
+            document.body.style.cursor = "auto"
+            setHovered(null)
+          }}
         >
           Expertise
         </Text>
@@ -312,13 +331,21 @@ function Footer({
             0,
           ]}
           fontSize={viewport.height * 0.03}
-          color={globalFontColor}
+          color={hovered === "about" ? hoverColor : globalFontColor}
+          outlineColor="#403454"
+          outlineWidth={hovered === "about" ? 0.003 : 0}
           anchorX="center"
           anchorY="middle"
           font="/fonts/ibm-plex-mono-latin-400-normal.woff"
           onClick={navigation?.goToAbout || (() => {})}
-          onPointerOver={() => (document.body.style.cursor = "pointer")}
-          onPointerOut={() => (document.body.style.cursor = "auto")}
+          onPointerOver={() => {
+            document.body.style.cursor = "pointer"
+            setHovered("about")
+          }}
+          onPointerOut={() => {
+            document.body.style.cursor = "auto"
+            setHovered(null)
+          }}
         >
           About
         </Text>
@@ -329,13 +356,21 @@ function Footer({
             0,
           ]}
           fontSize={viewport.height * 0.03}
-          color={globalFontColor}
+          color={hovered === "playground" ? hoverColor : globalFontColor}
+          outlineColor="#403454"
+          outlineWidth={hovered === "playground" ? 0.003 : 0}
           anchorX="center"
           anchorY="middle"
           font="/fonts/ibm-plex-mono-latin-400-normal.woff"
           onClick={navigation?.goToPlayground || (() => {})}
-          onPointerOver={() => (document.body.style.cursor = "pointer")}
-          onPointerOut={() => (document.body.style.cursor = "auto")}
+          onPointerOver={() => {
+            document.body.style.cursor = "pointer"
+            setHovered("playground")
+          }}
+          onPointerOut={() => {
+            document.body.style.cursor = "auto"
+            setHovered(null)
+          }}
         >
           Playground
         </Text>
@@ -428,13 +463,21 @@ function Footer({
             0,
           ]}
           fontSize={viewport.height * getFooterResponsiveValue("TextFont")}
-          color={globalFontColor}
+          color={hovered === "legal" ? hoverColor : globalFontColor}
+          outlineColor="#403454"
+          outlineWidth={hovered === "legal" ? 0.003 : 0}
           anchorX="left"
           anchorY="middle"
           font="/fonts/ibm-plex-mono-latin-400-normal.woff"
           onClick={navigation?.goToImprint || (() => {})}
-          onPointerOver={() => (document.body.style.cursor = "pointer")}
-          onPointerOut={() => (document.body.style.cursor = "auto")}
+          onPointerOver={() => {
+            document.body.style.cursor = "pointer"
+            setHovered("legal")
+          }}
+          onPointerOut={() => {
+            document.body.style.cursor = "auto"
+            setHovered(null)
+          }}
         >
           Legal / Imprint
         </Text>
