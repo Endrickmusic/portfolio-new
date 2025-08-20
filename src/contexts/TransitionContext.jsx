@@ -10,10 +10,18 @@ export function TransitionProvider({ children }) {
     () => ({
       ...transition,
       // Add navigation wrapper that triggers transitions
-      navigateWithTransition: (navigate, path, duration = 1000) => {
-        transition.triggerPageTransition(() => {
+      navigateWithTransition: (
+        navigate,
+        path,
+        outDuration = 600,
+        inDuration = 1500
+      ) => {
+        transition.triggerPageTransition(
+          outDuration,
+          inDuration
+        )(() => {
           navigate(path)
-        }, duration)
+        })
       },
     }),
     [transition]

@@ -14,7 +14,6 @@ import ImprintPageContent from "./components/ImprintPageContent"
 
 // Import transition components
 import { TransitionProvider } from "./contexts/TransitionContext"
-import TransitionPlane from "./components/TransitionPlane"
 
 import "./index.css"
 
@@ -58,9 +57,6 @@ function CanvasWrapper() {
         <Route path="/expertise" element={<ExpertisePageContent />} />
         <Route path="/imprint" element={<ImprintPageContent />} />
       </Routes>
-
-      {/* Transition effects overlay */}
-      <TransitionPlane />
     </Canvas>
   )
 }
