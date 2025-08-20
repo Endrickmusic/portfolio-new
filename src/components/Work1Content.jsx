@@ -78,7 +78,7 @@ export default function Work1Content() {
         {/* Test mesh */}
         <mesh position={[0, 0, 0]}>
           <boxGeometry args={[1, 1, 1]} />
-          <meshBasicMaterial color="red" />
+          <meshBasicMaterial color="green" />
         </mesh>
 
         {/* Test text */}
