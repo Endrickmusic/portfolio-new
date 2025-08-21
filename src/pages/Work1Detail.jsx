@@ -1,9 +1,10 @@
-import { Canvas } from "@react-three/fiber"
-import { ScrollControls, Text, Image, Svg } from "@react-three/drei"
+import { ScrollControls, Text, Image, Svg, useScroll } from "@react-three/drei"
 import { useNavigate } from "react-router-dom"
-import { useThree } from "@react-three/fiber"
+import { useThree, useFrame } from "@react-three/fiber"
+import { useRef } from "react"
 import { useTransitionContext } from "../contexts/TransitionContext"
 import Header from "../components/Header"
+import TextWithBorder from "../components/TextWithBorder"
 import { useControls, folder } from "leva"
 import { useBreakpoint, useResponsiveValue } from "../hooks/useBreakpoint"
 import { useState } from "react"
@@ -48,14 +49,30 @@ function WorkHeader({ title, subtitle }) {
 function BackButton() {
   const navigate = useNavigate()
   const { navigateWithTransition } = useTransitionContext()
+  const { viewport } = useThree()
 
   return (
-    <button
+    <TextWithBorder
+      position={[-viewport.width * 0.4, viewport.height * 0.4, 0]}
+      roundness={0.1}
+      color="#ffffff"
+      padding={0.05}
+      paddingXMult={2.0}
+      paddingYMult={1.0}
+      border={0.01}
+      fontSize={viewport.height * 0.02}
+      borderColor="#ffffff"
       onClick={() => navigateWithTransition(navigate, "/")}
-      className="fixed top-6 left-6 z-10 px-4 py-2 bg-white/10 backdrop-blur-sm text-white border border-white/20 rounded hover:bg-white/20 transition-colors"
+      onPointerOver={() => {
+        document.body.style.cursor = "pointer"
+      }}
+      onPointerOut={() => {
+        document.body.style.cursor = "auto"
+      }}
+      textZ={0}
     >
       ← Back to Portfolio
-    </button>
+    </TextWithBorder>
   )
 }
 
@@ -73,7 +90,7 @@ function Footer({
   const startX = -contentWidth / 2
 
   const [hovered, setHovered] = useState(null)
-  const hoverColor = "#f2f2f2"
+  const hoverColor = "#e0e0e0"
 
   // Helper function to get responsive footer values
   const getFooterResponsiveValue = (controlName) => {
@@ -313,6 +330,8 @@ function Footer({
 // 3D Scene content for Work 1
 function Work1Scene() {
   const { viewport } = useThree()
+  const group = useRef()
+  const scroll = useScroll()
 
   // Navigation handlers
   const navigation = {
@@ -396,9 +415,22 @@ function Work1Scene() {
     deskFooterTextFont: 0.02,
   }
 
+  // Scroll animation
+  useFrame(() => {
+    try {
+      if (group.current && scroll && typeof scroll.offset === "number") {
+        group.current.position.y = scroll.offset * 3.5 * viewport.height
+      }
+    } catch (error) {
+      // Scroll not ready yet, skip this frame
+    }
+  })
+
   return (
-    <ScrollControls pages={4} damping={0.1}>
-      <group>
+    <ScrollControls pages={3.5} damping={0.1}>
+      {/* White Background */}
+      <color attach="background" args={["#ffffff"]} />
+      <group ref={group}>
         {/* Header */}
         <Header
           textStyles={{
@@ -436,33 +468,85 @@ function Work1Scene() {
           globalSvgColor="#ffffff"
           navigation={navigation}
         />
-        {/* Hero Image */}
+        {/* Hero Image - Full Viewport */}
         <Image
           url="/images/vellum_dance_main.png"
-          position={[0, viewport.height * 0.4, 0]}
-          scale={[viewport.width * 1.2, viewport.height * 0.8, 1]}
+          position={[0, 0, 0]}
+          scale={[viewport.width, viewport.height, 1]}
         />
 
-        {/* Header */}
-        <WorkHeader
-          title="Vellum Dance"
-          subtitle="Movement woven into matter. Composing a fabric simulation in real-time, capturing the ephemeral tension between body, force, and material."
-        />
-
-        {/* Additional Images */}
-        <Image
-          url="/images/vellum_dance_main.png"
-          position={[0, viewport.height * -0.1, 0]}
-          scale={[viewport.width * 0.6, viewport.height * 0.4, 1]}
-        />
-
-        {/* Description Text */}
+        {/* Headline - Higher, Left Aligned, All Caps, White */}
         <Text
-          position={[0, viewport.height * -0.4, 0]}
-          fontSize={viewport.height * 0.02}
+          position={[-viewport.width * 0.4, -viewport.height * 0.1, 0]}
+          fontSize={viewport.height * 0.06}
           color="#ffffff"
-          maxWidth={viewport.width * 0.7}
-          anchorX="center"
+          anchorX="left"
+          anchorY="middle"
+          maxWidth={viewport.width * 0.3}
+          font="/fonts/SeasonSerifTRIAL-Light.woff"
+          letterSpacing={0.02}
+          lineHeight={1.2}
+        >
+          VELLUM DANCE
+        </Text>
+
+        {/* Subtitle from main page */}
+        <Text
+          position={[-viewport.width * 0.4, -viewport.height * 0.25, 0]}
+          fontSize={viewport.height * 0.025}
+          color="#ffffff"
+          maxWidth={viewport.width * 0.4}
+          anchorX="left"
+          anchorY="middle"
+          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+          letterSpacing={0.02}
+          lineHeight={1.5}
+        >
+          Movement woven into matter. Composing a fabric simulation in
+          real-time, capturing the ephemeral tension between body, force, and
+          material.
+        </Text>
+
+        {/* Second Image - Small Gap */}
+        <Image
+          url="/images/vellum_dance_main.png"
+          position={[0, viewport.height * -0.6, 0]}
+          scale={[viewport.width * 0.8, viewport.height * 0.5, 1]}
+        />
+
+        {/* Longer Description - After second image, more centered */}
+        <Text
+          position={[-viewport.width * 0.2, viewport.height * -1.2, 0]}
+          fontSize={viewport.height * 0.016}
+          color="#403454"
+          maxWidth={viewport.width * 0.6}
+          anchorX="left"
+          anchorY="middle"
+          font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+          letterSpacing={0.02}
+          lineHeight={1.6}
+        >
+          The project began as an exploration of real-time physics simulation,
+          pushing the boundaries of what's possible in web-based 3D graphics.
+          Using WebGL and advanced shader programming, we developed a system
+          that can handle complex fabric interactions at 60fps.
+          {"\n\n"}
+          Each simulation frame processes thousands of constraint calculations,
+          creating realistic fabric behavior that responds to user input,
+          environmental forces, and artistic direction. The result is a digital
+          medium that feels as responsive and expressive as physical materials.
+          {"\n\n"}
+          This technology opens new possibilities for interactive art, virtual
+          fashion design, and immersive storytelling experiences.
+        </Text>
+
+        {/* Description Text - Left Aligned, Smaller */}
+        <Text
+          position={[-viewport.width * 0.4, viewport.height * -0.4, 0]}
+          fontSize={viewport.height * 0.018}
+          color="#403454"
+          maxWidth={viewport.width * 0.4}
+          anchorX="left"
           anchorY="middle"
           font="/fonts/ibm-plex-mono-latin-400-normal.woff"
           letterSpacing={0.02}
@@ -481,43 +565,53 @@ function Work1Scene() {
           external influences.
         </Text>
 
-        {/* More Images */}
-        <group position={[0, viewport.height * -0.8, 0]}>
-          <Image
-            url="/images/vellum_dance_main.png"
-            position={[-viewport.width * 0.3, 0, 0]}
-            scale={[viewport.width * 0.25, viewport.height * 0.2, 1]}
-          />
+        {/* Three Images - Vertical Stack */}
+        <group position={[0, viewport.height * -1.8, 0]}>
           <Image
             url="/images/vellum_dance_main.png"
             position={[0, 0, 0]}
-            scale={[viewport.width * 0.25, viewport.height * 0.2, 1]}
+            scale={[viewport.width * 0.6, viewport.height * 0.3, 1]}
           />
           <Image
             url="/images/vellum_dance_main.png"
-            position={[viewport.width * 0.3, 0, 0]}
-            scale={[viewport.width * 0.25, viewport.height * 0.2, 1]}
+            position={[0, viewport.height * -0.4, 0]}
+            scale={[viewport.width * 0.6, viewport.height * 0.3, 1]}
+          />
+          <Image
+            url="/images/vellum_dance_main.png"
+            position={[0, viewport.height * -0.8, 0]}
+            scale={[viewport.width * 0.6, viewport.height * 0.3, 1]}
           />
         </group>
 
-        {/* Technical Details */}
-        <group position={[0, viewport.height * -1.2, 0]}>
+        {/* APPLICATIONS Section */}
+        <group position={[0, viewport.height * -2.8, 0]}>
           <Text
             position={[0, 0, 0]}
             fontSize={viewport.height * 0.04}
-            color="#ffffff"
+            color="#403454"
             anchorX="center"
             anchorY="middle"
             font="/fonts/SeasonSerifTRIAL-Light.woff"
             letterSpacing={0.02}
           >
-            APPLICATION
+            APPLICATIONS
           </Text>
 
+          {/* Two Horizontal Lines */}
+          <mesh position={[0, viewport.height * -0.05, 0]}>
+            <planeGeometry args={[viewport.width * 0.8, 0.002, 1]} />
+            <meshBasicMaterial color="#403454" />
+          </mesh>
+          <mesh position={[0, viewport.height * -0.1, 0]}>
+            <planeGeometry args={[viewport.width * 0.8, 0.002, 1]} />
+            <meshBasicMaterial color="#403454" />
+          </mesh>
+
           <Text
-            position={[0, viewport.height * -0.1, 0]}
+            position={[0, viewport.height * -0.2, 0]}
             fontSize={viewport.height * 0.025}
-            color="#ffffff"
+            color="#403454"
             maxWidth={viewport.width * 0.7}
             anchorX="center"
             anchorY="middle"
@@ -533,12 +627,91 @@ function Work1Scene() {
           </Text>
         </group>
 
+        {/* KEY TECHNOLOGIES Section */}
+        <group position={[0, viewport.height * -3.4, 0]}>
+          <Text
+            position={[0, 0, 0]}
+            fontSize={viewport.height * 0.04}
+            color="#403454"
+            anchorX="center"
+            anchorY="middle"
+            font="/fonts/SeasonSerifTRIAL-Light.woff"
+            letterSpacing={0.02}
+          >
+            KEY TECHNOLOGIES
+          </Text>
+
+          {/* Two Horizontal Lines */}
+          <mesh position={[0, viewport.height * -0.05, 0]}>
+            <planeGeometry args={[viewport.width * 0.8, 0.002, 1]} />
+            <meshBasicMaterial color="#403454" />
+          </mesh>
+          <mesh position={[0, viewport.height * -0.1, 0]}>
+            <planeGeometry args={[viewport.width * 0.8, 0.002, 1]} />
+            <meshBasicMaterial color="#403454" />
+          </mesh>
+
+          <Text
+            position={[0, viewport.height * -0.2, 0]}
+            fontSize={viewport.height * 0.025}
+            color="#403454"
+            maxWidth={viewport.width * 0.7}
+            anchorX="center"
+            anchorY="middle"
+            font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+            letterSpacing={0.02}
+            lineHeight={1.5}
+          >
+            WebGL 2.0 with advanced shader programming for real-time rendering.
+            {"\n\n"}
+            Custom physics engine with constraint-based simulation and particle
+            system optimization.
+          </Text>
+        </group>
+
+        {/* Get in Contact Section */}
+        <group position={[0, viewport.height * -4.0, 0]}>
+          <TextWithBorder
+            position={[0, 0, 0]}
+            roundness={0.1}
+            color="#403454"
+            padding={0.05}
+            paddingXMult={2.0}
+            paddingYMult={1.0}
+            border={0.01}
+            fontSize={viewport.height * 0.02}
+            borderColor="#403454"
+            onClick={() =>
+              window.open("mailto:christian@hohenbild.com", "_blank")
+            }
+            onPointerOver={() => (document.body.style.cursor = "pointer")}
+            onPointerOut={() => (document.body.style.cursor = "auto")}
+            textZ={0}
+          >
+            GET IN CONTACT
+          </TextWithBorder>
+
+          <Text
+            position={[0, viewport.height * -0.15, 0]}
+            fontSize={viewport.height * 0.023}
+            color="#403454"
+            maxWidth={viewport.width * 0.4}
+            anchorX="center"
+            anchorY="middle"
+            font="/fonts/ibm-plex-mono-latin-400-normal.woff"
+            letterSpacing={0.02}
+            lineHeight={1.5}
+          >
+            Ready to create something amazing together? Let's talk.
+          </Text>
+        </group>
+
         {/* Footer */}
         <Footer
-          position={[0, viewport.height * -4.2, 0]}
+          position={[0, viewport.height * -4.8, 0]}
           footerControls={footerControls}
-          globalFontColor="#ffffff"
-          globalSvgColor="#ffffff"
+          globalFontColor="#403454"
+          globalSvgColor="#403454"
           navigation={navigation}
         />
       </group>
@@ -548,14 +721,9 @@ function Work1Scene() {
 
 export default function Work1Detail() {
   return (
-    <div className="w-screen h-screen bg-black">
+    <>
       <BackButton />
-      <Canvas
-        camera={{ position: [0, 0, 2], fov: 75 }}
-        className="w-full h-full"
-      >
-        <Work1Scene />
-      </Canvas>
-    </div>
+      <Work1Scene />
+    </>
   )
 }

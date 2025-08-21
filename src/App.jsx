@@ -5,6 +5,7 @@ import { Leva, useControls } from "leva"
 // Import page content components (not full pages)
 import HomePageContent from "./components/HomePageContent"
 import Work1Content from "./components/Work1Content"
+import Work1Detail from "./pages/Work1Detail"
 import Work2Content from "./components/Work2Content"
 import Work3Content from "./components/Work3Content"
 import AboutPageContent from "./components/AboutPageContent"
@@ -49,7 +50,7 @@ function CanvasWrapper() {
     >
       <Routes>
         <Route path="/" element={<HomePageContent />} />
-        <Route path="/work1" element={<Work1Content />} />
+        <Route path="/work1" element={<Work1Detail />} />
         <Route path="/work2" element={<Work2Content />} />
         <Route path="/work3" element={<Work3Content />} />
         <Route path="/about" element={<AboutPageContent />} />
