@@ -30,6 +30,7 @@ function PostProcessPlaneImpl({ texture }, ref) {
     aberrationSlide,
     effectDuration,
     fbmOctaves,
+    decayRate,
     // Transition controls
     transitionDistortion,
     transitionAberration,
@@ -48,6 +49,7 @@ function PostProcessPlaneImpl({ texture }, ref) {
       aberrationSlide: { value: 0.12, min: 0.01, max: 2.0, step: 0.01 },
       effectDuration: { value: 2.0, min: 0.2, max: 2.0, step: 0.1 },
       fbmOctaves: { value: 3, min: 1, max: 8, step: 1 },
+      decayRate: { value: 2.0, min: 0.5, max: 5.0, step: 0.1 },
       // Transition controls
       transitionDistortion: { value: 0.8, min: 0.1, max: 2.0, step: 0.1 },
       transitionAberration: { value: 0.05, min: 0.001, max: 0.1, step: 0.001 },
@@ -269,6 +271,7 @@ function PostProcessPlaneImpl({ texture }, ref) {
     aberrationLayers,
     aberrationSlide,
     fbmOctaves,
+    decayRate,
     transitionDistortion,
     transitionAberration,
   ])
@@ -311,7 +314,14 @@ function PostProcessPlaneImpl({ texture }, ref) {
 
         // Update distortion time
         if (distortionTimeRef.current > 0) {
-          distortionTimeRef.current -= delta
+          // Exponential decay instead of linear fade
+          distortionTimeRef.current *= Math.exp(-decayRate * delta)
+
+          // Ensure it doesn't go below 0
+          if (distortionTimeRef.current < 0.001) {
+            distortionTimeRef.current = 0
+          }
+
           material.uniforms.uDistortionTime.value = distortionTimeRef.current
         }
 
