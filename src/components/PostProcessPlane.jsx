@@ -205,7 +205,7 @@ function PostProcessPlaneImpl({ texture }, ref) {
           
           void main() {
             // Calculate scroll-based vertical offset for noise
-            float scrollOffset = uScrollVelocity * uTime * 2.0;
+            float scrollOffset = uScrollVelocity * 2.0;
             // 2D distortion: use two different fbm noise values for x and y
             // Apply noiseScale to control the scale of the noise pattern
             // Use modulo to prevent the time from growing indefinitely and causing acceleration
