@@ -1,3 +1,3 @@
-# React + Vite + R3F
+# NEW Portfolio
 
-This template provides a minimal setup to get R3F working in Vite
+This is my 2025 portfolio. This is the messy version.
